@@ -2,36 +2,18 @@
 
 <img src="DatabaseDesignER.svg">
 
-This schema includes:
-
-- User management (Admin, Buyer, Seller)
-- Product & category handling
-- Product media
-- Cart system
-- Orders & order items
-- Payment integration
-- Address handling
-- Admin activity log
-
----
-
 ## 1. Users Table
 
 ```sql
 CREATE TABLE users (
     user_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    organization_id BIGINT,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     phone_number VARCHAR(20) UNIQUE,
     password_hash TEXT NOT NULL,
-    role ENUM('BUYER', 'BUYER_ADMIN', 'SELLER', 'SELLER_ADMIN', 'PLATFORM_ADMIN') NOT NULL,
-    department VARCHAR(100),
-    position VARCHAR(100),
-    purchase_approval_limit DECIMAL(15,2) DEFAULT 0, -- For approval workflows
+    role ENUM('BUYER','SELLER','ADMIN') NOT NULL,
     is_verified BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (organization_id) REFERENCES organizations(organization_id)
 );
 ```
 
@@ -54,14 +36,12 @@ CREATE TABLE price_tiers (
 CREATE TABLE contracts (
     contract_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     seller_id BIGINT NOT NULL,
-    buyer_organization_id BIGINT NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     payment_terms INT DEFAULT 30,
     status ENUM('DRAFT', 'ACTIVE', 'EXPIRED', 'TERMINATED') DEFAULT 'DRAFT',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (seller_id) REFERENCES users(user_id),
-    FOREIGN KEY (buyer_organization_id) REFERENCES organizations(organization_id)
 );
 ```
 
@@ -166,7 +146,6 @@ CREATE TABLE products (
 CREATE TABLE orders (
     order_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     buyer_id BIGINT NOT NULL,
-    buyer_organization_id BIGINT NOT NULL,
     seller_id BIGINT NOT NULL,
     contract_id BIGINT,
     shipping_address_id BIGINT NOT NULL,
@@ -184,7 +163,6 @@ CREATE TABLE orders (
     total_price DECIMAL(12,2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (buyer_id) REFERENCES users(user_id),
-    FOREIGN KEY (buyer_organization_id) REFERENCES organizations(organization_id),
     FOREIGN KEY (seller_id) REFERENCES users(user_id),
     FOREIGN KEY (contract_id) REFERENCES contracts(contract_id),
     FOREIGN KEY (shipping_address_id) REFERENCES addresses(address_id),
