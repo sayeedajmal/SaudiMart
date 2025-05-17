@@ -1,0 +1,225 @@
+erDiagram
+
+  organizations {
+    BIGINT organization_id PK
+    VARCHAR name
+    ENUM type
+    TIMESTAMP created_at
+  }
+
+  users {
+    BIGINT user_id PK
+    BIGINT organization_id FK
+    VARCHAR name
+    VARCHAR email
+    VARCHAR phone_number
+    TEXT password_hash
+    ENUM role
+    VARCHAR department
+    VARCHAR position
+    DECIMAL purchase_approval_limit
+    BOOLEAN is_verified
+    TIMESTAMP created_at
+  }
+
+  addresses {
+    BIGINT address_id PK
+    BIGINT organization_id FK
+    TEXT address_line
+    VARCHAR city
+    VARCHAR state
+    VARCHAR country
+    VARCHAR zip_code
+    ENUM type
+    TIMESTAMP created_at
+  }
+
+  categories {
+    BIGINT category_id PK
+    VARCHAR name
+    TEXT description
+    BIGINT created_by FK
+    TIMESTAMP created_at
+  }
+
+  products {
+    BIGINT product_id PK
+    BIGINT seller_id FK
+    VARCHAR name
+    TEXT description
+    BIGINT category_id FK
+    DECIMAL base_price
+    BOOLEAN is_bulk_only
+    INT minimum_order_quantity
+    DECIMAL weight
+    VARCHAR weight_unit
+    VARCHAR dimensions
+    VARCHAR sku
+    BOOLEAN is_active
+    TIMESTAMP created_at
+  }
+
+  product_media {
+    BIGINT media_id PK
+    BIGINT product_id FK
+    TEXT media_url
+    ENUM media_type
+  }
+
+  product_specifications {
+    BIGINT spec_id PK
+    BIGINT product_id FK
+    VARCHAR spec_name
+    TEXT spec_value
+    VARCHAR unit
+  }
+
+  product_variants {
+    BIGINT variant_id PK
+    BIGINT product_id FK
+    VARCHAR sku
+    VARCHAR variant_name
+    DECIMAL additional_price
+  }
+
+  price_tiers {
+    BIGINT tier_id PK
+    BIGINT product_id FK
+    INT min_quantity
+    INT max_quantity
+    DECIMAL price_per_unit
+  }
+
+  warehouses {
+    BIGINT warehouse_id PK
+    BIGINT seller_id FK
+    VARCHAR name
+    BIGINT address_id FK
+  }
+
+  inventory {
+    BIGINT inventory_id PK
+    BIGINT product_id FK
+    BIGINT variant_id FK
+    BIGINT warehouse_id FK
+    INT quantity
+    INT reserved_quantity
+    INT reorder_level
+    TIMESTAMP last_updated
+  }
+
+  contracts {
+    BIGINT contract_id PK
+    BIGINT seller_id FK
+    BIGINT buyer_organization_id FK
+    DATE start_date
+    DATE end_date
+    INT payment_terms
+    ENUM status
+    TIMESTAMP created_at
+  }
+
+  contract_items {
+    BIGINT contract_item_id PK
+    BIGINT contract_id FK
+    BIGINT product_id FK
+    DECIMAL negotiated_price
+    INT min_commitment_quantity
+    INT max_quantity
+  }
+
+  orders {
+    BIGINT order_id PK
+    BIGINT buyer_id FK
+    BIGINT buyer_organization_id FK
+    BIGINT seller_id FK
+    BIGINT contract_id FK
+    BIGINT shipping_address_id FK
+    BIGINT billing_address_id FK
+    ENUM payment_method
+    VARCHAR reference_number
+    VARCHAR purchase_order_number
+    DATE expected_delivery_date
+    TEXT notes
+    ENUM status
+    DECIMAL subtotal
+    DECIMAL tax_amount
+    DECIMAL shipping_cost
+    DECIMAL discount_amount
+    DECIMAL total_price
+    TIMESTAMP created_at
+  }
+
+  order_items {
+    BIGINT order_item_id PK
+    BIGINT order_id FK
+    BIGINT product_id FK
+    BIGINT variant_id FK
+    INT quantity
+    DECIMAL price_per_unit
+    DECIMAL discount_percent
+    DECIMAL tax_percent
+    DECIMAL total_price
+    BIGINT ship_from_warehouse_id FK
+    ENUM status
+  }
+
+  order_approvals {
+    BIGINT approval_id PK
+    BIGINT order_id FK
+    BIGINT approver_id FK
+    ENUM status
+    TEXT comments
+    TIMESTAMP approval_date
+    TIMESTAMP created_at
+  }
+
+  payments {
+    BIGINT payment_id PK
+    BIGINT order_id FK
+    DECIMAL amount
+    ENUM payment_type
+    VARCHAR transaction_id
+    ENUM payment_status
+    TIMESTAMP payment_date
+    DATE due_date
+    TIMESTAMP created_at
+  }
+
+  invoices {
+    BIGINT invoice_id PK
+    BIGINT order_id FK
+    VARCHAR invoice_number
+    DATE issued_date
+    DATE due_date
+    ENUM status
+    DECIMAL subtotal
+    DECIMAL tax_amount
+    DECIMAL total_amount
+    DECIMAL paid_amount
+    TEXT notes
+    TIMESTAMP created_at
+  }
+
+  %% Relationships
+  users ||--o{ addresses : has
+  organizations ||--o{ users : employs
+  organizations ||--o{ addresses : has
+  users ||--o{ products : sells
+  users ||--o{ warehouses : owns
+  users ||--o{ orders : places
+  users ||--o{ order_approvals : approves
+  products ||--o{ product_media : has
+  products ||--o{ product_specifications : has
+  products ||--o{ product_variants : has
+  products ||--o{ price_tiers : has
+  products ||--o{ order_items : included_in
+  product_variants ||--o{ inventory : tracks
+  products ||--o{ inventory : stocked
+  orders ||--o{ order_items : contains
+  orders ||--o{ order_approvals : requires
+  orders ||--o{ payments : paid_by
+  orders ||--o{ invoices : billed_by
+  contracts ||--o{ contract_items : includes
+  contracts ||--o{ orders : binds
+  warehouses ||--o{ inventory : holds
