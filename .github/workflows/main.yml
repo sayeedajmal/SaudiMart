@@ -1,18 +1,31 @@
-name: Build and Test
+name: Build and Install saudiMartAuth
 
 on:
   push:
-    branches: [ AuthService ]
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./saudiMartAuth
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Make Maven wrapper executable
+        run: chmod +x mvnw
+
       - name: Build with Maven
-        run: mvn clean install
+        run: ./mvnw clean install -DskipTests
