@@ -10,26 +10,32 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - saudiMart_network
 
   redis:
     image: redis:latest
-    container_name: saudimart_redis
+    container_name: redis
+    restart: always
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - saudiMart_network
 
   redisinsight:
-    image: redislabs/redisinsight:latest
+    image: redis/redisinsight:latest
     container_name: saudimart_redisinsight
     ports:
-      - "8001:8001"
-    depends_on:
-      - redis
-    environment:
-      - REDIS_HOST=redis
+      - "5540:5540"
+    networks:
+      - saudiMart_network
 
 volumes:
   postgres_data:
   redis_data:
 
+networks:
+  saudiMart_network:
+    driver: bridge

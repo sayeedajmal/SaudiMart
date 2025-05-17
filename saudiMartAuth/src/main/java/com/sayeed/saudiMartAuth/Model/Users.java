@@ -2,12 +2,20 @@ package com.sayeed.saudiMartAuth.Model;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Data
@@ -16,11 +24,11 @@ import lombok.Data;
 public class Users implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String userId; // Auto-generated
+    @Column(name = "user_id", updatable = false, nullable = false)
+    private String userId = UUID.randomUUID().toString();
 
     @Column(nullable = false)
-    private String name; // e.g., "Sayeed Ajmal"
+    private String username; // e.g., "Sayeed Ajmal"
 
     @Column(unique = true, nullable = false)
     private String email; // e.g., "sayeed@example.com"
@@ -40,7 +48,6 @@ public class Users implements UserDetails {
     @CreationTimestamp
     private Timestamp createdAt;
 
-    
     private boolean enabled = true;
 
     // Spring Security flags — defaults should be set during registration
@@ -48,41 +55,10 @@ public class Users implements UserDetails {
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;
 
-    @Transient
-    private Collection<? extends GrantedAuthority> authorities;
-
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role));
     }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return name;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return accountNonExpired;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return accountNonLocked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return credentialsNonExpired;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
 }

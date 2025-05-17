@@ -1,5 +1,6 @@
 package com.sayeed.saudiMartAuth.Security;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,102 +12,90 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.sayeed.saudiMartAuth.Model.Users;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-/**
- * Security configuration class for setting up the security aspects of the
- * application.
- */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    // @Value("${Users.Cors.Url}")
-    // private String CORS_URL;
-
-    // @Value("${Users.Cors.Methods}")
-    // private String CORS_METHODS;
-
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
-    /**
-     * Configures the security filter chain with custom settings.
-     * 
-     * @param http the HttpSecurity object to configure.
-     * @return the configured SecurityFilterChain.
-     * @throws Exception if an error occurs during configuration.
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/actuator/**").permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/auth/**", "/actuator/**").permitAll();
+                    // Fix: Add explicit permission for user endpoints
+                    auth.requestMatchers("/users/**").hasAnyRole("BUYER", "ADMIN", "SELLER");
+                    auth.anyRequest().authenticated();
+                })
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(customAuthenticationEntryPoint()))
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .logout(logout -> logout
                         .logoutUrl("/api/logout")
-                        .logoutSuccessHandler(
-                                (request, response, authentication) -> SecurityContextHolder.clearContext()));
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            SecurityContextHolder.clearContext();
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            response.getWriter().write("{\"message\": \"Logged out successfully\"}");
+                        }));
 
         return http.build();
     }
 
-    /**
-     * Configures CORS settings for the application.
-     * 
-     * @return CorsConfigurationSource
-     */
+    @Bean
+    public AuthenticationEntryPoint customAuthenticationEntryPoint() {
+        return new AuthenticationEntryPoint() {
+            @Override
+            public void commence(HttpServletRequest request, HttpServletResponse response,
+                    AuthenticationException authException) throws IOException, ServletException {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\": \"" + authException.getMessage() + "\", \"path\": \"" +
+                        request.getRequestURI() + "\", \"status\": 401}");
+            }
+        };
+    }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true);
+        config.setExposedHeaders(List.of("Authorization"));
+        // Fix: Set to false when using "*" for allowed origins
+        config.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
 
-    /**
-     * Provides a PasswordEncoder bean using BCrypt hashing.
-     * 
-     * @return a BCryptPasswordEncoder instance.
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public Users user() {
-        return new Users();
-    }
-
-    /**
-     * Provides an AuthenticationManager bean.
-     * 
-     * @param configuration the AuthenticationConfiguration used to build the
-     *                      AuthenticationManager.
-     * @return the configured AuthenticationManager.
-     * @throws Exception if an error occurs while building the
-     *                   AuthenticationManager.
-     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();

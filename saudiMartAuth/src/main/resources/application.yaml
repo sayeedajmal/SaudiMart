@@ -1,18 +1,24 @@
 server:
   port: 8081
 spring:
+  main:
+      allow-circular-references: true
   application:
     name: saudiMartAuth
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/saudimartdb}
+    username: ${DB_USERNAME:saudimart}
+    password: ${DB_PASSWORD:saudimart}
+    initialization-mode: always
+  jpa:
+    hibernate:
+      ddl-auto: update
   redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
-    password: ${REDIS_PASSWORD}
-    username: ${REDIS_USERNAME}
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
 jwt:
-  secret: ${JWT_SECRET}
-  tokenValidityInMilliSeconds: ${JWT_ACCESS_TOKEN_EXPIRE}
-  tokenRefreshInMilliSeconds: ${JWT_REFRESH_TOKEN_EXPIRE}
+  secret: ${JWT_SECRET:habeebahabeebahabeebahabeebahabeebahabeebahabeebahabeebahabeebahabeebahabeebahabeebahabeebahabeebahabeeba}
+  tokenValidityInMilliSeconds: ${JWT_ACCESS_TOKEN_EXPIRE:1800000}
+  tokenRefreshInMilliSeconds: ${JWT_REFRESH_TOKEN_EXPIRE:604800000}
+  
+

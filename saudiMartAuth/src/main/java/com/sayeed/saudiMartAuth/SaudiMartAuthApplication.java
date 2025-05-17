@@ -10,8 +10,6 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class SaudiMartAuthApplication {
@@ -20,10 +18,7 @@ public class SaudiMartAuthApplication {
 	String host;
 	@Value("${spring.redis.port}")
 	int port;
-	@Value("${spring.redis.username}")
-	String username;
-	@Value("${spring.redis.password}")
-	String password;
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(SaudiMartAuthApplication.class, args);
@@ -46,13 +41,7 @@ public class SaudiMartAuthApplication {
 		RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
 		redisConfig.setHostName(host);
 		redisConfig.setPort(port);
-		redisConfig.setUsername(username);
-		redisConfig.setPassword(password);
 		return new LettuceConnectionFactory(redisConfig);
 	}
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
 }

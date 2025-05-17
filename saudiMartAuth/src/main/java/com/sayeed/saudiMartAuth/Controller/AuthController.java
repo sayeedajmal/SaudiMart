@@ -20,6 +20,13 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Handles user registration.
+     * 
+     * @param user the user object from the request body
+     * @return a response entity containing the JWT access token and refresh token
+     * @throws UserException if the email is already taken
+     */
     @PostMapping("/signup")
     public ResponseEntity<ResponseWrapper<Map<String, Object>>> signUp(@RequestBody Users user) throws UserException {
         Map<String, Object> tokens = userService.signUp(user);
@@ -27,7 +34,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseWrapper<Map<String, Object>>> authenticate(
+    /**
+     * Handles user login.
+     * 
+     * @param loginRequest a map containing the "email" and "password" fields from
+     *                     the request body
+     * @return a response entity containing the JWT access token and refresh token
+     * @throws UserException if the authentication fails
+     */
+    public ResponseEntity<ResponseWrapper<?>> authenticate(
             @RequestBody Map<String, String> loginRequest) throws UserException {
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
@@ -35,4 +50,12 @@ public class AuthController {
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Login successful", tokens));
     }
 
+    @PostMapping("/refresh-token")
+    public ResponseEntity<ResponseWrapper<Map<String, String>>> refreshToken(
+            @RequestBody Map<String, String> request) throws UserException {
+        String refreshToken = request.get("refreshToken");
+        String email = request.get("email");
+        Map<String, String> tokens = userService.refreshToken(refreshToken, email);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Token refreshed successfully", tokens));
+    }
 }

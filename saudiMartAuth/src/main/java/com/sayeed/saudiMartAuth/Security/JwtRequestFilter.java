@@ -1,9 +1,11 @@
 package com.sayeed.saudiMartAuth.Security;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -69,10 +71,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 String email = jwtUtil.extractUserEmail(jwt);
                 if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     Users userDetails = (Users) userService.loadUserByUsername(email);
-
                     if (userDetails != null && jwtUtil.isTokenValid(jwt, userDetails)) {
+                        System.out.println("ROLE:"+userDetails.getRole());
                         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
+                                userDetails, null,
+                                List.of(new SimpleGrantedAuthority("ROLE_" + userDetails.getRole())));
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                         chain.doFilter(request, response);

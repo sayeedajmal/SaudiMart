@@ -2,15 +2,9 @@ package com.sayeed.saudiMartAuth.Controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sayeed.saudiMartAuth.Model.ResponseWrapper;
 import com.sayeed.saudiMartAuth.Model.Users;
@@ -21,9 +15,16 @@ import com.sayeed.saudiMartAuth.Utils.UserException;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    /**
+     * Gets all users in the system.
+     * Requires ROLE_ADMIN.
+     */
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapper<List<Users>>> getAllUsers() {
@@ -31,66 +32,100 @@ public class UserController {
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", users));
     }
 
-    @PostMapping("/{email}/{role}")
-    public ResponseEntity<ResponseWrapper<Boolean>> updateRole(String email, String role) throws UserException {
-        userService.updateRole(email, role);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", true));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Users>> getUserById(@PathVariable String id) throws UserException {
+    /**
+     * Gets a user by ID.
+     */
+    @GetMapping("/id/{id}")
+    public ResponseEntity<ResponseWrapper<Users>> getUserById(@PathVariable("id") String id) throws UserException {
         Users user = userService.getUserById(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", user));
     }
 
-    @PostMapping("/{email}/{activated}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ResponseWrapper<Boolean>> toggleUserActivation(@PathVariable String email,
-            @PathVariable boolean activated)
+    /**
+     * Gets a user by their email address.
+     */
+    @GetMapping("/email/{email:.+}")
+    public ResponseEntity<ResponseWrapper<Users>> getUserByEmail(@PathVariable("email") String email)
             throws UserException {
-        userService.toggleUserActivation(email, activated);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", true));
-    }
-
-    @PostMapping("/{email}/{locked}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ResponseWrapper<Boolean>> lockOrUnlockUser(@PathVariable String email,
-            @PathVariable boolean locked)
-            throws UserException {
-        userService.lockOrUnlockUser(email, locked);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", true));
-    }
-
-    @PostMapping("/{email}/{verified}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ResponseWrapper<Boolean>> setUserVerificationStatus(@PathVariable String email,
-            @PathVariable boolean verified)
-            throws UserException {
-        userService.setUserVerificationStatus(email, verified);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", true));
-    }
-
-    @PostMapping("/update")
-    public ResponseEntity<ResponseWrapper<Users>> updateUserSelf(Users user) throws UserException {
-        Users updatedUser = userService.updateUserSelf(user);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", updatedUser));
-    }
-
-    @GetMapping("/is-email-available/{email}")
-    public ResponseEntity<ResponseWrapper<Boolean>> isEmailAvailable(@PathVariable String email) throws UserException {
-        boolean available = userService.isEmailAvailable(email);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", available));
-    }
-
-    @GetMapping("/{email}")
-    public ResponseEntity<ResponseWrapper<Users>> getUserByEmail(@PathVariable String email) throws UserException {
         Users user = userService.getUserByEmail(email);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", user));
     }
 
-    @DeleteMapping("/{id}")
+    /**
+     * Checks if the given email is available.
+     */
+    @GetMapping("/is-email-available/{email:.+}")
+    public ResponseEntity<ResponseWrapper<Boolean>> isEmailAvailable(@PathVariable("email") String email)
+            throws UserException {
+        boolean available = userService.isEmailAvailable(email);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", available));
+    }
+
+    /**
+     * Used by Admin to change a user's role.
+     * Requires ROLE_ADMIN.
+     */
+    @PostMapping("/set-role/{email:.+}/{role}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ResponseWrapper<Void>> deleteUser(@PathVariable String id) throws UserException {
+    public ResponseEntity<ResponseWrapper<Boolean>> updateRole(@PathVariable("email") String email,
+            @PathVariable("role") String role)
+            throws UserException {
+        userService.updateRole(email, role);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", true));
+    }
+
+    /**
+     * Toggles a user's activation status.
+     * Requires ROLE_ADMIN.
+     */
+    @PostMapping("/activate/{email:.+}/{activated}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<ResponseWrapper<Boolean>> toggleUserActivation(@PathVariable("email") String email,
+            @PathVariable("activated") boolean activated) throws UserException {
+        userService.toggleUserActivation(email, activated);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", true));
+    }
+
+    /**
+     * Locks or unlocks a user's account.
+     * Requires ROLE_ADMIN.
+     */
+    @PostMapping("/lock/{email:.+}/{locked}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<ResponseWrapper<Boolean>> lockOrUnlockUser(@PathVariable("email") String email,
+            @PathVariable("locked") boolean locked) throws UserException {
+        userService.lockOrUnlockUser(email, locked);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", true));
+    }
+
+    /**
+     * Verifies or unverifies a user.
+     * Requires ROLE_ADMIN.
+     */
+    @PostMapping("/verify/{email:.+}/{verified}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<ResponseWrapper<Boolean>> setUserVerificationStatus(@PathVariable("email") String email,
+            @PathVariable("verified") boolean verified) throws UserException {
+        userService.setUserVerificationStatus(email, verified);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", true));
+    }
+
+    /**
+     * Updates the profile details of the currently logged-in user.
+     */
+    @PostMapping("/update")
+    public ResponseEntity<ResponseWrapper<Users>> updateUserSelf(@RequestBody Users user) throws UserException {
+        Users updatedUser = userService.updateUserSelf(user);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Success", updatedUser));
+    }
+
+    /**
+     * Deletes a user by ID.
+     * Requires ROLE_ADMIN.
+     */
+    @DeleteMapping("/id/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<ResponseWrapper<Void>> deleteUser(@PathVariable("id") String id) throws UserException {
         userService.deleteUser(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "User deleted successfully", null));
     }
