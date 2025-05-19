@@ -4,7 +4,20 @@ import { login } from './api/auth'; // Assuming the path to your auth API file
 
 function LoginPage({ toggleToSignup }) {
   const dispatch = useDispatch();
-  const { error } = useSelector(state => state.auth); // Assuming your auth state is under 'auth' in the Redux store
+  const { error, loading } = useSelector(state => state.auth); // Assuming your auth state is under 'auth' in the Redux store
+  const [credentials, setCredentials] = useState({ emailOrPhone: '', password: '' });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Dispatch the login action with credentials and dispatch function
+      await dispatch(login(credentials)); // Assuming login function is an async action creator
+      // You might want to redirect the user here on success
+    } catch (err) {
+      // Error handled by Redux action, but you might log or show a local message
+      console.error("Login form submission error:", err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -26,23 +39,7 @@ function LoginPage({ toggleToSignup }) {
               Log in to <span className="text-blue-600">Exclusive</span>
             </h2>
 
-            <form className="space-y-5" onSubmit={async (e) => {
-              e.preventDefault();
-              const formData = new FormData(e.target);
-              const credentials = {
-                email: formData.get('emailOrPhone'), // Assuming emailOrPhone is the correct field name
-                password: formData.get('password'),
-              };
-              try {
-                // Dispatch the login action with credentials and dispatch function
-                await dispatch(login(credentials)); // Assuming login function is an async action creator
-                // You might want to redirect the user here on success
-              } catch (err) {
-                // Error handled by Redux action, but you might log or show a local message
-                console.error("Login form submission error:", err);
-              }
-            }}>
-
+            <form className="space-y-5" onSubmit={handleSubmit}>
               {/* Email or Phone */}
               <div>
                 <label htmlFor="emailOrPhone" className="sr-only">
@@ -55,6 +52,8 @@ function LoginPage({ toggleToSignup }) {
                   required
                   placeholder="Email or Phone Number"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  value={credentials.emailOrPhone}
+                  onChange={(e) => setCredentials({ ...credentials, emailOrPhone: e.target.value })}
                 />
               </div>
 
@@ -70,6 +69,8 @@ function LoginPage({ toggleToSignup }) {
                   required
                   placeholder="Password"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  value={credentials.password}
+                  onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
                 />
               </div>
 
@@ -86,9 +87,9 @@ function LoginPage({ toggleToSignup }) {
               {/* Login Button */}
               <div>
                 <button
-                  type="submit" // Added type="submit"
-                  className={`w-full py-2 px-4 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${false ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  disabled={false} // Disable button while loading
+                  type="submit"
+                  className={`w-full py-2 px-4 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  disabled={loading}
                 >
                   {loading ? 'Logging In...' : 'Log In'}
                 </button>
@@ -111,7 +112,6 @@ function LoginPage({ toggleToSignup }) {
 
             {/* Error Message */}
             {error && <p className="text-red-500 text-center mt-4">{error.message || 'An error occurred during login.'}</p>}
-
           </div>
         </div>
       </main>
@@ -120,3 +120,4 @@ function LoginPage({ toggleToSignup }) {
 }
 
 export default LoginPage;
+
