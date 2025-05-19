@@ -1,12 +1,8 @@
-import React from 'react';
-
-function LoginPage() {
+function LoginPage({ toggleToSignup }) {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      
       {/* Main Content */}
       <main className="flex-grow flex flex-col md:flex-row">
-        
         {/* Left Side - Image */}
         <div className="md:w-1/2 bg-blue-200 flex items-center justify-center p-8">
           <img
@@ -26,7 +22,9 @@ function LoginPage() {
             <form className="space-y-5">
               {/* Email or Phone */}
               <div>
-                <label htmlFor="emailOrPhone" className="sr-only">Email or Phone</label>
+                <label htmlFor="emailOrPhone" className="sr-only">
+                  Email or Phone
+                </label>
                 <input
                   id="emailOrPhone"
                   name="emailOrPhone"
@@ -39,7 +37,9 @@ function LoginPage() {
 
               {/* Password */}
               <div>
-                <label htmlFor="password" className="sr-only">Password</label>
+                <label htmlFor="password" className="sr-only">
+                  Password
+                </label>
                 <input
                   id="password"
                   name="password"
@@ -52,7 +52,10 @@ function LoginPage() {
 
               {/* Forgot Password */}
               <div className="flex justify-end">
-                <a href="#" className="text-sm text-blue-600 hover:text-blue-500 font-medium">
+                <a
+                  href="#"
+                  className="text-sm text-blue-600 hover:text-blue-500 font-medium"
+                >
                   Forgot Password?
                 </a>
               </div>
@@ -71,10 +74,14 @@ function LoginPage() {
             {/* Sign Up Prompt */}
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Don’t have an account?{' '}
-                <a href="#" className="text-blue-600 hover:text-blue-500 font-medium">
+                Don’t have an account?{" "}
+                <button
+                  type="button"
+                  onClick={toggleToSignup}
+                  className="text-blue-600 hover:text-blue-500 font-medium"
+                >
                   Sign up
-                </a>
+                </button>
               </p>
             </div>
           </div>

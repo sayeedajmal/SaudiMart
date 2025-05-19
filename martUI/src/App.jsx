@@ -1,24 +1,24 @@
-import {
-  MdAccountCircle,
-  MdDashboard,
-  MdNotifications,
-  MdSearch,
-} from "react-icons/md";
-import LoginPage from "./LoginPage"
-import BuyerDashboard from "./Buyer/BuyerDashboard"
+import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
+import Footer from "./Footer";
 import { useState } from "react";
-import Footer from "./Footer"
 
 function App() {
   const [showLogin, setShowLogin] = useState(true);
 
   const togglePage = () => {
-    setShowLogin(!showLogin);
+    setShowLogin((prev) => !prev);
   };
+
   return (
-    <div>
-      <LoginPage />
+    <div className="min-h-screen flex flex-col justify-between">
+      <div className="flex-grow">
+        {showLogin ? (
+          <LoginPage toggleToSignup={togglePage} />
+        ) : (
+          <SignupPage toggleToLogin={togglePage} />
+        )}
+      </div>
       <Footer />
     </div>
   );
