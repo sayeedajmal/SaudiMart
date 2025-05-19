@@ -1,4 +1,11 @@
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from './api/auth'; // Assuming the path to your auth API file
+
 function LoginPage({ toggleToSignup }) {
+  const dispatch = useDispatch();
+  const { error } = useSelector(state => state.auth); // Assuming your auth state is under 'auth' in the Redux store
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Main Content */}
@@ -19,7 +26,23 @@ function LoginPage({ toggleToSignup }) {
               Log in to <span className="text-blue-600">Exclusive</span>
             </h2>
 
-            <form className="space-y-5">
+            <form className="space-y-5" onSubmit={async (e) => {
+              e.preventDefault();
+              const formData = new FormData(e.target);
+              const credentials = {
+                email: formData.get('emailOrPhone'), // Assuming emailOrPhone is the correct field name
+                password: formData.get('password'),
+              };
+              try {
+                // Dispatch the login action with credentials and dispatch function
+                await dispatch(login(credentials)); // Assuming login function is an async action creator
+                // You might want to redirect the user here on success
+              } catch (err) {
+                // Error handled by Redux action, but you might log or show a local message
+                console.error("Login form submission error:", err);
+              }
+            }}>
+
               {/* Email or Phone */}
               <div>
                 <label htmlFor="emailOrPhone" className="sr-only">
@@ -63,10 +86,11 @@ function LoginPage({ toggleToSignup }) {
               {/* Login Button */}
               <div>
                 <button
-                  type="submit"
-                  className="w-full py-2 px-4 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  type="submit" // Added type="submit"
+                  className={`w-full py-2 px-4 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${false ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  disabled={false} // Disable button while loading
                 >
-                  Log In
+                  {loading ? 'Logging In...' : 'Log In'}
                 </button>
               </div>
             </form>
@@ -84,6 +108,10 @@ function LoginPage({ toggleToSignup }) {
                 </button>
               </p>
             </div>
+
+            {/* Error Message */}
+            {error && <p className="text-red-500 text-center mt-4">{error.message || 'An error occurred during login.'}</p>}
+
           </div>
         </div>
       </main>

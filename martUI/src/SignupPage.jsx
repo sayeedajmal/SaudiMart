@@ -1,4 +1,15 @@
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { signup } from './api/auth';
+
 function SignupPage({ toggleToLogin }) {
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.auth); // Assuming your auth state is under 'auth'
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Main Section */}
@@ -21,26 +32,38 @@ function SignupPage({ toggleToLogin }) {
             <p className="text-gray-600 mb-6">Enter your details below</p>
 
             <form className="space-y-4">
+              {error && <p className="text-red-500">{error.message}</p>}
               <input
                 type="text"
                 placeholder="Name"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
               <input
                 type="text"
                 placeholder="Email or Phone Number"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <input
                 type="password"
                 placeholder="Password"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <button
                 type="submit"
                 className="w-full px-4 py-2 rounded-md text-white font-semibold bg-blue-600 hover:bg-blue-700"
+                onClick={async (e) => {
+                  e.preventDefault(); // Prevent default form submission
+                  await signup({ name, email, password }, dispatch);
+                }}
+                disabled={loading}
               >
-                Create Account
+                {loading ? 'Creating Account...' : 'Create Account'}
               </button>
               <button
                 type="button"
