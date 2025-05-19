@@ -1,14 +1,14 @@
 import {
-    MdAccountCircle,
-    MdDashboard,
-    MdNotifications,
-    MdSearch,
+  MdAccountCircle,
+  MdDashboard,
+  MdNotifications,
+  MdSearch,
 } from "react-icons/md";
 import LoginPage from "./LoginPage"
-
+import BuyerDashboard from "./Buyer/BuyerDashboard"
 import SignupPage from "./SignupPage";
 import { useState } from "react";
-
+import Footer from "./Footer"
 
 function App() {
   const [showLogin, setShowLogin] = useState(true);
@@ -18,7 +18,8 @@ function App() {
   };
   return (
     <div>
-      <SignupPage/>
+      <LoginPage />
+      <Footer />
     </div>
   );
 }
