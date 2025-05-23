@@ -3,7 +3,7 @@ import { Provider, useSelector } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { combineReducers, createStore } from "redux";
 import authReducer from "./redux/authReducer";
-
+import NotificationDisplay from './NotificationDisplay'; 
 import BuyerDashboard from "./Buyer/BuyerDashboard";
 import LoginPage from "./LoginPage";
 import SellerDashboard from "./Seller/SellerDashboard";
@@ -45,7 +45,7 @@ function App() {
   return (
     <Provider store={store}>
       <Routes>
-        {" "}
+      <NotificationDisplay />
         <Route
           path="/login"
           element={<LoginPage toggleToSignup={toggleToSignup} />}

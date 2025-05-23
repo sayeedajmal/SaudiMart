@@ -3,6 +3,7 @@ import {
   loginSuccess,
   signupSuccess
 } from '../redux/authActions';
+import { addNotification } from '../redux/notificationActions';
 
 const API_BASE_URL = 'http://localhost:8081';
 
@@ -21,6 +22,7 @@ export const signup = async (userData, dispatch) => {
     
     if (!response.ok) {
       const error = new Error(data.message || 'Signup failed');
+      dispatch(addNotification({ message: data.message || 'Signup failed', type: 'error' }));
       dispatch(authFailure(error));
       throw error;
     }
@@ -48,6 +50,7 @@ export const login = async (credentials, dispatch) => {
 
     if (!response.ok) {
       const error = new Error(data.message || 'Login failed');
+      dispatch(addNotification({ message: data.message || 'Login failed', type: 'error' }));
       dispatch(authFailure(error));
       throw error;
     }
