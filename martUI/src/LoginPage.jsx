@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { login } from './api/auth'; // Assuming the path to your auth API file
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "./api/auth";
+import { loginSuccess } from "./redux/authActions";
 
 function LoginPage({ toggleToSignup }) {
   const dispatch = useDispatch();
-  const { error, loading } = useSelector(state => state.auth); // Assuming your auth state is under 'auth' in the Redux store
-  const [credentials, setCredentials] = useState({ emailOrPhone: '', password: '' });
+  const { error, loading } = useSelector((state) => state.auth);
+  const [credentials, setCredentials] = useState({
+    email: "",
+    password: "",
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Dispatch the login action with credentials and dispatch function
-      await dispatch(login(credentials)); // Assuming login function is an async action creator
-      // You might want to redirect the user here on success
+      const response = await login(credentials);
+      dispatch(loginSuccess(response.data));
     } catch (err) {
-      // Error handled by Redux action, but you might log or show a local message
       console.error("Login form submission error:", err);
     }
   };
@@ -40,20 +42,25 @@ function LoginPage({ toggleToSignup }) {
             </h2>
 
             <form className="space-y-5" onSubmit={handleSubmit}>
-              {/* Email or Phone */}
+              {/* Email */}
               <div>
-                <label htmlFor="emailOrPhone" className="sr-only">
-                  Email or Phone
+                <label htmlFor="email" className="sr-only">
+                  Email
                 </label>
                 <input
-                  id="emailOrPhone"
-                  name="emailOrPhone"
-                  type="text"
+                  id="email"
+                  name="email"
+                  type="email"
                   required
-                  placeholder="Email or Phone Number"
+                  placeholder="Email"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  value={credentials.emailOrPhone}
-                  onChange={(e) => setCredentials({ ...credentials, emailOrPhone: e.target.value })}
+                  value={credentials.email}
+                  onChange={(e) =>
+                    setCredentials({
+                      ...credentials,
+                      email: e.target.value,
+                    })
+                  }
                 />
               </div>
 
@@ -70,7 +77,9 @@ function LoginPage({ toggleToSignup }) {
                   placeholder="Password"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   value={credentials.password}
-                  onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+                  onChange={(e) =>
+                    setCredentials({ ...credentials, password: e.target.value })
+                  }
                 />
               </div>
 
@@ -88,10 +97,12 @@ function LoginPage({ toggleToSignup }) {
               <div>
                 <button
                   type="submit"
-                  className={`w-full py-2 px-4 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`w-full py-2 px-4 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                    loading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                   disabled={loading}
                 >
-                  {loading ? 'Logging In...' : 'Log In'}
+                  {loading ? "Logging In..." : "Log In"}
                 </button>
               </div>
             </form>
@@ -111,7 +122,11 @@ function LoginPage({ toggleToSignup }) {
             </div>
 
             {/* Error Message */}
-            {error && <p className="text-red-500 text-center mt-4">{error.message || 'An error occurred during login.'}</p>}
+            {error && (
+              <p className="text-red-500 text-center mt-4">
+                {error.message || "An error occurred during login."}
+              </p>
+            )}
           </div>
         </div>
       </main>
@@ -120,4 +135,3 @@ function LoginPage({ toggleToSignup }) {
 }
 
 export default LoginPage;
-

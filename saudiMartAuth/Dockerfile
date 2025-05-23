@@ -1,9 +1,13 @@
-FROM maven:3.8.4-openjdk-17 AS build
-COPY . /usr/src/app
-RUN mvn -f /usr/src/app/pom.xml clean package
+# Use a minimal JDK image
+FROM eclipse-temurin:17-jdk
 
-FROM openjdk:17-jdk-slim
-COPY --from=build /usr/src/app/target/*.jar app.jar
+WORKDIR /app
+
+# Copy only the pre-built JAR file (ensure JAR exists before building the image)
+COPY saudiMartAuth/target/*.jar app.jar
+
+# Expose the application port
 EXPOSE 8081
-ENTRYPOINT ["java","-jar","/app.jar"]
 
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]

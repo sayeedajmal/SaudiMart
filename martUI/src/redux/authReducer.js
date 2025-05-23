@@ -1,5 +1,3 @@
-// martUI/src/redux/authReducer.js
-
 import {
   SIGNUP_SUCCESS,
   LOGIN_SUCCESS,

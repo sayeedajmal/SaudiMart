@@ -1,14 +1,55 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { signup } from './api/auth';
-
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { signup } from "./api/auth";
+import { signupSuccess } from "./redux/authActions";
 function SignupPage({ toggleToLogin }) {
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.auth); // Assuming your auth state is under 'auth'
+  const { loading, error } = useSelector((state) => state.auth);
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone_number, setPhoneNumber] = useState("");
+  const [role, setRole] = useState("");
+
+  const handleChange = (e) => {
+    switch (e.target.name) {
+      case "name":
+        setName(e.target.value);
+        break;
+      case "email":
+        setEmail(e.target.value);
+        break;
+      case "password":
+        setPassword(e.target.value);
+        break;
+      case "phone_number":
+        setPhoneNumber(e.target.value);
+        break;
+      case "role":
+        setRole(e.target.value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const credentials = {
+        username: name,
+        email,
+        phone_number,
+        password,
+        role,
+      };
+      const response = await signup(credentials);
+      dispatch(signupSuccess(response.data));
+    } catch (err) {
+      console.error("Signup form submission error:", err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -31,39 +72,57 @@ function SignupPage({ toggleToLogin }) {
             </h2>
             <p className="text-gray-600 mb-6">Enter your details below</p>
 
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               {error && <p className="text-red-500">{error.message}</p>}
               <input
                 type="text"
                 placeholder="Name"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={handleChange}
+                name="name"
               />
               <input
                 type="text"
-                placeholder="Email or Phone Number"
+                placeholder="Email"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleChange}
+                name="email"
               />
               <input
                 type="password"
                 placeholder="Password"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handleChange}
+                name="password"
               />
+              <input
+                type="text"
+                placeholder="Phone Number"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                value={phone_number}
+                onChange={handleChange}
+                name="phone_number"
+              />
+              <select
+                name="role"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                value={role}
+                onChange={handleChange}
+              >
+                <option value="">Select a role</option>
+                <option value="BUYER">Buyer</option>
+                <option value="SELLER">Seller</option>
+              </select>
               <button
                 type="submit"
                 className="w-full px-4 py-2 rounded-md text-white font-semibold bg-blue-600 hover:bg-blue-700"
-                onClick={async (e) => {
-                  e.preventDefault(); // Prevent default form submission
-                  await signup({ name, email, password }, dispatch);
-                }}
+                onClick={handleSubmit}
                 disabled={loading}
               >
-                {loading ? 'Creating Account...' : 'Create Account'}
+                {loading ? "Creating Account..." : "Create Account"}
               </button>
               <button
                 type="button"
