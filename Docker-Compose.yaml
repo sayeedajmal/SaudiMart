@@ -1,4 +1,17 @@
 services:
+  saudimartauth:
+    build:
+      context: .
+      dockerfile: saudiMartAuth/Dockerfile
+    container_name: saudiMartAuth
+    ports:
+      - "8081:8081"
+    env_file: .env
+    networks:
+      - saudiMart_network
+    volumes:
+      - app_data:/var/lib/auth/data
+
   postgres:
     image: postgres:latest
     container_name: saudimart_postgres
@@ -35,6 +48,7 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  app_data:
 
 networks:
   saudiMart_network:

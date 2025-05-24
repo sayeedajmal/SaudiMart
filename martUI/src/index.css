@@ -1,0 +1,109 @@
+@import url(https://fonts.googleapis.com/css2?family=Lato&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Open+Sans&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200);
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Primary Colors */
+  --primary-color-1: #FFFFFF;
+  --primary-color-2: #363738;
+
+  /* Secondary Colors */
+  --secondary-color-1: #F5F5F5;
+  --secondary-color-2: #FEFAF1;
+  --secondary-color-3: #DB4444;
+
+  /* Text Colors */
+  --text-color-1: #D37643;
+
+  /* Other Colors */
+  --button-color-1: #47B486;
+  --button-color-2: #DB4444;
+  --hover-color-1: #E2B93B;
+  --hover-color-2: #EB5757;
+
+  /* Grayscale */
+  --grayscale-title-active: #1A1A2E;
+  --grayscale-body: #36374D;
+  --grayscale-label: #52536D;
+  --grayscale-placeholder: #C0C0C0;
+  --grayscale-line: #E0E0E0;
+  --grayscale-input-background: #F0F0F0;
+  --grayscale-background: #FAFAFA;
+  --grayscale-off-white: #FFFFFF;
+
+  /* Colors */
+  --color-primary: #6A4C93;
+  --color-secondary: #17C3B2;
+  --color-error: #E74C3C;
+  --color-success: #2ECC71;
+  --color-warning: #FAD02E;
+  --gradient-primary: linear-gradient(to right, #6A4C93, #17C3B2);
+  --gradient-secondary: linear-gradient(to right, #17C3B2, #FAD02E);
+  --gradient-accent: linear-gradient(to right, #FAD02E, #E74C3C);
+
+  /* Neutral Colors */
+  --neutral-50: #F7F7F7;
+  --neutral-100: #E0E0E0;
+  --neutral-200: #C0C0C0;
+  --neutral-300: #A0A0A0;
+  --neutral-400: #808080;
+  --neutral-500: #606060;
+  --neutral-600: #404040;
+  --neutral-700: #202020;
+  --neutral-800: #101010;
+  --neutral-900: #000000;
+
+  /* Blue Colors */
+  --blue-50: #E3F2FD;
+  --blue-100: #BBDEFB;
+  --blue-200: #90CAF9;
+  --blue-300: #64B5F6;
+  --blue-400: #42A5F5;
+  --blue-500: #2196F3;
+  --blue-600: #1E88E5;
+  --blue-700: #1976D2;
+  --blue-800: #1565C0;
+  --blue-900: #0D47A1;
+
+  /* Purple Colors */
+  --purple-50: #F3E5F5;
+  --purple-100: #E1BEE7;
+  --purple-200: #CE93D8;
+  --purple-300: #BA68C8;
+  --purple-400: #AB47BC;
+  --purple-500: #9C27B0;
+  --purple-600: #8E24AA;
+  --purple-700: #7B1FA2;
+  --purple-800: #6A1B9A;
+  --purple-900: #4A148C;
+
+  /* Magenta Colors */
+  --magenta-50: #FCE4EC;
+  --magenta-100: #F8BBD0;
+  --magenta-200: #F48FB1;
+  --magenta-300: #F06292;
+  --magenta-400: #EC407A;
+  --magenta-500: #E91E63;
+  --magenta-600: #D81B60;
+  --magenta-700: #C2185B;
+  --magenta-800: #AD1457;
+  --magenta-900: #880E4F;
+
+  /* Green Colors */
+  --green-50: #E8F5E9;
+  --green-100: #C8E6C9;
+  --green-200: #A5D6A7;
+  --green-300: #81C784;
+  --green-400: #66BB6A;
+  --green-500: #4CAF50;
+  --green-600: #43A047;
+  --green-700: #388E3C;
+  --green-800: #2E7D32;
+  --green-900: #1B5E20;
+
+}
