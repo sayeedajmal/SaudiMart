@@ -23,7 +23,6 @@ function LoginPage({ toggleToSignup }) {
 
     try {
       const response = await login(credentials, dispatch);
-      dispatch(loginSuccess(response.data));
     } catch (err) {
       console.error("Login form submission error:", err);
     }

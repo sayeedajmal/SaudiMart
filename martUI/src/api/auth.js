@@ -39,7 +39,9 @@ export const signup = async (userData, dispatch) => {
 };
 
 export const login = async (credentials, dispatch) => {
+  console.log('Dispatching authRequest...');
   dispatch(authRequest());
+
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
@@ -50,6 +52,7 @@ export const login = async (credentials, dispatch) => {
     });
 
     const data = await response.json();
+    console.log('Login API response data:', data);
 
     if (!response.ok) {
       const error = new Error(data.message || 'Login failed');
@@ -58,11 +61,13 @@ export const login = async (credentials, dispatch) => {
       throw error;
     }
 
-    dispatch(loginSuccess(data.data));
+    dispatch(loginSuccess(data.data));  
+    console.log('Dispatching loginSuccess...');
     return data.data;
   } catch (error) {
     console.error('Login error:', error);
     dispatch(authFailure(error));
+    console.log('Dispatching authFailure...');
     throw error;
   }
 };
@@ -73,8 +78,6 @@ export const refreshToken = async (refreshTokenData) => {
 
 
   console.warn("Client-side token refresh is generally not recommended due to security concerns. Consider implementing server-side token refresh.")
-
-
 
 
 };

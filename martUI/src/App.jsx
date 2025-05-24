@@ -11,17 +11,18 @@ import {
   removeNotification,
 } from "./redux/notificationActions";
 
-
 import { useNavigate } from "react-router-dom";
 const PrivateRoute = ({ element, allowedRoles }) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const userRole = useSelector((state) => state.auth.user?.role);
 
   if (!isAuthenticated) {
+    console.log("PrivateRoute: Redirecting to /login");
     return <Navigate to="/login" replace />;
   }
 
   if (allowedRoles && !allowedRoles.includes(userRole?.toLowerCase())) {
+    console.log("PrivateRoute: Redirecting to /");
     return <Navigate to="/" replace />;
   }
 
@@ -44,11 +45,9 @@ function App() {
   const dispatch = useDispatch();
   const dispatchedDummyNotificationRef = useRef(false);
   useEffect(() => {
-    // Prevent double dispatch in Strict Mode
     if (!dispatchedDummyNotificationRef.current) {
       dispatchedDummyNotificationRef.current = true;
 
-      // Add a dummy notification on app load
       const dummyNotification = {
         message: "This is a dummy notification!",
         type: "success",
@@ -63,24 +62,26 @@ function App() {
 
       const timer = setTimeout(() => {
         dispatch(removeNotification(notificationId));
-      }, 60000); // 60000 milliseconds = 1 minute
+      }, 60000);
 
-      return () => clearTimeout(timer); // Clean up the timer
+      return () => clearTimeout(timer);
     }
   }, [dispatch, dispatchedDummyNotificationRef]);
 
-  // Effect to handle navigation after authentication
   useEffect(() => {
+    console.log("Auth state changed:", { isAuthenticated, user });
     if (isAuthenticated && user) {
-      // Check if authenticated and user data is available
+      console.log("User role for navigation:", user.role);
+
       if (user.role === "BUYER") {
+        console.log("Navigating to buyer dashboard...");
         navigate("/buyer-dashboard");
       } else if (user.role === "SELLER") {
+        console.log("Navigating to seller dashboard...");
         navigate("/seller-dashboard");
       }
-      // Add more role-based navigation if needed
     }
-  }, [isAuthenticated, user, navigate]); // Rerun effect when these values change
+  }, [isAuthenticated, user]);
   return (
     <>
       <NotificationDisplay />
@@ -99,7 +100,7 @@ function App() {
           allowedRoles={["BUYER"]}
         />
         <Route
-          path="/seller-dashboard"
+          path="/seller"
           element={
             <PrivateRoute
               element={<SellerDashboard />}
@@ -112,9 +113,9 @@ function App() {
           element={
             isAuthenticated ? (
               user?.role === "BUYER" ? (
-                <Navigate to="/buyer-dashboard" replace />
+                <Navigate to="/" replace />
               ) : user?.role === "SELLER" ? (
-                <Navigate to="/seller-dashboard" replace />
+                <Navigate to="/seller" replace />
               ) : (
                 <Navigate to="/login" replace />
               )

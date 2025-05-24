@@ -17,26 +17,32 @@ const initialState = {
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case AUTH_REQUEST:
-      return {
+      const newState = {
         ...state,
         loading: true,
         error: null,
       };
+ console.log('Auth Reducer - AUTH_REQUEST Case - New State:', newState);
+ return newState;
     case SIGNUP_SUCCESS:
     case LOGIN_SUCCESS:
-
-      if (action.payload && action.payload.data) {
-        return {
+      console.log('Auth Reducer - Inside LOGIN_SUCCESS case. Action:', action);
+ console.log('Auth Reducer - LOGIN_SUCCESS if condition result:', action.payload && action.payload.data);
+      if (action.payload) {
+ console.log('Auth Reducer - Inside LOGIN_SUCCESS if block. action.payload.data:', action.payload.data);
+        const returnedState = {
           ...state,
           isAuthenticated: true,
-          user: action.payload.data.myProfile,
+          user: action.payload.myProfile,
           tokens: {
-            accessToken: action.payload.data.accessToken,
-            refreshToken: action.payload.data.refreshToken,
+            accessToken: action.payload.accessToken,
+            refreshToken: action.payload.refreshToken,
           },
           error: null,
           loading: false,
         };
+        console.log('Auth Reducer - LOGIN_SUCCESS - New State:', returnedState);
+        return returnedState;
       }
 
       return state;
