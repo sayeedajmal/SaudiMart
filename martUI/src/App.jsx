@@ -1,16 +1,15 @@
-import React, { useCallback, useEffect, useRef } from "react";
-import { useSelector, useDispatch,  } from "react-redux";
+import { useCallback, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
-import authReducer from "./redux/authReducer";
-import NotificationDisplay from './NotificationDisplay';
-import notificationReducer from './redux/notificationReducer';
 import BuyerDashboard from "./Buyer/BuyerDashboard";
 import LoginPage from "./LoginPage";
+import NotificationDisplay from "./NotificationDisplay";
 import SellerDashboard from "./Seller/SellerDashboard";
 import SignupPage from "./SignupPage";
-import { addNotification, removeNotification } from './redux/notificationActions';
-
-import { combineReducers } from "redux";
+import {
+  addNotification,
+  removeNotification,
+} from "./redux/notificationActions";
 
 
 import { useNavigate } from "react-router-dom";
@@ -22,7 +21,7 @@ const PrivateRoute = ({ element, allowedRoles }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(userRole)) {
+  if (allowedRoles && !allowedRoles.includes(userRole?.toLowerCase())) {
     return <Navigate to="/" replace />;
   }
 
@@ -31,6 +30,9 @@ const PrivateRoute = ({ element, allowedRoles }) => {
 
 function App() {
   const navigate = useNavigate();
+
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const user = useSelector((state) => state.auth.user);
 
   const toggleToSignup = useCallback(() => {
     navigate("/signup");
@@ -52,8 +54,10 @@ function App() {
         type: "success",
       };
 
-
-      const action = addNotification(dummyNotification.message, dummyNotification.type);
+      const action = addNotification(
+        dummyNotification.message,
+        dummyNotification.type
+      );
       dispatch(action);
       const notificationId = action.payload.id;
 
@@ -64,26 +68,63 @@ function App() {
       return () => clearTimeout(timer); // Clean up the timer
     }
   }, [dispatch, dispatchedDummyNotificationRef]);
+
+  // Effect to handle navigation after authentication
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      // Check if authenticated and user data is available
+      if (user.role === "BUYER") {
+        navigate("/buyer-dashboard");
+      } else if (user.role === "SELLER") {
+        navigate("/seller-dashboard");
+      }
+      // Add more role-based navigation if needed
+    }
+  }, [isAuthenticated, user, navigate]); // Rerun effect when these values change
   return (
-    <><NotificationDisplay /><Routes>
-      <Route
-        path="/login"
-        element={<LoginPage toggleToSignup={toggleToSignup} />} />{" "}
-      <Route
-        path="/signup"
-        element={<SignupPage toggleToLogin={toggleToLogin} />} />
-      <Route
-        path="/buyer-dashboard"
-        element={<PrivateRoute
-          element={<BuyerDashboard />}
-          allowedRoles={["buyer"]} />} />
-      <Route
-        path="/seller-dashboard"
-        element={<PrivateRoute
-          element={<SellerDashboard />}
-          allowedRoles={["seller"]} />} />
-      <Route path="*" element={<Navigate to="/login" replace />} />
-    </Routes></>
+    <>
+      <NotificationDisplay />
+      <Routes>
+        <Route
+          path="/login"
+          element={<LoginPage toggleToSignup={toggleToSignup} />}
+        />{" "}
+        <Route
+          path="/signup"
+          element={<SignupPage toggleToLogin={toggleToLogin} />}
+        />
+        <Route
+          path="/"
+          element={<PrivateRoute element={<BuyerDashboard />} />}
+          allowedRoles={["BUYER"]}
+        />
+        <Route
+          path="/seller-dashboard"
+          element={
+            <PrivateRoute
+              element={<SellerDashboard />}
+              allowedRoles={["SELLER"]}
+            />
+          }
+        />
+        <Route
+          path="*"
+          element={
+            isAuthenticated ? (
+              user?.role === "BUYER" ? (
+                <Navigate to="/buyer-dashboard" replace />
+              ) : user?.role === "SELLER" ? (
+                <Navigate to="/seller-dashboard" replace />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+      </Routes>
+    </>
   );
 }
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "./api/auth";
 import { loginSuccess } from "./redux/authActions";
-
+import { addNotification } from "./redux/notificationActions";
 function LoginPage({ toggleToSignup }) {
   const dispatch = useDispatch();
   const { error, loading } = useSelector((state) => state.auth);
@@ -13,6 +13,14 @@ function LoginPage({ toggleToSignup }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!credentials.email || !credentials.password) {
+      dispatch(
+        addNotification("Please enter both email and password.", "warning")
+      );
+      return;
+    }
+
     try {
       const response = await login(credentials, dispatch);
       dispatch(loginSuccess(response.data));

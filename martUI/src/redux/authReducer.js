@@ -1,8 +1,9 @@
 import {
-  SIGNUP_SUCCESS,
+  AUTH_FAILURE,
+  AUTH_REQUEST,
   LOGIN_SUCCESS,
   LOGOUT,
-  AUTH_FAILURE,
+  SIGNUP_SUCCESS,
 } from './authActions';
 
 const initialState = {
@@ -10,25 +11,39 @@ const initialState = {
   user: null,
   tokens: null,
   error: null,
+  loading: false,
 };
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SIGNUP_SUCCESS:
-    case LOGIN_SUCCESS:
+    case AUTH_REQUEST:
       return {
         ...state,
-        isAuthenticated: true,
-        user: action.payload.myProfile, // Store the user object
-        tokens: {
-          accessToken: action.payload.accessToken,
-          refreshToken: action.payload.refreshToken,
-        }, // Store tokens as an object
+        loading: true,
         error: null,
       };
+    case SIGNUP_SUCCESS:
+    case LOGIN_SUCCESS:
+
+      if (action.payload && action.payload.data) {
+        return {
+          ...state,
+          isAuthenticated: true,
+          user: action.payload.data.myProfile,
+          tokens: {
+            accessToken: action.payload.data.accessToken,
+            refreshToken: action.payload.data.refreshToken,
+          },
+          error: null,
+          loading: false,
+        };
+      }
+
+      return state;
     case LOGOUT:
       return {
-        ...initialState, // Reset state to initial state on logout
+        ...initialState,
+        loading: false,
       };
     case AUTH_FAILURE:
       return {
@@ -36,7 +51,8 @@ const authReducer = (state = initialState, action) => {
         isAuthenticated: false,
         user: null,
         tokens: null,
-        error: action.payload, // Assuming payload is the error object or message
+        error: action.payload,
+        loading: false,
       };
     default:
       return state;

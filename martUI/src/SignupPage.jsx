@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signup } from "./api/auth";
-import { signupSuccess } from "./redux/authActions";
+import { signupSuccess, authFailure } from "./redux/authActions";
 function SignupPage({ toggleToLogin }) {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
@@ -36,6 +36,12 @@ function SignupPage({ toggleToLogin }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!name || !email || !password || !phone_number || !role) {
+      dispatch(authFailure({ message: "Please fill in all required fields." }));
+      return;
+    }
+
     try {
       const credentials = {
         username: name,
@@ -81,6 +87,7 @@ function SignupPage({ toggleToLogin }) {
                 value={name}
                 onChange={handleChange}
                 name="name"
+                required
               />
               <input
                 type="text"
@@ -89,6 +96,7 @@ function SignupPage({ toggleToLogin }) {
                 value={email}
                 onChange={handleChange}
                 name="email"
+                required
               />
               <input
                 type="password"
@@ -97,6 +105,7 @@ function SignupPage({ toggleToLogin }) {
                 value={password}
                 onChange={handleChange}
                 name="password"
+                required
               />
               <input
                 type="text"
@@ -105,11 +114,13 @@ function SignupPage({ toggleToLogin }) {
                 value={phone_number}
                 onChange={handleChange}
                 name="phone_number"
+                required
               />
               <select
                 name="role"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                 value={role}
+                required
                 onChange={handleChange}
               >
                 <option value="">Select a role</option>
