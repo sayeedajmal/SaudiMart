@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -32,32 +31,22 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/auth/**", "/actuator/**").permitAll();
-                    // Fix: Add explicit permission for user endpoints
-                    auth.requestMatchers("/users/**").hasAnyRole("BUYER", "ADMIN", "SELLER");
+                    auth.requestMatchers("/actuator/**").permitAll();
+                    auth.requestMatchers("/admin/**").permitAll();
+                    auth.requestMatchers("/product/**").hasAnyRole("BUYER", "SELLER");
                     auth.anyRequest().authenticated();
                 })
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(customAuthenticationEntryPoint()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                .logout(logout -> logout
-                        .logoutUrl("/api/logout")
-                        .logoutSuccessHandler((request, response, authentication) -> {
-                            SecurityContextHolder.clearContext();
-                            response.setStatus(HttpServletResponse.SC_OK);
-                            response.getWriter().write("{\"message\": \"Logged out successfully\"}");
-                        }));
+ .addFilterBefore(new GatewayAuthFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
