@@ -4,6 +4,7 @@ import {
   LOGIN_SUCCESS,
   LOGOUT,
   SIGNUP_SUCCESS,
+  LOAD_USER_FROM_LOCAL_STORAGE,
 } from './authActions';
 
 const initialState = {
@@ -22,14 +23,14 @@ const authReducer = (state = initialState, action) => {
         loading: true,
         error: null,
       };
- console.log('Auth Reducer - AUTH_REQUEST Case - New State:', newState);
- return newState;
+      console.log('Auth Reducer - AUTH_REQUEST Case - New State:', newState);
+      return newState;
     case SIGNUP_SUCCESS:
     case LOGIN_SUCCESS:
       console.log('Auth Reducer - Inside LOGIN_SUCCESS case. Action:', action);
- console.log('Auth Reducer - LOGIN_SUCCESS if condition result:', action.payload && action.payload.data);
+      console.log('Auth Reducer - LOGIN_SUCCESS if condition result:', action.payload && action.payload.data);
       if (action.payload) {
- console.log('Auth Reducer - Inside LOGIN_SUCCESS if block. action.payload.data:', action.payload.data);
+        console.log('Auth Reducer - Inside LOGIN_SUCCESS if block. action.payload.data:', action.payload.data);
         const returnedState = {
           ...state,
           isAuthenticated: true,
@@ -60,6 +61,20 @@ const authReducer = (state = initialState, action) => {
         error: action.payload,
         loading: false,
       };
+    case LOAD_USER_FROM_LOCAL_STORAGE:
+      if (action.payload) {
+        return {
+          ...state,
+          isAuthenticated: true,
+          user: action.payload.myProfile,
+          tokens: {
+            accessToken: action.payload.accessToken,
+            refreshToken: action.payload.refreshToken,
+          },
+        };
+      }
+      return state;
+
     default:
       return state;
   }

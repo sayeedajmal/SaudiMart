@@ -1,15 +1,11 @@
-import { useCallback, useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useCallback, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
 import BuyerDashboard from "./Buyer/BuyerDashboard";
 import LoginPage from "./LoginPage";
 import NotificationDisplay from "./NotificationDisplay";
 import SellerDashboard from "./Seller/SellerDashboard";
 import SignupPage from "./SignupPage";
-import {
-  addNotification,
-  removeNotification,
-} from "./redux/notificationActions";
 
 import { useNavigate } from "react-router-dom";
 const PrivateRoute = ({ element, allowedRoles }) => {
@@ -34,6 +30,7 @@ function App() {
 
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);
+  const loading = useSelector((state) => state.auth.loading);
 
   const toggleToSignup = useCallback(() => {
     navigate("/signup");
@@ -41,32 +38,6 @@ function App() {
   const toggleToLogin = useCallback(() => {
     navigate("/login");
   }, [navigate]);
-
-  const dispatch = useDispatch();
-  const dispatchedDummyNotificationRef = useRef(false);
-  useEffect(() => {
-    if (!dispatchedDummyNotificationRef.current) {
-      dispatchedDummyNotificationRef.current = true;
-
-      const dummyNotification = {
-        message: "This is a dummy notification!",
-        type: "success",
-      };
-
-      const action = addNotification(
-        dummyNotification.message,
-        dummyNotification.type
-      );
-      dispatch(action);
-      const notificationId = action.payload.id;
-
-      const timer = setTimeout(() => {
-        dispatch(removeNotification(notificationId));
-      }, 60000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [dispatch, dispatchedDummyNotificationRef]);
 
   useEffect(() => {
     console.log("Auth state changed:", { isAuthenticated, user });
@@ -82,6 +53,10 @@ function App() {
       }
     }
   }, [isAuthenticated, user]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <>
       <NotificationDisplay />
