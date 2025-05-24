@@ -6,6 +6,7 @@ import LoginPage from "./LoginPage";
 import NotificationDisplay from "./NotificationDisplay";
 import SellerDashboard from "./Seller/SellerDashboard";
 import SignupPage from "./SignupPage";
+import FullScreenLoader from "./components/FullScreenLoader";
 
 import { useNavigate } from "react-router-dom";
 const PrivateRoute = ({ element, allowedRoles }) => {
@@ -55,7 +56,7 @@ function App() {
   }, [isAuthenticated, user]);
 
   if (loading) {
-    return <div>Loading...</div>;
+ return <FullScreenLoader />;
   }
   return (
     <>

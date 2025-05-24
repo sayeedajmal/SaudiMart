@@ -2,6 +2,7 @@ import { combineReducers, createStore, applyMiddleware } from 'redux';
 import authReducer from './authReducer.js';
 // Import other reducers here
 import notificationReducer from './notificationReducer.js';
+import { loadUserFromLocalStorage } from './authActions.js';
 
 // Simple logging middleware
 const loggingMiddleware = store => next => action => {
@@ -18,5 +19,7 @@ const rootReducer = combineReducers({
 });
 
 const store = createStore(rootReducer, applyMiddleware(loggingMiddleware));
+
+store.dispatch(loadUserFromLocalStorage());
 
 export default store;
