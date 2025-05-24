@@ -1,10 +1,13 @@
-import { combineReducers } from 'redux';
+import { combineReducers, createStore } from 'redux';
 import authReducer from './authReducer.js';
 // Import other reducers here
+import notificationReducer from './notificationReducer.js';
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  // Add other reducers here
+  notifications: notificationReducer,
 });
 
-export default rootReducer;
+const store = createStore(rootReducer);
+
+export default store;

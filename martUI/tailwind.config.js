@@ -60,9 +60,11 @@ export default {
         secondary: {
           DEFAULT: '#F97316',
           dark: '#C2410C',
+
         },
-        success: '#10B981',
-        warning: '#FACC15',
+        error: 'var(--color-error)',
+        success: 'var(--color-success)',
+        warning: 'var(--color-warning)',
         danger: '#EF4444',
         neutral: {
           50: "#f7f7f7",
@@ -77,6 +79,7 @@ export default {
           900: "#464646",
           950: "#282828",
         },
+        info: 'var(--gray-500)', // Using --gray-500 as a placeholder for info color
       },
     },
     fontSize: {

@@ -14,7 +14,7 @@ function LoginPage({ toggleToSignup }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await login(credentials);
+      const response = await login(credentials, dispatch);
       dispatch(loginSuccess(response.data));
     } catch (err) {
       console.error("Login form submission error:", err);

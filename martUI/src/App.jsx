@@ -1,24 +1,19 @@
-import { useCallback } from "react";
-import { Provider, useSelector } from "react-redux";
+import React, { useCallback, useEffect, useRef } from "react";
+import { useSelector, useDispatch,  } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { combineReducers, createStore } from "redux";
 import authReducer from "./redux/authReducer";
-import NotificationDisplay from './NotificationDisplay'; 
+import NotificationDisplay from './NotificationDisplay';
 import notificationReducer from './redux/notificationReducer';
 import BuyerDashboard from "./Buyer/BuyerDashboard";
 import LoginPage from "./LoginPage";
 import SellerDashboard from "./Seller/SellerDashboard";
 import SignupPage from "./SignupPage";
+import { addNotification, removeNotification } from './redux/notificationActions';
 
-const rootReducer = combineReducers({
-  notifications: notificationReducer,
-  auth: authReducer,
-});
+import { combineReducers } from "redux";
+
 
 import { useNavigate } from "react-router-dom";
-const store = createStore(rootReducer);
-
-// Protected Route
 const PrivateRoute = ({ element, allowedRoles }) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const userRole = useSelector((state) => state.auth.user?.role);
@@ -44,39 +39,51 @@ function App() {
     navigate("/login");
   }, [navigate]);
 
+  const dispatch = useDispatch();
+  const dispatchedDummyNotificationRef = useRef(false);
+  useEffect(() => {
+    // Prevent double dispatch in Strict Mode
+    if (!dispatchedDummyNotificationRef.current) {
+      dispatchedDummyNotificationRef.current = true;
+
+      // Add a dummy notification on app load
+      const dummyNotification = {
+        message: "This is a dummy notification!",
+        type: "success",
+      };
+
+
+      const action = addNotification(dummyNotification.message, dummyNotification.type);
+      dispatch(action);
+      const notificationId = action.payload.id;
+
+      const timer = setTimeout(() => {
+        dispatch(removeNotification(notificationId));
+      }, 60000); // 60000 milliseconds = 1 minute
+
+      return () => clearTimeout(timer); // Clean up the timer
+    }
+  }, [dispatch, dispatchedDummyNotificationRef]);
   return (
-    <Provider store={store}>
-      <Routes>
-      <NotificationDisplay />
-        <Route
-          path="/login"
-          element={<LoginPage toggleToSignup={toggleToSignup} />}
-        />{" "}
-        <Route
-          path="/signup"
-          element={<SignupPage toggleToLogin={toggleToLogin} />}
-        />
-        <Route
-          path="/buyer-dashboard"
-          element={
-            <PrivateRoute
-              element={<BuyerDashboard />}
-              allowedRoles={["buyer"]}
-            />
-          }
-        />
-        <Route
-          path="/seller-dashboard"
-          element={
-            <PrivateRoute
-              element={<SellerDashboard />}
-              allowedRoles={["seller"]}
-            />
-          }
-        />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-    </Provider>
+    <><NotificationDisplay /><Routes>
+      <Route
+        path="/login"
+        element={<LoginPage toggleToSignup={toggleToSignup} />} />{" "}
+      <Route
+        path="/signup"
+        element={<SignupPage toggleToLogin={toggleToLogin} />} />
+      <Route
+        path="/buyer-dashboard"
+        element={<PrivateRoute
+          element={<BuyerDashboard />}
+          allowedRoles={["buyer"]} />} />
+      <Route
+        path="/seller-dashboard"
+        element={<PrivateRoute
+          element={<SellerDashboard />}
+          allowedRoles={["seller"]} />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes></>
   );
 }
 

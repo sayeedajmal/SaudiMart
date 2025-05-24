@@ -26,9 +26,9 @@ const NotificationDisplay = () => {
         <div
           key={notification.id}
           className={`p-4 rounded shadow-md text-white ${
-            notification.type === 'success' ? 'bg-green-500' :
-            notification.type === 'error' ? 'bg-red-500' :
-            notification.type === 'warning' ? 'bg-yellow-500' :
+            notification.type === 'success' ? 'bg-success' :
+            notification.type === 'error' ? 'bg-error' :
+            notification.type === 'warning' ? 'bg-warning' :
             'bg-gray-500'
           }`}
         >

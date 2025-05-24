@@ -44,7 +44,7 @@ function SignupPage({ toggleToLogin }) {
         password,
         role,
       };
-      const response = await signup(credentials);
+      const response = await signup(credentials, dispatch);
       dispatch(signupSuccess(response.data));
     } catch (err) {
       console.error("Signup form submission error:", err);
