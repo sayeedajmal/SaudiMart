@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class UserExcResponse {
+public class ProductExcResponse {
     private String Message;
     private Integer Status;
     private long TimeStamp;

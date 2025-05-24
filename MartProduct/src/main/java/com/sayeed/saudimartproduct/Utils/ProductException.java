@@ -2,30 +2,30 @@ package com.sayeed.saudimartproduct.Utils;
 
 import org.springframework.http.HttpStatus;
 
-public class UserException extends Exception {
+public class ProductException extends Exception {
     private HttpStatus status;
 
-    public UserException() {
+    public ProductException() {
         super();
         this.status = HttpStatus.BAD_REQUEST;
     }
 
-    public UserException(String message) {
+    public ProductException(String message) {
         super(message);
         this.status = HttpStatus.BAD_REQUEST;
     }
 
-    public UserException(String message, HttpStatus status) {
+    public ProductException(String message, HttpStatus status) {
         super(message);
         this.status = status;
     }
 
-    public UserException(String message, Throwable throwable) {
+    public ProductException(String message, Throwable throwable) {
         super(message, throwable);
         this.status = HttpStatus.BAD_REQUEST;
     }
 
-    public UserException(Throwable throwable) {
+    public ProductException(Throwable throwable) {
         super(throwable);
         this.status = HttpStatus.BAD_REQUEST;
     }

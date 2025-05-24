@@ -15,18 +15,18 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handles {@link UserException} thrown by the application.
+     * Handles {@link ProductException} thrown by the application.
      *
-     * This exception handler is responsible for catching {@link UserException}s
+     * This exception handler is responsible for catching {@link ProductException}s
      * thrown by the application, and returning a 409 CONFLICT response with
-    **/
-    @ExceptionHandler(UserException.class)
-    public ResponseEntity<?> handleUserException(UserException exception) {
+     **/
+    @ExceptionHandler(ProductException.class)
+    public ResponseEntity<?> handleUserException(ProductException exception) {
         return buildErrorResponse(exception.getMessage(), HttpStatus.CONFLICT);
     }
 
     private ResponseEntity<?> buildErrorResponse(String message, HttpStatus status) {
-        UserExcResponse response = new UserExcResponse();
+        ProductExcResponse response = new ProductExcResponse();
         response.setMessage(message);
         response.setStatus(status.value());
         response.setTimeStamp(System.currentTimeMillis());
