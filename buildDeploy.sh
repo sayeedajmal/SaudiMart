@@ -10,7 +10,27 @@ RESET='\033[0m'  # Reset color
 # Exit on error
 set -e
 
-# Function to display the menu and prompt for user choice
+# Displays an interactive menu for selecting which Java service(s) to build.
+#
+# Outputs:
+#
+# * Prints a color-coded menu to STDOUT listing individual services and an option to build all services.
+#
+# Example:
+#
+# ```bash
+# show_menu
+# # Output:
+# # BUILD JAR FILE
+# # Choose a service to build:
+# # 1. saudiMartAuth
+# # 2. familypost
+# # 3. familynotification
+# # 4. familyfeed
+# # 5. familygateway
+# # 6. familydiscovery
+# # 7. All Services
+# ```
 show_menu() {
   echo -e "${BLUE}BUILD JAR FILE${RESET}"
   echo -e "${YELLOW}Choose a service to build:${RESET}"
@@ -23,7 +43,7 @@ show_menu() {
   echo -e "${GREEN}7.${RESET} All Services"
 }
 
-# Function to track and display elapsed time every second
+# ```
 track_time() {
   start_time=$(date +%s)
   while true; do
@@ -42,7 +62,26 @@ read -p "Please enter the number of your choice: " choice
 # Log file
 LOG_FILE="build_log.txt"
 
-# Function to build a service
+# Builds the specified Java service using Maven and tracks build time.
+#
+# Arguments:
+#
+# * service_name: Name of the service directory to build.
+#
+# Outputs:
+#
+# * Prints colored status messages to STDOUT.
+# * Prints error messages to STDERR if the service directory is not found.
+#
+# Returns:
+#
+# * Exits with status 1 if the service directory does not exist.
+#
+# Example:
+#
+# ```bash
+# build_service user-service
+# ```
 build_service() {
   service_name=$1
   echo -e "${GREEN}Building $service_name...${RESET}"

@@ -2,6 +2,13 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signup } from "./api/auth";
 import { signupSuccess, authFailure } from "./redux/authActions";
+/**
+ * Renders the user signup page with a registration form and role selection.
+ *
+ * Displays a form for users to create an account by entering their name, email, password, phone number, and selecting a role. Handles form validation, displays error messages, and dispatches authentication actions. Includes an option to sign up with Google and a prompt to switch to the login view.
+ *
+ * @param {{ toggleToLogin: function }} props - Contains a callback to switch to the login page.
+ */
 function SignupPage({ toggleToLogin }) {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);

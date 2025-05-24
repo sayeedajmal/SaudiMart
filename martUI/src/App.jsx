@@ -26,6 +26,13 @@ const PrivateRoute = ({ element, allowedRoles }) => {
   return element;
 };
 
+/**
+ * Main application component that manages authentication state, routing, and role-based dashboard navigation for the marketplace UI.
+ *
+ * Redirects authenticated users to their respective dashboards based on role, displays a full-screen loader during authentication checks, and renders global notifications. Public routes for login and signup are provided, while dashboard routes are protected and role-restricted.
+ *
+ * @returns {JSX.Element} The rendered application UI with routing and authentication logic.
+ */
 function App() {
   const navigate = useNavigate();
 

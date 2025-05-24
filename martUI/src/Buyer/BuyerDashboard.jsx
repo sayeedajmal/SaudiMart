@@ -3,6 +3,11 @@ import { MdSearch, MdFavoriteBorder, MdOutlineRemoveRedEye, MdOutlineAddShopping
 import Categories from "./Categories"
 import FeaturedProduct from "./FeaturedProduct"
 import ProductCard from './ProductCard';
+/****
+ * Renders the buyer dashboard page for the e-commerce platform, displaying promotional banners, navigation, product categories, featured products, and a scrollable list of today's deals.
+ *
+ * @returns {JSX.Element} The buyer dashboard UI component.
+ */
 function BuyerDashboard() {
 
   const products = [

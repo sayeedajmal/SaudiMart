@@ -2,6 +2,13 @@ import React from 'react';
 import { MdOutlineArrowForwardIos, MdOutlineArrowBackIosNew, MdOutlineVisibility, MdOutlineFavoriteBorder } from 'react-icons/md'; // Assuming react-icons are installed
 import ProductCard from './ProductCard';
 
+/**
+ * Renders the main categories and best-selling products browsing interface for buyers.
+ *
+ * Displays a grid of product categories, a horizontally scrollable list of best-selling products for the current month, and a placeholder for future featured content. Uses Material Symbols and imported icons for visual elements.
+ *
+ * @returns {JSX.Element} The categories and products browsing UI component.
+ */
 function Categories() {
     const categories = [
         { name: 'Camera', icon: 'camera_alt' },

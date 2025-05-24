@@ -1,5 +1,12 @@
 import React from 'react';
 
+/**
+ * Displays a featured products section with highlighted items and store features.
+ *
+ * Renders a visually prominent section showcasing a main featured product, a grid of additional featured products, and a row of store feature highlights such as free delivery, customer service, and money-back guarantee. Designed for responsive layouts with styled backgrounds and images.
+ *
+ * @returns {JSX.Element} The featured products section for the storefront.
+ */
 function FeaturedProduct() {
   return (
     <section className="py-12 px-4" style={{ backgroundColor: 'var(--primary-color-1)' }}>
