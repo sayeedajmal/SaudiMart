@@ -1,3 +1,13 @@
+/**
+ * Renders a comprehensive, responsive seller dashboard UI for a B2B portal.
+ *
+ * The dashboard includes a sidebar navigation, mobile navbar, summary cards, recent orders table with pagination, inquiry tracker, recommended products, and supplier offers. All content is static and presentational, styled with Tailwind CSS and Material Symbols icons.
+ *
+ * @returns {JSX.Element} The seller dashboard layout as a React component.
+ *
+ * @remark
+ * This component is purely presentational and does not include dynamic state management or event handling.
+ */
 function App() {
   return (
     <div>

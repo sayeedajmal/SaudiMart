@@ -3,6 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { login } from "./api/auth";
 import { loginSuccess } from "./redux/authActions";
 import { addNotification } from "./redux/notificationActions";
+/**
+ * Renders the login page with a form for user authentication.
+ *
+ * Displays a two-column layout with a promotional image and a login form. Handles user input for email and password, validates credentials, and dispatches authentication actions. Shows loading and error states, and provides a button to switch to the signup view.
+ *
+ * @param {{ toggleToSignup: () => void }} props - Callback to switch to the signup view.
+ */
 function LoginPage({ toggleToSignup }) {
   const dispatch = useDispatch();
   const { error, loading } = useSelector((state) => state.auth);

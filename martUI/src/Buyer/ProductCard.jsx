@@ -2,6 +2,14 @@ import React from 'react';
 import { MdOutlineFavoriteBorder, MdOutlineRemoveRedEye } from 'react-icons/md';
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 
+/**
+ * Displays a product card with image, title, pricing, discount badge, rating stars, and action buttons.
+ *
+ * Renders interactive UI elements for a product, including hover effects for image scaling, action buttons, and an "Add To Cart" button. Shows a discount badge if applicable, displays the current and original prices, and visualizes the product rating with stars and review count.
+ *
+ * @param {Object} product - The product data to display, including image, title, price, original price, discount, rating, and reviews.
+ * @returns {JSX.Element} The rendered product card component.
+ */
 function ProductCard({ product }) {
   const renderRatingStars = (rating) => {
     const stars = [];

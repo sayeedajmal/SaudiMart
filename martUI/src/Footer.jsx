@@ -1,3 +1,10 @@
+/**
+ * Renders the website footer with subscription, support, account, quick links, and app download sections.
+ *
+ * The footer includes a subscription form, contact information, navigation links, policy links, and promotional app download badges, all styled with responsive layout and custom color variables.
+ *
+ * @returns {JSX.Element} The footer section for the website.
+ */
 function Footer() {
 
     return (
