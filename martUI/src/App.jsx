@@ -4,12 +4,14 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { combineReducers, createStore } from "redux";
 import authReducer from "./redux/authReducer";
 import NotificationDisplay from './NotificationDisplay'; 
+import notificationReducer from './redux/notificationReducer';
 import BuyerDashboard from "./Buyer/BuyerDashboard";
 import LoginPage from "./LoginPage";
 import SellerDashboard from "./Seller/SellerDashboard";
 import SignupPage from "./SignupPage";
 
 const rootReducer = combineReducers({
+  notifications: notificationReducer,
   auth: authReducer,
 });
 
