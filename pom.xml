@@ -9,9 +9,9 @@
     <version>1.0.0</version>
     <packaging>pom</packaging>
     <modules>
-        <!-- <module>martAuth</module> -->
+        <module>martAuth</module>
         <module>MartProduct</module>
-        <!-- <module>MartGateway</module> -->
+        <module>MartGateway</module>
     </modules>
 
     <properties>
