@@ -6,6 +6,7 @@ import com.sayeed.saudimartproduct.Service.ProductSpecificationService;
 import com.sayeed.saudimartproduct.Utils.ProductException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ public class ProductSpecificationController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('BUYER', 'SELLER')")
     public ResponseEntity<ResponseWrapper<ProductSpecification>> getProductSpecificationById(@PathVariable Long id) {
         try {
             ProductSpecification specification = productSpecificationService.findProductSpecificationById(id);
@@ -37,6 +39,7 @@ public class ProductSpecificationController {
     }
 
     @GetMapping("/product/{productId}")
+    @PreAuthorize("hasAnyRole('BUYER', 'SELLER')")
     public ResponseEntity<ResponseWrapper<List<ProductSpecification>>> getProductSpecificationsByProductId(@PathVariable Long productId) {
         try {
             List<ProductSpecification> specifications = productSpecificationService.findProductSpecificationsByProductId(productId);
@@ -50,6 +53,7 @@ public class ProductSpecificationController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     public ResponseEntity<ResponseWrapper<ProductSpecification>> createProductSpecification(@Valid @RequestBody ProductSpecification specification) {
         try {
             ProductSpecification createdSpecification = productSpecificationService.saveProductSpecification(specification);
@@ -62,6 +66,7 @@ public class ProductSpecificationController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     public ResponseEntity<ResponseWrapper<ProductSpecification>> updateProductSpecification(@PathVariable Long id, @Valid @RequestBody ProductSpecification specificationDetails) {
         try {
             ProductSpecification updatedSpecification = productSpecificationService.updateProductSpecification(id, specificationDetails);
@@ -74,6 +79,7 @@ public class ProductSpecificationController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     public ResponseEntity<ResponseWrapper<Void>> deleteProductSpecification(@PathVariable Long id) {
         try {
             productSpecificationService.deleteProductSpecification(id);

@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+ @PreAuthorize("hasAnyRole('BUYER', 'SELLER')")
     public ResponseEntity<ResponseWrapper<Product>> getProductById(@PathVariable Long id) {
         Optional<Product> product = productService.findProductById(id);
         return product.map(prod -> ResponseWrapper.success(prod, HttpStatus.OK))
@@ -32,12 +34,14 @@ public class ProductController {
     }
 
     @GetMapping
+ @PreAuthorize("hasAnyRole('BUYER', 'SELLER')")
     public ResponseEntity<ResponseWrapper<List<Product>>> getAllProducts() {
         List<Product> products = productService.findAllProducts();
         return ResponseWrapper.success(products, HttpStatus.OK);
     }
 
     @PostMapping
+ @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     public ResponseEntity<ResponseWrapper<Product>> createProduct(@Valid @RequestBody Product product) {
         try {
             Product createdProduct = productService.saveProduct(product);
@@ -50,6 +54,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
+ @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     public ResponseEntity<ResponseWrapper<Product>> updateProduct(@PathVariable Long id, @Valid @RequestBody Product productDetails) {
         try {
             Product updatedProduct = productService.updateProduct(id, productDetails);
@@ -62,6 +67,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+ @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     public ResponseEntity<ResponseWrapper<Void>> deleteProduct(@PathVariable Long id) {
         try {
             productService.deleteProduct(id);

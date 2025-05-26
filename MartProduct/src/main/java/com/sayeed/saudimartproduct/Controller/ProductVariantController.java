@@ -6,6 +6,7 @@ import com.sayeed.saudimartproduct.Service.ProductVariantService;
 import com.sayeed.saudimartproduct.Utils.ProductException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ public class ProductVariantController {
         this.productVariantService = productVariantService;
     }
 
+ @PreAuthorize("hasAnyRole('BUYER', 'SELLER')")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseWrapper<ProductVariant>> getProductVariantById(@PathVariable Long id) {
         try {
@@ -35,12 +37,14 @@ public class ProductVariantController {
         }
     }
 
+ @PreAuthorize("hasAnyRole('BUYER', 'SELLER')")
     @GetMapping
     public ResponseEntity<ResponseWrapper<List<ProductVariant>>> getAllProductVariants() {
         List<ProductVariant> productVariants = productVariantService.findAllProductVariants();
         return ResponseWrapper.success(productVariants, HttpStatus.OK);
     }
 
+ @PreAuthorize("hasAnyRole('BUYER', 'SELLER')")
     @GetMapping("/product/{productId}")
     public ResponseEntity<ResponseWrapper<List<ProductVariant>>> getProductVariantsByProductId(@PathVariable Long productId) {
         try {
@@ -53,6 +57,7 @@ public class ProductVariantController {
         }
     }
 
+ @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @PostMapping
     public ResponseEntity<ResponseWrapper<ProductVariant>> createProductVariant(@Valid @RequestBody ProductVariant productVariant) {
         try {
@@ -65,6 +70,7 @@ public class ProductVariantController {
         }
     }
 
+ @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ResponseWrapper<ProductVariant>> updateProductVariant(@PathVariable Long id, @Valid @RequestBody ProductVariant productVariantDetails) {
         try {
@@ -77,6 +83,7 @@ public class ProductVariantController {
         }
     }
 
+ @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseWrapper<Void>> deleteProductVariant(@PathVariable Long id) {
         try {

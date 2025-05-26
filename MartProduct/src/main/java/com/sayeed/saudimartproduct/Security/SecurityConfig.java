@@ -37,8 +37,6 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/actuator/**").permitAll();
-                    auth.requestMatchers("/admin/**").permitAll();
-                    auth.requestMatchers("/product/**").hasAnyRole("BUYER", "SELLER");
                     auth.anyRequest().authenticated();
                 })
                 .exceptionHandling(exception -> exception

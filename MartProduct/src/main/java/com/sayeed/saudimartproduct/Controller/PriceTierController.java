@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class PriceTierController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     public ResponseEntity<ResponseWrapper<PriceTier>> getPriceTierById(@PathVariable Long id) {
         try {
             PriceTier priceTier = priceTierService.findPriceTierById(id);
@@ -36,6 +38,7 @@ public class PriceTierController {
     }
 
     @GetMapping("/variant/{variantId}")
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     public ResponseEntity<ResponseWrapper<List<PriceTier>>> getPriceTiersByVariantId(@PathVariable Long variantId) {
         try {
             List<PriceTier> priceTiers = priceTierService.findPriceTiersByProductVariantId(variantId);
@@ -48,6 +51,7 @@ public class PriceTierController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseWrapper<PriceTier>> createPriceTier(@Valid @RequestBody PriceTier priceTier) {
         try {
             PriceTier createdPriceTier = priceTierService.savePriceTier(priceTier);
@@ -60,6 +64,7 @@ public class PriceTierController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseWrapper<PriceTier>> updatePriceTier(@PathVariable Long id, @Valid @RequestBody PriceTier priceTierDetails) {
         try {
             PriceTier updatedPriceTier = priceTierService.updatePriceTier(id, priceTierDetails);
@@ -72,6 +77,7 @@ public class PriceTierController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseWrapper<Void>> deletePriceTier(@PathVariable Long id) {
         try {
             priceTierService.deletePriceTier(id);

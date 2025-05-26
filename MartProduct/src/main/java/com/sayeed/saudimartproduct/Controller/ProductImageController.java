@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class ProductImageController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('BUYER', 'SELLER')")
     public ResponseEntity<ResponseWrapper<ProductImage>> getProductImageById(@PathVariable Long id) {
         try {
             ProductImage productImage = productImageService.findProductImageById(id);
@@ -36,6 +38,7 @@ public class ProductImageController {
     }
 
     @GetMapping("/product/{productId}")
+    @PreAuthorize("hasAnyRole('BUYER', 'SELLER')")
     public ResponseEntity<ResponseWrapper<List<ProductImage>>> getProductImagesByProductId(@PathVariable Long productId) {
         try {
             List<ProductImage> productImages = productImageService.findProductImagesByProductId(productId);
@@ -47,6 +50,7 @@ public class ProductImageController {
     }
 
     @GetMapping("/variant/{variantId}")
+    @PreAuthorize("hasAnyRole('BUYER', 'SELLER')")
     public ResponseEntity<ResponseWrapper<List<ProductImage>>> getProductImagesByVariantId(@PathVariable Long variantId) {
         try {
             List<ProductImage> productImages = productImageService.findProductImagesByProductVariantId(variantId);
@@ -58,6 +62,7 @@ public class ProductImageController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     public ResponseEntity<ResponseWrapper<ProductImage>> createProductImage(@Valid @RequestBody ProductImage productImage) {
         try {
             ProductImage createdProductImage = productImageService.saveProductImage(productImage);
@@ -70,6 +75,7 @@ public class ProductImageController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     public ResponseEntity<ResponseWrapper<ProductImage>> updateProductImage(@PathVariable Long id, @Valid @RequestBody ProductImage productImageDetails) {
         try {
             ProductImage updatedProductImage = productImageService.updateProductImage(id, productImageDetails);
@@ -82,6 +88,7 @@ public class ProductImageController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     public ResponseEntity<ResponseWrapper<Void>> deleteProductImage(@PathVariable Long id) {
         try {
             productImageService.deleteProductImage(id);
