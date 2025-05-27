@@ -30,8 +30,9 @@ public class Product {
     private Long productId;
 
     @NotNull(message = "Seller ID cannot be null")
-    @Column(name = "seller_id", nullable = false)
-    private Long sellerId; // Assuming seller is represented by ID from Auth service
+    @ManyToOne
+    @JoinColumn(name = "seller_id", nullable = false)
+    private String  seller; // Using Users model for seller
 
     @NotBlank(message = "Product name cannot be blank")
     @Column(name = "name", nullable = false)
