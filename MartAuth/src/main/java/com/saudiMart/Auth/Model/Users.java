@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -26,21 +28,29 @@ public class Users implements UserDetails {
     @Id
     @Column(name = "user_id", updatable = false, nullable = false)
     private String userId = UUID.randomUUID().toString();
+    // Changed from String to Long and added GeneratedValue
+    /*
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Long userId;
+    */
 
-    @Column(nullable = false)
-    private String username; // e.g., "Sayeed Ajmal"
+    @Column(name = "name", nullable = false)
+    private String name; // e.g., "Sayeed Ajmal"
 
     @Column(unique = true, nullable = false)
     private String email; // e.g., "sayeed@example.com"
 
-    @Column(unique = true)
-    private String phone_number; // e.g., "+966512345678"
+    @Column(name = "phone_number", unique = true)
+    private String phoneNumber; // e.g., "+966512345678"
 
-    @Column(nullable = false)
-    private String password; // Stored as bcrypt
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash; // Stored as bcrypt
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String role; // e.g., "BUYER" or "SELLER" or "ADMIN"
+    private Role role; // e.g., "BUYER" or "SELLER" or "ADMIN"
 
     @Column(nullable = false)
     private Boolean isVerified; // After email or OTP verified
@@ -55,10 +65,46 @@ public class Users implements UserDetails {
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;
 
+    public enum Role {
+        BUYER,
+        SELLER,
+        ADMIN
+    }
+
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.passwordHash;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email; // Using email as the username for UserDetails
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return this.accountNonExpired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.accountNonLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return this.credentialsNonExpired;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
     }
 
 }

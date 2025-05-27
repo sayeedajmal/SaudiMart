@@ -4,12 +4,11 @@ import com.saudimart.martProduct.Model.Product;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 
-@Entity
-@Table(name = "product_images")
 import jakarta.persistence.*;
 @Data
 public class ProductImage {
@@ -42,8 +41,8 @@ public class ProductImage {
     private Boolean isPrimary = false;
 
     @CreationTimestamp
-    @Column(name = "uploaded_at", updatable = false)
-    private Timestamp uploadedAt;
+    @Column(name = "created_at")
+    private Timestamp createdAt;
 
     // Consider adding a field for the image type if needed (e.g., "thumbnail", "large")
     // @Column(name = "image_type")

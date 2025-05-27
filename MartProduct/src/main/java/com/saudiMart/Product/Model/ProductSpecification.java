@@ -12,8 +12,8 @@ public class ProductSpecification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "specification_id")
-    private Long specificationId;
+    @Column(name = "spec_id") // Changed from specification_id
+    private Long specId; // Changed from specificationId
 
     @NotNull(message = "Product cannot be null")
     @ManyToOne
@@ -24,10 +24,14 @@ public class ProductSpecification {
     @Column(name = "spec_name", nullable = false)
     private String specName;
 
+
     @Column(name = "spec_value")
     private String specValue;
 
     @Column(name = "unit")
     private String unit; // e.g., kg, cm, Fahrenheit
+
+    @Column(name = "display_order")
+    private Integer displayOrder; // Added displayOrder
 
 }

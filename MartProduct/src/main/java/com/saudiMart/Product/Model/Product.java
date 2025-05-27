@@ -1,6 +1,7 @@
 package com.saudiMart.Product.Model;
 
-import com.saudimart.martProduct.Model.Category;
+import com.saudiMart.Auth.Model.Users; // Assuming Users model exists in Auth module
+import com.saudiMart.Product.Model.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -20,10 +21,11 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
     private Long productId;
-
+ 
     @NotNull(message = "Seller ID cannot be null")
-    @Column(name = "seller_id", nullable = false)
-    private Long sellerId; // Assuming seller is represented by ID from Auth service
+    @ManyToOne
+    @JoinColumn(name = "seller_id", nullable = false)
+    private Users seller; // Using Users model for seller
 
     @NotBlank(message = "Product name cannot be blank")
     @Column(name = "name", nullable = false)
