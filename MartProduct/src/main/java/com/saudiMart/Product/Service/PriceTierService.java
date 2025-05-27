@@ -1,5 +1,7 @@
 package com.saudiMart.Product.Service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -7,9 +9,6 @@ import org.springframework.stereotype.Service;
 import com.saudiMart.Product.Model.PriceTier;
 import com.saudiMart.Product.Repository.PriceTierRepository;
 import com.saudiMart.Product.Utils.ProductException;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PriceTierService {
@@ -37,7 +36,7 @@ public class PriceTierService {
     public PriceTier updatePriceTier(Long id, PriceTier updatedPriceTier) throws ProductException {
         PriceTier existingPriceTier = findPriceTierById(id); // Use the find method that throws exception
 
-        existingPriceTier.setQuantity(updatedPriceTier.getQuantity());
+        existingPriceTier.setMinimumQuantity(updatedPriceTier.getMinimumQuantity());
         existingPriceTier.setPrice(updatedPriceTier.getPrice());
         existingPriceTier.setProductVariant(updatedPriceTier.getProductVariant());
         // Assuming other fields if any need to be updated

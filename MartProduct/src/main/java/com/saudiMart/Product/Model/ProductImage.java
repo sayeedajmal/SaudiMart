@@ -1,16 +1,19 @@
 package com.saudiMart.Product.Model;
 
-import com.saudimart.martProduct.Model.Product;
+import java.sql.Timestamp;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.sql.Timestamp;
-
-@Entity
-@Table(name = "product_images")
-import jakarta.persistence.*;
 @Data
 public class ProductImage {
 
@@ -45,7 +48,8 @@ public class ProductImage {
     @Column(name = "uploaded_at", updatable = false)
     private Timestamp uploadedAt;
 
-    // Consider adding a field for the image type if needed (e.g., "thumbnail", "large")
+    // Consider adding a field for the image type if needed (e.g., "thumbnail",
+    // "large")
     // @Column(name = "image_type")
     // private String imageType;
 }

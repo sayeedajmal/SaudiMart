@@ -1,9 +1,10 @@
 package com.saudiMart.Product.Repository;
 
-import com.saudimart.martProduct.Model.PriceTier;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import com.saudiMart.Product.Model.PriceTier;
 
 public interface PriceTierRepository extends JpaRepository<PriceTier, Long> {
 

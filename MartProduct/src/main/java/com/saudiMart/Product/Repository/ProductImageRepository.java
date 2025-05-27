@@ -1,9 +1,10 @@
 package com.saudiMart.Product.Repository;
 
-import com.saudimart.martProduct.Model.ProductImage;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import com.saudiMart.Product.Model.ProductImage;
 
 public interface ProductImageRepository extends JpaRepository<ProductImage, Long> {
 

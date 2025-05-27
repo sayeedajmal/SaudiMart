@@ -1,14 +1,14 @@
 package com.saudiMart.Product.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.saudiMart.Product.Model.Category;
 import com.saudiMart.Product.Repository.CategoryRepository;
 import com.saudiMart.Product.Utils.ProductException;
-import com.saudiMart.Product.model.Category;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CategoryService {
@@ -40,14 +40,15 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public Category updateCategory(Long id, Category updatedCategory) {
+    public Category updateCategory(Long id, Category updatedCategory) throws ProductException {
         Optional<Category> existingCategoryOptional = categoryRepository.findById(id);
         if (existingCategoryOptional.isPresent()) {
             Category existingCategory = existingCategoryOptional.get();
             existingCategory.setName(updatedCategory.getName());
             existingCategory.setDescription(updatedCategory.getDescription());
             existingCategory.setIsActive(updatedCategory.getIsActive());
-            if (updatedCategory.getParentCategory() != null && !updatedCategory.getParentCategory().getCategoryId().equals(id)) {
+            if (updatedCategory.getParentCategory() != null
+                    && !updatedCategory.getParentCategory().getCategoryId().equals(id)) {
                 existingCategory.setParentCategory(updatedCategory.getParentCategory());
             } else if (updatedCategory.getParentCategory() == null) {
                 existingCategory.setParentCategory(null);
@@ -58,7 +59,7 @@ public class CategoryService {
         }
     }
 
-    public void deleteCategory(Long id) {
+    public void deleteCategory(Long id) throws ProductException {
         if (categoryRepository.existsById(id)) {
             categoryRepository.deleteById(id);
         } else {

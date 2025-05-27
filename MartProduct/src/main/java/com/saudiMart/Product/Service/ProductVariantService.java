@@ -1,5 +1,7 @@
 package com.saudiMart.Product.Service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -7,9 +9,6 @@ import org.springframework.stereotype.Service;
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Repository.ProductVariantRepository;
 import com.saudiMart.Product.Utils.ProductException;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductVariantService {
@@ -23,7 +22,8 @@ public class ProductVariantService {
 
     public ProductVariant findProductVariantById(Long id) throws ProductException {
         return productVariantRepository.findById(id)
-                .orElseThrow(() -> new ProductException("Product variant not found with id: " + id, HttpStatus.NOT_FOUND));
+                .orElseThrow(
+                        () -> new ProductException("Product variant not found with id: " + id, HttpStatus.NOT_FOUND));
     }
 
     public List<ProductVariant> findAllProductVariants() {
@@ -47,7 +47,8 @@ public class ProductVariantService {
         existingProductVariant.setAttribute3(updatedProductVariant.getAttribute3());
         existingProductVariant.setPrice(updatedProductVariant.getPrice());
         existingProductVariant.setAvailable(updatedProductVariant.getAvailable());
-        // The product relationship should ideally not be changed here or handled carefully
+        // The product relationship should ideally not be changed here or handled
+        // carefully
 
         return productVariantRepository.save(existingProductVariant);
     }
