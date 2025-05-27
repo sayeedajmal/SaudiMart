@@ -1,6 +1,6 @@
-package com.sayeed.saudimartproduct.Model;
+package com.saudimart.martProduct.Model;
 
-import jakarta.persistence.*;
+import com.saudimart.martProduct.Model.Product;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

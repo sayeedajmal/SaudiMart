@@ -1,4 +1,4 @@
-package com.sayeed.saudiMartAuth;
+package com.saudimart.martAuth;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

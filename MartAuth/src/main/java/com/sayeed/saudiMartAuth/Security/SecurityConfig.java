@@ -1,4 +1,4 @@
-package com.sayeed.saudiMartAuth.Security;
+package com.saudimart.martAuth.Security;
 
 import java.io.IOException;
 import java.util.List;

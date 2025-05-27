@@ -1,6 +1,6 @@
-package com.sayeed.saudimartproduct.Repository;
+package com.saudimart.martProduct.Repository;
 
-import com.sayeed.saudimartproduct.Model.Category;
+import com.saudimart.martProduct.Model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

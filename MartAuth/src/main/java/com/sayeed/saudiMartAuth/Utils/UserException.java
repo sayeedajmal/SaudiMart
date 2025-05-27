@@ -1,4 +1,4 @@
-package com.sayeed.saudiMartAuth.Utils;
+package com.saudimart.martAuth.Utils;
 
 import org.springframework.http.HttpStatus;
 

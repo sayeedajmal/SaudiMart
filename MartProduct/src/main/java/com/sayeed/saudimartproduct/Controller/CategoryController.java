@@ -1,14 +1,14 @@
-package com.sayeed.saudimartproduct.Controller;
+package com.saudimart.martProduct.Controller;
 
-import com.sayeed.saudimartproduct.Model.Category;
-import com.sayeed.saudimartproduct.Model.ResponseWrapper;
-import com.sayeed.saudimartproduct.Utils.ProductException;
-import com.sayeed.saudimartproduct.Service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.saudimart.martProduct.Model.Category;
+import com.saudimart.martProduct.Model.ResponseWrapper;
+import com.saudimart.martProduct.Service.CategoryService;
+import com.saudimart.martProduct.Utils.ProductException;
 import java.util.List;
 
 import jakarta.validation.Valid;

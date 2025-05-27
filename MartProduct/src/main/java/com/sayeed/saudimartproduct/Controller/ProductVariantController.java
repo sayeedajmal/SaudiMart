@@ -1,9 +1,10 @@
-package com.sayeed.saudimartproduct.Controller;
+package com.saudimart.martProduct.Controller;
 
-import com.sayeed.saudimartproduct.Model.ProductVariant;
-import com.sayeed.saudimartproduct.Model.ResponseWrapper;
-import com.sayeed.saudimartproduct.Service.ProductVariantService;
-import com.sayeed.saudimartproduct.Utils.ProductException;
+import com.saudimart.martProduct.Model.ProductVariant;
+import com.saudimart.martProduct.Model.ResponseWrapper;
+import com.saudimart.martProduct.Service.ProductVariantService;
+import com.saudimart.martProduct.Utils.ProductException;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

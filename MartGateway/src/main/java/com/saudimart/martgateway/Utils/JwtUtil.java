@@ -1,4 +1,4 @@
-package com.saudimart.martgateway.Utils;
+package com.saudimart.martGateway.Utils;
 
 import java.util.Date;
 import java.util.function.Function;

@@ -16,11 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sayeed.saudiMartAuth.Model.Users;
-import com.sayeed.saudiMartAuth.Repository.UserRepository;
-import com.sayeed.saudiMartAuth.Utils.JwtUtil;
-import com.sayeed.saudiMartAuth.Utils.UserException;
+import com.saudimart.martAuth.Model.Users;
+import com.saudimart.martAuth.Repository.UserRepository;
+import com.saudimart.martAuth.Utils.JwtUtil;
+import com.saudimart.martAuth.Utils.UserException;
 
 @Service
 public class UserService implements UserDetailsService {

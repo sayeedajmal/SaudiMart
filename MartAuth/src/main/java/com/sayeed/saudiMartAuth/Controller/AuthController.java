@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sayeed.saudiMartAuth.Model.ResponseWrapper;
-import com.sayeed.saudiMartAuth.Model.Users;
-import com.sayeed.saudiMartAuth.Service.UserService;
-import com.sayeed.saudiMartAuth.Utils.UserException;
+import com.saudimart.martAuth.Model.ResponseWrapper;
+import com.saudimart.martAuth.Model.Users;
+import com.saudimart.martAuth.Service.UserService;
+import com.saudimart.martAuth.Utils.UserException;
 
 @RestController
 @RequestMapping("/auth")

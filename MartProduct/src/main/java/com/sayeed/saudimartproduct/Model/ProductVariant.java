@@ -1,6 +1,6 @@
-package com.sayeed.saudimartproduct.Model;
+package com.saudimart.martProduct.Model;
 
-import jakarta.persistence.*;
+import com.saudimart.martProduct.Model.Product;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -8,6 +8,7 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity

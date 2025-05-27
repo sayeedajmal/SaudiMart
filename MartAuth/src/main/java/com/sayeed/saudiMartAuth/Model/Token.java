@@ -1,4 +1,4 @@
-package com.sayeed.saudiMartAuth.Model;
+package com.saudimart.martAuth.Model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

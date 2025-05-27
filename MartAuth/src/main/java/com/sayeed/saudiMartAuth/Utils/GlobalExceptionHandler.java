@@ -1,6 +1,8 @@
-package com.sayeed.saudiMartAuth.Utils;
+package com.saudimart.martAuth.Utils;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import com.saudimart.martAuth.Utils.UserException;
+import com.saudimart.martAuth.Utils.UserExcResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

@@ -1,11 +1,11 @@
-package com.sayeed.saudimartproduct.Controller;
+package com.saudimart.martProduct.Controller;
 
-import com.sayeed.saudimartproduct.Model.PriceTier;
-import com.sayeed.saudimartproduct.Model.ResponseWrapper;
-import com.sayeed.saudimartproduct.Service.PriceTierService;
-import com.sayeed.saudimartproduct.Utils.ProductException;
+import com.saudimart.martProduct.Model.PriceTier;
+import com.saudimart.martProduct.Model.ResponseWrapper;
+import com.saudimart.martProduct.Service.PriceTierService;
+import com.saudimart.martProduct.Utils.ProductException;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +19,6 @@ public class PriceTierController {
 
     private final PriceTierService priceTierService;
 
-    @Autowired
     public PriceTierController(PriceTierService priceTierService) {
         this.priceTierService = priceTierService;
     }

@@ -1,4 +1,4 @@
-package com.sayeed.saudimartproduct.Model;
+package com.saudimart.martProduct.Model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

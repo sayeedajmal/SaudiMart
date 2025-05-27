@@ -1,4 +1,4 @@
-package com.saudimart.saudimartproduct;
+package com.saudimart.martProduct;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

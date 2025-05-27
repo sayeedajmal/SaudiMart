@@ -1,4 +1,4 @@
-package com.sayeed.saudimartproduct.Model;
+package com.saudimart.martProduct.Model;
 
 public class ResponseWrapper<T> {
     private int status;

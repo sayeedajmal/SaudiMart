@@ -1,11 +1,11 @@
-package com.sayeed.saudimartproduct.Controller;
+package com.saudimart.martProduct.Controller;
 
-import com.sayeed.saudimartproduct.Model.ProductSpecification;
-import com.sayeed.saudimartproduct.Model.ResponseWrapper;
-import com.sayeed.saudimartproduct.Service.ProductSpecificationService;
-import com.sayeed.saudimartproduct.Utils.ProductException;
+import com.saudimart.martProduct.Model.ProductSpecification;
+import com.saudimart.martProduct.Model.ResponseWrapper;
+import com.saudimart.martProduct.Service.ProductSpecificationService;
+import com.saudimart.martProduct.Utils.ProductException;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,6 @@ public class ProductSpecificationController {
 
     private final ProductSpecificationService productSpecificationService;
 
-    @Autowired
     public ProductSpecificationController(ProductSpecificationService productSpecificationService) {
         this.productSpecificationService = productSpecificationService;
     }

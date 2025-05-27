@@ -1,4 +1,4 @@
-package com.sayeed.saudimartproduct.Model;
+package com.saudimart.martProduct.Model;
 
 import java.sql.Timestamp;
 import java.util.List;

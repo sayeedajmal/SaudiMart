@@ -11,10 +11,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.sayeed.saudiMartAuth.Model.Users;
-import com.sayeed.saudiMartAuth.Service.UserService;
-import com.sayeed.saudiMartAuth.Utils.JwtUtil;
-import com.sayeed.saudiMartAuth.Utils.UserException;
+import com.saudimart.martAuth.Model.Users;
+import com.saudimart.martAuth.Service.UserService;
+import com.saudimart.martAuth.Utils.JwtUtil;
+import com.saudimart.martAuth.Utils.UserException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
