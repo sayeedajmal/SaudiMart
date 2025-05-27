@@ -1,4 +1,4 @@
-# REDIS DESIGN — `saudiMartAuth` (SaudiMart)
+# REDIS DESIGN — `Auth` (SaudiMart)
 
 | Purpose                | Redis Key               | Value Example               | TTL           |
 | ---------------------- | ----------------------- | --------------------------- | ------------- |

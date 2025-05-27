@@ -7,7 +7,7 @@
         <artifactId>SaudiMart</artifactId>
         <version>1.0.0</version>
     </parent>
-	<artifactId>saudiMartAuth</artifactId>
+	<artifactId>Auth</artifactId>
 
 	<description>Auth Service for SaudiMart</description>
 	<properties>
@@ -97,7 +97,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.sayeed.saudiMartAuth.SaudiMartAuthApplication</mainClass>
+                    <mainClass>com.sayeed.Auth.SaudiMartAuthApplication</mainClass>
                 </configuration>
             </plugin>
 			<plugin>
