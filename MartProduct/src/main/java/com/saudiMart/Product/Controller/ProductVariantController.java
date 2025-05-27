@@ -25,14 +25,17 @@ public class ProductVariantController {
     @GetMapping
     public ResponseEntity<ResponseWrapper<List<ProductVariant>>> getAllProductVariants() {
         List<ProductVariant> productVariants = productVariantService.getAllProductVariants();
-        ResponseWrapper<List<ProductVariant>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Product variants retrieved successfully", productVariants);
+        ResponseWrapper<List<ProductVariant>> response = new ResponseWrapper<>(HttpStatus.OK.value(),
+                "Product variants retrieved successfully", productVariants);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<ResponseWrapper<List<ProductVariant>>> getProductVariantsByProductId(@PathVariable Long productId) {
+    public ResponseEntity<ResponseWrapper<List<ProductVariant>>> getProductVariantsByProductId(
+            @PathVariable Long productId) {
         List<ProductVariant> productVariants = productVariantService.getProductVariantsByProductId(productId);
-        ResponseWrapper<List<ProductVariant>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Product variants by product ID retrieved successfully", productVariants);
+        ResponseWrapper<List<ProductVariant>> response = new ResponseWrapper<>(HttpStatus.OK.value(),
+                "Product variants by product ID retrieved successfully", productVariants);
         return ResponseEntity.ok(response);
     }
 
@@ -40,29 +43,37 @@ public class ProductVariantController {
     public ResponseEntity<ResponseWrapper<ProductVariant>> getProductVariantById(@PathVariable Long id) {
         Optional<ProductVariant> productVariant = productVariantService.getProductVariantById(id);
         if (productVariant.isPresent()) {
-            ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Product variant retrieved successfully", productVariant.get());
+            ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.OK.value(),
+                    "Product variant retrieved successfully", productVariant.get());
             return ResponseEntity.ok(response);
         } else {
-            ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.NOT_FOUND.value(), "Product variant not found", null);
+            ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.NOT_FOUND.value(),
+                    "Product variant not found", null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 
     @PostMapping
-    public ResponseEntity<ResponseWrapper<ProductVariant>> createProductVariant(@RequestBody ProductVariant productVariant) {
+    public ResponseEntity<ResponseWrapper<ProductVariant>> createProductVariant(
+            @RequestBody ProductVariant productVariant) {
         ProductVariant createdProductVariant = productVariantService.createProductVariant(productVariant);
-        ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.CREATED.value(), "Product variant created successfully", createdProductVariant);
+        ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.CREATED.value(),
+                "Product variant created successfully", createdProductVariant);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<ProductVariant>> updateProductVariant(@PathVariable Long id, @RequestBody ProductVariant productVariantDetails) {
+    public ResponseEntity<ResponseWrapper<ProductVariant>> updateProductVariant(@PathVariable Long id,
+            @RequestBody ProductVariant productVariantDetails) {
         try {
-            ProductVariant updatedProductVariant = productVariantService.updateProductVariant(id, productVariantDetails);
-            ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Product variant updated successfully", updatedProductVariant);
+            ProductVariant updatedProductVariant = productVariantService.updateProductVariant(id,
+                    productVariantDetails);
+            ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.OK.value(),
+                    "Product variant updated successfully", updatedProductVariant);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.NOT_FOUND.value(), e.getMessage(), null);
+            ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.NOT_FOUND.value(),
+                    e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
@@ -71,7 +82,8 @@ public class ProductVariantController {
     public ResponseEntity<ResponseWrapper<Void>> deleteProductVariant(@PathVariable Long id) {
         try {
             productVariantService.deleteProductVariant(id);
-            ResponseWrapper<Void> response = new ResponseWrapper<>(HttpStatus.NO_CONTENT.value(), "Product variant deleted successfully", null);
+            ResponseWrapper<Void> response = new ResponseWrapper<>(HttpStatus.NO_CONTENT.value(),
+                    "Product variant deleted successfully", null);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
         } catch (RuntimeException e) {
             ResponseWrapper<Void> response = new ResponseWrapper<>(HttpStatus.NOT_FOUND.value(), e.getMessage(), null);

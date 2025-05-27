@@ -50,7 +50,7 @@ public class ProductImageController {
 
     @PostMapping
     public ResponseEntity<ResponseWrapper<ProductImage>> createProductImage(@RequestBody ProductImage productImage) {
-        ProductImage createdProductImage = productImageService.createProductImage(productImage);
+        ProductImage createdProductImage = productImageService.saveProductImage(productImage);
         ResponseWrapper<ProductImage> response = new ResponseWrapper<>(HttpStatus.CREATED.value(), "Product image created successfully", createdProductImage);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

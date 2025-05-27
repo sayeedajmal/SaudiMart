@@ -26,7 +26,6 @@ public class ProductImageService {
         return productImageRepository.findById(id);
     }
 
-
     public List<ProductImage> getProductImagesByProductId(Long productId) {
         return productImageRepository.findByProductId(productId);
     }
@@ -34,4 +33,19 @@ public class ProductImageService {
     public void deleteProductImage(Long id) {
         productImageRepository.deleteById(id);
     }
+
+    public ProductImage updateProductImage(Long id, ProductImage productImageDetails) {
+        Optional<ProductImage> existingProductImage = productImageRepository.findById(id);
+        if (existingProductImage.isPresent()) {
+            ProductImage updatedProductImage = existingProductImage.get();
+            updatedProductImage.setImageUrl(productImageDetails.getImageUrl());
+            updatedProductImage.setAltText(productImageDetails.getAltText());
+            updatedProductImage.setDisplayOrder(productImageDetails.getDisplayOrder());
+            updatedProductImage.setPrimary(productImageDetails.getPrimary());
+            return productImageRepository.save(updatedProductImage);
+        } else {
+            throw new UnsupportedOperationException("Product image not found with id: " + id);
+        }
+    }
+
 }

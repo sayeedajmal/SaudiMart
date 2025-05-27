@@ -22,10 +22,9 @@ public class ProductVariantService {
         return productVariantRepository.findAll();
     }
 
-    public Optional<ProductVariant> getProductVariantById(Long id) {
-        return productVariantRepository.findById(id);
-    }
-
+    public List<ProductVariant> getProductVariantsByProductId(Long productId) {
+    return productVariantRepository.findByProductId(productId);
+}
     public ProductVariant createProductVariant(ProductVariant productVariant) {
         return productVariantRepository.save(productVariant);
     }
@@ -50,6 +49,11 @@ public class ProductVariantService {
 
     public void deleteProductVariant(Long id) {
         productVariantRepository.deleteById(id);
+    }
+
+    public Optional<ProductVariant> getProductVariantById(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getProductVariantById'");
     }
 
 }

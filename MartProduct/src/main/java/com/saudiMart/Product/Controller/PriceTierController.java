@@ -3,6 +3,8 @@ package com.saudiMart.Product.Controller;
 import com.saudiMart.Product.Model.PriceTier;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Service.PriceTierService;
+import com.saudiMart.Product.Utils.ProductException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +40,7 @@ public class PriceTierController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<PriceTier>> updatePriceTier(@PathVariable Long id, @RequestBody PriceTier priceTierDetails) {
+    public ResponseEntity<ResponseWrapper<PriceTier>> updatePriceTier(@PathVariable Long id, @RequestBody PriceTier priceTierDetails) throws ProductException {
         try {
             PriceTier updatedPriceTier = priceTierService.updatePriceTier(id, priceTierDetails);
             return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Price tier updated successfully", updatedPriceTier));
@@ -48,7 +50,7 @@ public class PriceTierController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deletePriceTier(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<Void>> deletePriceTier(@PathVariable Long id) throws ProductException {
         try {
             priceTierService.deletePriceTier(id);
             return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Price tier deleted successfully", null));
@@ -59,7 +61,7 @@ public class PriceTierController {
 
     @GetMapping("/variant/{variantId}")
     public ResponseEntity<ResponseWrapper<List<PriceTier>>> getPriceTiersByVariantId(@PathVariable Long variantId) {
-        List<PriceTier> priceTiers = priceTierService.getPriceTiersByProductVariantId(variantId);
+        List<PriceTier> priceTiers = priceTierService.getPriceTiersByVariantId(variantId);
         return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Price tiers retrieved successfully for variant", priceTiers));
     }
 }

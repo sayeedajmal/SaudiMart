@@ -45,7 +45,8 @@ public class ProductSpecificationService {
         }
     }
 
-    public void deleteProductSpecification(Long id) {
+    public boolean deleteProductSpecification(Long id) {
         productSpecificationRepository.deleteById(id);
+        return true;
     }
 }

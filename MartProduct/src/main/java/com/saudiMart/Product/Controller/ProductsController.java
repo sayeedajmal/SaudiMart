@@ -60,14 +60,11 @@ public class ProductsController {
  }
     }
     @PostMapping
-    public ResponseEntity<ResponseWrapper<Products>> createProduct(@RequestBody Products product) {
+    public ResponseEntity<ResponseWrapper<Products>> createProduct(@RequestBody Products product) throws ProductException {
         try {
             Products createdProduct = productsService.createProduct(product);
             ResponseWrapper<Products> response = new ResponseWrapper<>(HttpStatus.CREATED.value(), "Product created successfully", createdProduct);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (ProductException e) {
-            ResponseWrapper<Products> response = new ResponseWrapper<>(e.getStatus().value(), "Error creating product: " + e.getMessage(), null);
-            return ResponseEntity.status(e.getStatus()).body(response);
         } catch (Exception e) {
             ResponseWrapper<Products> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error creating product: " + e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -75,14 +72,11 @@ public class ProductsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Products>> updateProduct(@PathVariable Long id, @RequestBody Products productDetails) {
+    public ResponseEntity<ResponseWrapper<Products>> updateProduct(@PathVariable Long id, @RequestBody Products productDetails) throws ProductException {
         try {
             Products updatedProduct = productsService.updateProduct(id, productDetails);
             ResponseWrapper<Products> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Product updated successfully", updatedProduct);
             return ResponseEntity.ok(response);
-        } catch (ProductException e) {
-            ResponseWrapper<Products> response = new ResponseWrapper<>(e.getStatus().value(), "Error updating product: " + e.getMessage(), null);
-            return ResponseEntity.status(e.getStatus()).body(response);
         } catch (Exception e) {
             ResponseWrapper<Products> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error updating product: " + e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -90,14 +84,11 @@ public class ProductsController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<Void>> deleteProduct(@PathVariable Long id) throws ProductException {
         try {
             productsService.deleteProduct(id);
             ResponseWrapper<Void> response = new ResponseWrapper<>(HttpStatus.NO_CONTENT.value(), "Product deleted successfully", null);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
-        } catch (ProductException e) {
-            ResponseWrapper<Void> response = new ResponseWrapper<>(e.getStatus().value(), "Error deleting product: " + e.getMessage(), null);
-            return ResponseEntity.status(e.getStatus()).body(response);
         } catch (Exception e) {
             ResponseWrapper<Void> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error deleting product: " + e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);

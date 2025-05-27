@@ -44,7 +44,7 @@ public class ProductSpecificationController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseWrapper<ProductSpecification>> updateProductSpecification(@PathVariable Long id, @RequestBody ProductSpecification productSpecificationDetails) {
-        Optional<ProductSpecification> updatedProductSpecification = productSpecificationService.updateProductSpecification(id, productSpecificationDetails);
+        Optional<ProductSpecification> updatedProductSpecification = Optional.ofNullable(productSpecificationService.updateProductSpecification(id, productSpecificationDetails));
         if (updatedProductSpecification.isPresent()) {
             return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Product specification updated successfully", updatedProductSpecification.get()));
         } else {
