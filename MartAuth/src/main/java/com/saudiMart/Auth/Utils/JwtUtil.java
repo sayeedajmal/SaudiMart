@@ -179,7 +179,7 @@ public class JwtUtil {
         return Jwts
                 .builder()
                 .setSubject(user.getEmail())
-                .claim("userId", user.getUserId())
+                .claim("id", user.getId())
                 .claim("name", user.getUsername())
                 .claim("enabled", user.isEnabled())
                 .claim("accountNonLocked", user.isAccountNonLocked())

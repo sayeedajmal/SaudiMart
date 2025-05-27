@@ -56,9 +56,8 @@ public class JwtUtil {
     public String extractUserRoles(String token) {
         try {
             Claims claims = extractAllClaims(token);
-            return claims.get("authorities", String.class); // Assuming roles are stored as a String or can be converted
+            return claims.get("authorities", String.class);
         } catch (RuntimeException e) {
-            // Handle exception internally, return null for invalid or missing claim
             return null;
         }
     }
@@ -70,7 +69,7 @@ public class JwtUtil {
      * @return the extracted user id.
      * @throws UserException if the token is invalid or has expired.
      */
-    public String extractUserId(String token) {
+    public String extractId(String token) {
         Claims claims = extractAllClaims(token);
         return claims.get("id", String.class);
     }

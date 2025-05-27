@@ -176,7 +176,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public Users updateUserSelf(Users user) throws UserException {
-        Users existingUser = userRepository.findByUserId(user.getUserId())
+        Users existingUser = userRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new UserException("User not found"));
 
         if (user.getUsername() != null && !user.getUsername().isBlank()) {

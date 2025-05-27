@@ -35,7 +35,6 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         final String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return response.setComplete();
         }
@@ -48,12 +47,11 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
                 return response.setComplete();
             }
 
-            String userId = jwtUtil.extractUserId(jwt);
-
+            String id = jwtUtil.extractId(jwt);
             String userRoles = jwtUtil.extractUserRoles(jwt);
 
             ServerHttpRequest modifiedRequest = request.mutate()
-                    .header("X-User-Id", userId)
+                    .header("X-User-Id", id)
                     .header("X-User-Roles", userRoles)
                     .build();
 
@@ -66,7 +64,6 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-
         return -1;
     }
 }

@@ -1,12 +1,13 @@
 package com.saudiMart.Product.Service;
 
-import com.saudiMart.Product.Model.ProductVariant;
-import com.saudiMart.Product.Repository.ProductVariantRepository;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.saudiMart.Product.Model.ProductVariant;
+import com.saudiMart.Product.Repository.ProductVariantRepository;
 
 @Service
 public class ProductVariantService {
@@ -23,8 +24,9 @@ public class ProductVariantService {
     }
 
     public List<ProductVariant> getProductVariantsByProductId(Long productId) {
-    return productVariantRepository.findByProductId(productId);
-}
+        return productVariantRepository.findByProductId(productId);
+    }
+
     public ProductVariant createProductVariant(ProductVariant productVariant) {
         return productVariantRepository.save(productVariant);
     }
@@ -52,8 +54,7 @@ public class ProductVariantService {
     }
 
     public Optional<ProductVariant> getProductVariantById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getProductVariantById'");
+        return productVariantRepository.findById(id);
     }
 
 }
