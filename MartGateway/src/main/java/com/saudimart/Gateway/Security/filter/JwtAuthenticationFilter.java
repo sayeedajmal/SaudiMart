@@ -1,4 +1,4 @@
-package com.saudimart.Gateway.filter;
+package com.saudimart.Gateway.Security.filter;
 
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
