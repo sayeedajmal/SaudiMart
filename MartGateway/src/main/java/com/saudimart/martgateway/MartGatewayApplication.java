@@ -1,4 +1,4 @@
-package com.sayeed.martgateway;
+package com.saudimart.martgateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

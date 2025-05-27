@@ -1,8 +1,9 @@
 package com.sayeed.saudimartproduct.Service;
 
-import com.sayeed.saudimartproduct.Model.Category;
 import com.sayeed.saudimartproduct.Repository.CategoryRepository;
 import com.sayeed.saudimartproduct.Utils.ProductException;
+import com.sayeed.saudimartproduct.model.Category;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
