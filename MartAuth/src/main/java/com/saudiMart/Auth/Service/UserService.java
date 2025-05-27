@@ -161,7 +161,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void updateRole(String email, String role) throws UserException {
+    public void updateRole(String email,  String role) throws UserException {
         Users user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException("User not found"));
 
@@ -180,10 +180,10 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UserException("User not found"));
 
         if (user.getUsername() != null && !user.getUsername().isBlank()) {
-            existingUser.setUsername(user.getUsername());
+            existingUser.setName(user.getName());
         }
-        if (user.getPhone_number() != null && !user.getPhone_number().isBlank()) {
-            existingUser.setPhone_number(user.getPhone_number());
+        if (user.getPhoneNumber() != null && !user.getPhoneNumber().isBlank()) {
+            existingUser.setPhoneNumber(user.getPhoneNumber());
         }
         if (user.getPassword() != null && !user.getPassword().isBlank()) {
             existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
