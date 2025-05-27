@@ -1,0 +1,24 @@
+server:
+  port: 8765
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:  # Corrected from 'sprung'
+  cloud:
+    gateway:
+      discovery.locator:
+        enabled: true
+        lower-case-service-id: true
+      routes:
+        - id: auth-service
+          uri: lb://MARTAUTH
+          predicates:
+            - Path=/auth/**
+
+jwt:
+  secret: your-jwt-secret # Replace with your actual secret key
+  tokenValidityInMilliSeconds: 3600000 # Example: 1 hour
+  tokenRefreshInMilliSeconds: 604800000 # Example: 7 days

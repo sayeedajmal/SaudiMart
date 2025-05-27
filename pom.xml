@@ -11,6 +11,7 @@
     <modules>
         <module>martAuth</module>
         <module>MartProduct</module>
+        <module>MartGateway</module>
     </modules>
 
     <properties>
