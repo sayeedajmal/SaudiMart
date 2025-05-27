@@ -1,6 +1,15 @@
 package com.saudiMart.Product.Model;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -14,7 +23,7 @@ public class ProductSpecification {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    private Products product;
 
     @NotNull
     @Size(max = 100)
@@ -42,11 +51,11 @@ public class ProductSpecification {
         this.specId = specId;
     }
 
-    public Product getProduct() {
+    public Products getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(Products product) {
         this.product = product;
     }
 

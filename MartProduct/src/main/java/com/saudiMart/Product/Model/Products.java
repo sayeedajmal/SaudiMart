@@ -1,10 +1,20 @@
-package com.saudimart.Product.Model;
+package com.saudiMart.Product.Model;
 
-import javax.persistence.*;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.Id;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "products")
@@ -95,7 +105,6 @@ public class Products {
         this.description = description;
     }
 
-
     public Long getCategoryId() {
         return categoryId;
     }
@@ -179,14 +188,13 @@ public class Products {
     public Timestamp getUpdatedAt() {
         return updatedAt;
     }
-    
+
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
 
     @PrePersist
     protected void onCreate() {
-        createdAt = new Timestamp(System.currentTimeMillis());
         updatedAt = new Timestamp(System.currentTimeMillis());
     }
 
