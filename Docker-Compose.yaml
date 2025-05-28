@@ -1,7 +1,8 @@
 services:
   marteureka:
     build:
-      context: ./MartEureka
+      context: .
+      dockerfile: MartEureka/Dockerfile
     ports:
       - "8761:8761"
     networks:
@@ -9,38 +10,34 @@ services:
 
   martauth:
     build:
-      context: ./MartAuth
+      context: .
+      dockerfile: MartAuth/Dockerfile
     ports:
       - "8081:8081"
     networks:
       - saudimart-network
-    depends_on:
-      - marteureka
     env_file:
       - .env
 
   martproduct:
     build:
-      context: ./MartProduct
+      context: .
+      dockerfile: MartProduct/Dockerfile
     ports:
       - "8082:8082"
     networks:
       - saudimart-network
-    depends_on:
-      - marteureka
     env_file:
       - .env
 
   martgateway:
     build:
-      context: ./MartGateway
+      context: .
+      dockerfile: MartGateway/Dockerfile
     ports:
       - "8080:8765"
     networks:
       - saudimart-network
-    depends_on:
-      - martauth
-      - martproduct
     env_file:
       - .env
 

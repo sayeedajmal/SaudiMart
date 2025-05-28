@@ -18,7 +18,10 @@ import com.saudiMart.Auth.Utils.UserException;
 @RequestMapping("/auth")
 public class AuthController {
     @Autowired
-    private UserService userService;
+    private final UserService userService;
+    public AuthController(UserService userService) {
+        this.userService = userService;
+    }
 
     /**
      * Handles user registration.
