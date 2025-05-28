@@ -12,6 +12,7 @@
         <module>martAuth</module>
         <module>MartProduct</module>
         <module>MartGateway</module>
+        <module>MartEureka</module>
     </modules>
 
     <properties>

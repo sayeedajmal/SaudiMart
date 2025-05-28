@@ -1,9 +1,7 @@
-version: "3.9"
-
 services:
-  eureka:
+  marteureka:
     build:
-      context: ./Eureka
+      context: ./MartEureka
     ports:
       - "8761:8761"
     networks:
@@ -17,7 +15,7 @@ services:
     networks:
       - saudimart-network
     depends_on:
-      - eureka
+      - marteureka
     env_file:
       - .env
 
@@ -29,7 +27,7 @@ services:
     networks:
       - saudimart-network
     depends_on:
-      - eureka
+      - marteureka
     env_file:
       - .env
 
@@ -50,9 +48,9 @@ services:
     image: postgres:latest
     container_name: saudimart_postgres
     environment:
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: saudimart
+      POSTGRES_PASSWORD: saudimart
+      POSTGRES_DB: saudimartdb
     ports:
       - "5432:5432"
     volumes:
