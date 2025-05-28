@@ -20,5 +20,12 @@ jwt:
   secret: ${JWT_SECRET:habeebahabeebahabeebahabeebahabeebahabeebahabeebahabeebahabeebahabeebahabeebahabeebahabeebahabeebahabeeba}
   tokenValidityInMilliSeconds: ${JWT_ACCESS_TOKEN_EXPIRE:1800000}
   tokenRefreshInMilliSeconds: ${JWT_REFRESH_TOKEN_EXPIRE:604800000}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
   
 
