@@ -7,7 +7,9 @@ import NotificationDisplay from "./NotificationDisplay";
 import SellerDashboard from "./Seller/SellerDashboard";
 import SignupPage from "./SignupPage";
 import FullScreenLoader from "./components/FullScreenLoader";
-
+import Header from "./components/Header";
+import Footer from "./Footer"
+import Wishlist from "./Buyer/Components/Wishlist";
 import { useNavigate } from "react-router-dom";
 const PrivateRoute = ({ element, allowedRoles }) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -56,19 +58,20 @@ function App() {
   }, [isAuthenticated, user]);
 
   if (loading) {
- return <FullScreenLoader />;
+    return <FullScreenLoader />;
   }
   return (
     <>
+      <Header />
       <NotificationDisplay />
       <Routes>
         <Route
           path="/login"
-          element={<LoginPage toggleToSignup={toggleToSignup} />}
+          element={<Wishlist toggleToSignup={toggleToSignup} />}
         />{" "}
         <Route
           path="/signup"
-          element={<SignupPage toggleToLogin={toggleToLogin} />}
+          element={<Wishlist toggleToLogin={toggleToLogin} />}
         />
         <Route
           path="/"
@@ -101,6 +104,7 @@ function App() {
           }
         />
       </Routes>
+      <Footer/>
     </>
   );
 }
