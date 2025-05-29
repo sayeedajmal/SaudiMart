@@ -4,7 +4,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
 
 spring:
   main:
@@ -12,19 +12,19 @@ spring:
   application:
     name: MARTAUTH
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/saudimartdb}
-    username: ${DB_USERNAME:saudimart}
-    password: ${DB_PASSWORD:saudimart}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     initialization-mode: always
   jpa:
     hibernate:
       ddl-auto: update
   redis:
-    host: ${REDIS_HOST:localhost}
-    port: ${REDIS_PORT:6379}
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
 
 
 jwt:
-  secret: thisissecretKeythisissecretKeythisissecretKeythisissecretKeythisissecretKeythisissecretKeythisissecretKeythisissecretKey 
-  tokenValidityInMilliSeconds: 86400000 # Example: 1 day
-  tokenRefreshInMilliSeconds: 604800000 # Example: 7 days
+  secret: ${JWT_SECRET}
+  tokenValidityInMilliSeconds: ${JWT_ACCESS_TOKEN_EXPIRE}
+  tokenRefreshInMilliSeconds: ${JWT_REFRESH_TOKEN_EXPIRE}

@@ -51,10 +51,6 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    public List<Category> getChildCategories(Long parentId) {
-        return categoryRepository.findByParentCategoryId(parentId);
-    }
-
     public Optional<Category> getParentCategory(Long categoryId) throws ProductException {
         return categoryRepository.findById(categoryId).map(Category::getParentCategory);
     }

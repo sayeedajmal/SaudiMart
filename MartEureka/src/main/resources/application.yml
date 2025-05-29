@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: eureka-server
+    name: MARTEUREKA
   cloud:
     config:
       enabled: true

@@ -91,19 +91,6 @@ public class CategoryController {
         }
     }
 
-    @GetMapping("/{id}/children")
-    public ResponseEntity<ResponseWrapper<List<Category>>> getChildCategories(@PathVariable Long id)
-            throws ProductException {
-        try {
-            List<Category> childCategories = categoryService.getChildCategories(id);
-            return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(),
-                    "Child categories retrieved successfully", childCategories));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
-        }
-    }
-
     @GetMapping("/{id}/parent")
     public ResponseEntity<ResponseWrapper<Optional<Category>>> getParentCategory(@PathVariable Long id) {
         try {
