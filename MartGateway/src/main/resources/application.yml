@@ -10,6 +10,8 @@ spring:
   application:
     name: MARTGATEWAY
   cloud:
+    compatibility-verifier:
+      enabled: false
     gateway:
       discovery.locator:
         enabled: true
