@@ -105,7 +105,7 @@
 
 	<build>
 		<plugins>
-		<plugin>
+		 <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
@@ -118,10 +118,8 @@
                 <configuration>
                     <mainClass>com.saudiMart.Product.ProductApplication</mainClass>
                 </configuration>
-        </plugin>
-			<plugin>
+            </plugin>
 		</plugins>
 	</build>
-
 </project>
 
