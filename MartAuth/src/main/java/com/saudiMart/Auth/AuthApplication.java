@@ -12,7 +12,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @SpringBootApplication
-public class SaudiMartAuthApplication {
+public class AuthApplication {
 
 	@Value("${spring.redis.host}")
 	String host;
@@ -20,7 +20,7 @@ public class SaudiMartAuthApplication {
 	int port;
 
 	public static void main(String[] args) {
-		SpringApplication.run(SaudiMartAuthApplication.class, args);
+		SpringApplication.run(AuthApplication.class, args);
 	}
 
 	@Bean

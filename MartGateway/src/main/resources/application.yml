@@ -1,15 +1,17 @@
 server:
-  port: 8765
+  port: 8080
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
 
 spring:
   application:
     name: MARTGATEWAY
   cloud:
+    compatibility-verifier:
+      enabled: false
     gateway:
       discovery.locator:
         enabled: true
@@ -18,9 +20,14 @@ spring:
         - id: auth-service
           uri: lb://MARTAUTH
           predicates:
+            - Path=/users/**
             - Path=/auth/**
+        - id: product-service
+          uri: lb://MARTPRODUCT
+          predicates:
+            - Path=/api/**
 
 jwt:
-  secret: your-jwt-secret 
-  tokenValidityInMilliSeconds: 3600000 # Example: 1 hour
-  tokenRefreshInMilliSeconds: 604800000 # Example: 7 days
+  secret: ${JWT_SECRET}
+  tokenValidityInMilliSeconds: ${JWT_ACCESS_TOKEN_EXPIRE}
+  tokenRefreshInMilliSeconds: ${JWT_REFRESH_TOKEN_EXPIRE}

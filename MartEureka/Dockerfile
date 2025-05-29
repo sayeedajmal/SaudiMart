@@ -2,8 +2,8 @@ FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
 
-COPY MartAuth/target/*.jar app.jar
+COPY MartEureka/target/*.jar app.jar
 
-EXPOSE 8765
+EXPOSE 8761
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

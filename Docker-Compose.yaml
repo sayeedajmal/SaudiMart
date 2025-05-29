@@ -1,16 +1,45 @@
 services:
-  saudimartauth:
+  marteureka:
     build:
       context: .
-      dockerfile: saudiMartAuth/Dockerfile
-    container_name: saudiMartAuth
+      dockerfile: MartEureka/Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - saudimart-network
+
+  martauth:
+    build:
+      context: .
+      dockerfile: MartAuth/Dockerfile
     ports:
       - "8081:8081"
-    env_file: .env
     networks:
-      - saudiMart_network
-    volumes:
-      - app_data:/var/lib/auth/data
+      - saudimart-network
+    env_file:
+      - .env
+
+  martproduct:
+    build:
+      context: .
+      dockerfile: MartProduct/Dockerfile
+    ports:
+      - "8082:8082"
+    networks:
+      - saudimart-network
+    env_file:
+      - .env
+
+  martgateway:
+    build:
+      context: .
+      dockerfile: MartGateway/Dockerfile
+    ports:
+      - "8080:8765"
+    networks:
+      - saudimart-network
+    env_file:
+      - .env
 
   postgres:
     image: postgres:latest
@@ -24,7 +53,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - saudiMart_network
+      - saudimart-network
 
   redis:
     image: redis:latest
@@ -35,7 +64,7 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - saudiMart_network
+      - saudimart-network
 
   redisinsight:
     image: redis/redisinsight:latest
@@ -43,13 +72,12 @@ services:
     ports:
       - "5540:5540"
     networks:
-      - saudiMart_network
+      - saudimart-network
 
 volumes:
   postgres_data:
   redis_data:
-  app_data:
 
 networks:
-  saudiMart_network:
+  saudimart-network:
     driver: bridge

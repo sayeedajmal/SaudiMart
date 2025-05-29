@@ -14,8 +14,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -26,8 +24,8 @@ import lombok.Data;
 public class Users implements UserDetails {
 
     @Id
-    @Column(name = "user_id", updatable = false, nullable = false)
-    private String userId = UUID.randomUUID().toString();
+    @Column(updatable = false, nullable = false)
+    private String id = UUID.randomUUID().toString();
 
     @Column(name = "name", nullable = false)
     private String name; // e.g., "Sayeed Ajmal"
@@ -35,13 +33,12 @@ public class Users implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email; // e.g., "sayeed@example.com"
 
-    @Column(name = "phone_number", unique = true)
+    @Column(unique = true)
     private String phoneNumber; // e.g., "+966512345678"
 
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password; // Stored as bcrypt
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private String role; // e.g., "BUYER" or "SELLER" or "ADMIN"
 

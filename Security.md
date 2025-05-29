@@ -52,3 +52,49 @@ Security Flow:
 7. API Gateway routes request with headers to the appropriate Downstream Service (e.g., MartProduct).
 8. Downstream Service's GatewayAuthFilter reads user info from headers.
 9. Downstream Service performs authorization based on user roles.
+
+# Gateway Auth Filter
++-----------+                                     +-----------+
+|  Client   |                                     |  Eureka   |
++-----------+                                     |  Server   |
+      |                                             +-----------+
+      |  HTTP Request (with JWT in Auth Header)         ^
+      |----------------------------------------------->|
+      |                                             |  Service Registration
+      |                                             |  Service Discovery
+      |                                             |
++-----------+                                     |
+| API Gateway |                                     |
++-----------+                                     |
+      |  1. Intercepts Request                        |
+      |  2. JWT Validation (Auth, AuthZ, Expire Check)|
+      |     (If invalid/expired, returns 401)        |
+      |                                             |
+      |  3. Modify Request (Add X-User-Id, X-User-Roles Headers)
+      |                                             |
+      |  4. Service Discovery (via Eureka)------------->|
+      |     (Checks Eureka for Microservice location) |
+      |                                             |
+      |  5. Forwards Request (with Headers) --------->|
+      |                                             |
+      |                                     +--------------+
+      |                                     | Microservice |
+      |                                     | (e.g., MartProduct)
+      |                                     +--------------+
+      |                                             |
+      |                                             |  6. Security Filter (e.g., GatewayAuthFilter)
+      |                                             |     Reads X-User-Id, X-User-Roles Headers
+      |                                             |     Sets Security Context
+      |                                             |
+      |                                             |  7. Authorization Checks (based on User/Role)
+      |                                             |  8. Executes Business Logic
+      |                                             |
+      |<---------------------------------------------|
+      |  9. HTTP Response (Data)
+      |
+      |<---------------------------------------------|
+      | 10. Forwards Response
+      |
++-----------+
+|  Client   |
++-----------+

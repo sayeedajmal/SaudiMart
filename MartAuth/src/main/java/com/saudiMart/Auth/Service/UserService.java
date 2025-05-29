@@ -50,7 +50,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public Users getUserById(String userId) throws UserException {
-        return userRepository.findByUserId(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new UserException("User not found with ID: " + userId));
     }
 
@@ -161,7 +161,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void updateRole(String email,  String role) throws UserException {
+    public void updateRole(String email, String role) throws UserException {
         Users user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException("User not found"));
 
@@ -176,7 +176,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public Users updateUserSelf(Users user) throws UserException {
-        Users existingUser = userRepository.findByUserId(user.getUserId())
+        Users existingUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new UserException("User not found"));
 
         if (user.getUsername() != null && !user.getUsername().isBlank()) {

@@ -1,10 +1,16 @@
 server:
-  port: 8082
+  port: 8081
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
+
 spring:
   main:
-      allow-circular-references: true
+    allow-circular-references: true
   application:
-    name: saudiMartProduct
+    name: saudiMartAuth
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -16,12 +22,9 @@ spring:
   redis:
     host: ${REDIS_HOST}
     port: ${REDIS_PORT}
+
+
 jwt:
   secret: ${JWT_SECRET}
   tokenValidityInMilliSeconds: ${JWT_ACCESS_TOKEN_EXPIRE}
   tokenRefreshInMilliSeconds: ${JWT_REFRESH_TOKEN_EXPIRE}
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
