@@ -6,9 +6,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "product_images")
@@ -18,11 +21,13 @@ public class ProductImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
 
- @NotNull
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Products product;
 
     @Column(name = "variant_id")
+    @ManyToOne
     private Long variantId;
 
  @NotNull
@@ -40,7 +45,7 @@ public class ProductImage {
     private Boolean isPrimary = false;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Timestamp createdAt;
 
     // Getters and setters
 
@@ -52,13 +57,6 @@ public class ProductImage {
         this.imageId = imageId;
     }
 
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
 
     public Long getVariantId() {
         return variantId;
@@ -101,10 +99,14 @@ public class ProductImage {
     }
 
     public LocalDateTime getCreatedAt() {
-        return createdAt;
+        return createdAt != null ? createdAt.toLocalDateTime() : null;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+        this.createdAt = createdAt != null ? Timestamp.valueOf(createdAt) : null;
+    }
+
+    public Products getProduct() {
+        return product;
     }
 }

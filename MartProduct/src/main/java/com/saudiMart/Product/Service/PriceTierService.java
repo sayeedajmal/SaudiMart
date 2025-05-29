@@ -37,7 +37,6 @@ public class PriceTierService {
 
         priceTier.setMinimumQuantity(priceTierDetails.getMinimumQuantity());
         priceTier.setPrice(priceTierDetails.getPrice());
-        priceTier.setProductVariant(priceTierDetails.getProductVariant());
 
         return priceTierRepository.save(priceTier);
     }
@@ -47,9 +46,5 @@ public class PriceTierService {
             throw new ProductException("PriceTier not found with id: " + id);
         }
         priceTierRepository.deleteById(id);
-    }
-
-    public List<PriceTier> getPriceTiersByVariantId(Long variantId) {
-        return priceTierRepository.findByProductVariant_VariantId(variantId);
     }
 }

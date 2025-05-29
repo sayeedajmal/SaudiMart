@@ -8,9 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -25,12 +23,16 @@ public class Products {
     private Long productId;
 
     @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id", nullable = false)
     @Column(name = "seller_id", nullable = false)
     private Long sellerId;
 
     @NotNull
     @Size(max = 255)
     @Column(name = "name", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
     private String name;
 
     @Column(name = "description", columnDefinition = "TEXT")
@@ -65,12 +67,10 @@ public class Products {
     private Boolean available = true;
 
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private Timestamp createdAt;
 
     @Column(name = "updated_at")
     private Timestamp updatedAt;
-
-    // Getters and Setters
 
     public Long getProductId() {
         return productId;
@@ -176,11 +176,12 @@ public class Products {
         this.available = available;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
+
         this.createdAt = createdAt;
     }
 
@@ -194,7 +195,7 @@ public class Products {
 
     @PrePersist
     protected void onCreate() {
-        updatedAt = new Timestamp(System.currentTimeMillis());
+        createdAt = new Timestamp(System.currentTimeMillis());
     }
 
     @PreUpdate

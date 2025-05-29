@@ -58,10 +58,4 @@ public class PriceTierController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(HttpStatus.NOT_FOUND.value(), e.getMessage(), null));
         }
     }
-
-    @GetMapping("/variant/{variantId}")
-    public ResponseEntity<ResponseWrapper<List<PriceTier>>> getPriceTiersByVariantId(@PathVariable Long variantId) {
-        List<PriceTier> priceTiers = priceTierService.getPriceTiersByVariantId(variantId);
-        return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Price tiers retrieved successfully for variant", priceTiers));
-    }
 }
