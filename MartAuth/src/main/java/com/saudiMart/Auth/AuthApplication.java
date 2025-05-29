@@ -3,7 +3,6 @@ package com.saudiMart.Auth;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -13,17 +12,16 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @SpringBootApplication
-public class MartAuthApplication {
+public class AuthApplication {
 
 	@Value("${spring.redis.host}")
 	String host;
-	
 	@Value("${spring.redis.port}")
 	int port;
-	public static void main(String[] args) {
-		SpringApplication.run(MartAuthApplication.class, args);
-	}
 
+	public static void main(String[] args) {
+		SpringApplication.run(AuthApplication.class, args);
+	}
 
 	@Bean
 	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
