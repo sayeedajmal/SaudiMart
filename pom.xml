@@ -14,11 +14,11 @@
         <module>MartGateway</module>
         <module>MartEureka</module>
     </modules>
-
     <properties>
         <java.version>17</java.version>
         <spring.boot.version>3.2.0</spring.boot.version>
         <spring-cloud.version>2021.0.8</spring-cloud.version>
+        <spring-boot-starter-parent.version>3.5.0</spring-boot-starter-parent.version>
     </properties>
 
     <dependencyManagement>

@@ -13,17 +13,17 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @SpringBootApplication
-@EnableEurekaClient
-public class SaudiMartAuthApplication {
+public class MartAuthApplication {
 
 	@Value("${spring.redis.host}")
 	String host;
+	
 	@Value("${spring.redis.port}")
 	int port;
-
 	public static void main(String[] args) {
-		SpringApplication.run(SaudiMartAuthApplication.class, args);
+		SpringApplication.run(MartAuthApplication.class, args);
 	}
+
 
 	@Bean
 	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
