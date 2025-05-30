@@ -1,7 +1,7 @@
 const WishProduct = ({ product }) => {
   return (
-    <div className="flex flex-col gap-2 w-[270px] relative">
-      <div className="relative w-full h-[250px] bg-gray-100 rounded overflow-hidden flex items-center justify-center">
+    <div className="flex flex-col w-full max-w-[270px] relative mx-auto">
+      <div className="relative w-full h-[200px] sm:h-[250px] bg-gray-100 rounded overflow-hidden flex items-center justify-center">
         <img
           className="object-contain max-w-full max-h-full"
           src={product.imageUrl}
@@ -27,20 +27,36 @@ const WishProduct = ({ product }) => {
           ></path>
         </svg>
       </div>
+      <div className="absolute bottom-0 left-0 right-0 bg-black text-white text-center cursor-pointer z-10">
+        <button className="flex items-center justify-center w-full h-full p-2">
+          <svg
+            className="w-6 h-6 mr-2 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+            ></path>
+          </svg>
+          Add To Cart
+        </button>
+      </div>
       <div className="flex flex-col">
-        <span className="font-medium text-base text-black">
+        <span className="font-medium text-sm sm:text-base text-black">
           {product.name}
         </span>
-        <div className="flex items-center gap-3">
-          <span className="font-medium text-base text-red-500">
-            ${product.price}
-          </span>
-          {product.originalPrice && (
-            <span className="font-medium text-base line-through text-black opacity-50">
-              ${product.originalPrice}
-            </span>
-          )}
-        </div>
+        <span className="font-medium text-base text-red-500 mb-4">
+          ${product.price}
+        </span>
+        {product.originalPrice && (
+          <span className="font-medium text-base line-through text-black opacity-50">
+            ${product.originalPrice}
+          </span>)}
       </div>
     </div>
   );
