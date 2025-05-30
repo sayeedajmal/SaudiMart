@@ -2,6 +2,8 @@ import { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
 import BuyerDashboard from "./Buyer/BuyerDashboard";
+import Contact from "./Buyer/Components/Contact"
+import NotFound from "./pages/NotFound";
 import LoginPage from "./LoginPage";
 import NotificationDisplay from "./NotificationDisplay";
 import SellerDashboard from "./Seller/SellerDashboard";
@@ -9,7 +11,7 @@ import SignupPage from "./SignupPage";
 import FullScreenLoader from "./components/FullScreenLoader";
 import Header from "./components/Header";
 import Footer from "./Footer"
-import Wishlist from "./Buyer/Components/Wishlist";
+import Checkout from "./Buyer/Components/Checkout";
 import { useNavigate } from "react-router-dom";
 const PrivateRoute = ({ element, allowedRoles }) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -67,11 +69,11 @@ function App() {
       <Routes>
         <Route
           path="/login"
-          element={<Wishlist toggleToSignup={toggleToSignup} />}
+          element={<NotFound toggleToSignup={toggleToSignup} />}
         />{" "}
         <Route
           path="/signup"
-          element={<Wishlist toggleToLogin={toggleToLogin} />}
+          element={<Contact toggleToLogin={toggleToLogin} />}
         />
         <Route
           path="/"
@@ -104,7 +106,7 @@ function App() {
           }
         />
       </Routes>
-      <Footer/>
+      <Footer />
     </>
   );
 }
