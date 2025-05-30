@@ -1,44 +1,45 @@
-import React from "react";
-
-const WishProduct = () => {
+const WishProduct = ({ product }) => {
   return (
-    <div class="flex flex-col gap-4">
-      <div class="w-[270px] h-[250px] bg-neutral-100 rounded">
-        <div class="w-[270px] h-[41px] bg-black"></div>
-        <div class="flex flex-col gap-2">
-          <div class="w-[34px] h-[34px]">
-            <div class="w-6 h-6">
-              <svg class="w-4 h-[18px]"></svg>
-            </div>
-          </div>
-        </div>
-        <div class="flex justify-center items-center gap-2.5 bg-[#db4444] px-3 py-1 rounded">
-          <span class="font-normal text-[12px] leading-[18px] text-neutral-50">
-            -35%
-          </span>
-        </div>
-        <div class="w-[190px] h-[180px]">
-          <img class="w-[178px] h-[129px]"></img>
-        </div>
-        <div class="flex items-center gap-2">
-          <div class="w-6 h-6">
-            <svg class="w-[1.5px] h-[1.5px]"></svg>
-            <svg class="w-[1.5px] h-[1.5px]"></svg>
-            <svg class="w-[17.25px] h-[12.75px]"></svg>
-            <svg class="w-[14.91776180267334px] h-[7.5px]"></svg>
-          </div>
-          <span class="font-normal text-[12px] leading-[18px] text-white">
-            Add To Cart
-          </span>
+    <div className="flex flex-col gap-2 w-[270px] relative">
+      <div className="relative w-full h-[250px] bg-gray-100 rounded overflow-hidden flex items-center justify-center">
+        <img
+          className="object-contain max-w-full max-h-full"
+          src={product.imageUrl}
+          alt={product.name}
+        />
+        <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+          -{product.discount}%
         </div>
       </div>
-      <div class="flex flex-col gap-2">
-        <span class="font-medium text-base text-black">Gucci duffle bag</span>
-        <div class="flex gap-3">
-          <span class="font-medium text-base text-[#db4444]">$960</span>
-          <span class="font-medium text-base strikethrough text-black opacity-50">
-            $1160
+      <div className="absolute top-3 right-3 bg-white p-1.5 rounded-full shadow-md cursor-pointer">
+        <svg
+          className="w-5 h-5 text-gray-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          ></path>
+        </svg>
+      </div>
+      <div className="flex flex-col">
+        <span className="font-medium text-base text-black">
+          {product.name}
+        </span>
+        <div className="flex items-center gap-3">
+          <span className="font-medium text-base text-red-500">
+            ${product.price}
           </span>
+          {product.originalPrice && (
+            <span className="font-medium text-base line-through text-black opacity-50">
+              ${product.originalPrice}
+            </span>
+          )}
         </div>
       </div>
     </div>
@@ -46,3 +47,4 @@ const WishProduct = () => {
 };
 
 export default WishProduct;
+
