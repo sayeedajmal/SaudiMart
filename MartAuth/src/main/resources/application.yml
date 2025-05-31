@@ -10,7 +10,7 @@ spring:
   main:
     allow-circular-references: true
   application:
-    name: saudiMartAuth
+    name: MARTAUTH
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}

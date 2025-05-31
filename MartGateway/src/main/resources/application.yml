@@ -18,12 +18,12 @@ spring:
         lower-case-service-id: true
       routes:
         - id: auth-service
-          uri: lb://MARTAUTH
+          uri: lb://SAUDIMARTAUTH
           predicates:
             - Path=/users/**
             - Path=/auth/**
         - id: product-service
-          uri: lb://MARTPRODUCT
+          uri: lb://SAUDIMARTPRODUCT
           predicates:
             - Path=/api/**
 
