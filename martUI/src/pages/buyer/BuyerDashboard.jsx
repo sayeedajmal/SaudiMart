@@ -1,7 +1,7 @@
 import React from 'react';
-import Categories from "./Categories"
-import FeaturedProduct from "./FeaturedProduct"
-import ProductCard from './ProductCard';
+import Categories from "../components/Categories"
+import FeaturedProduct from "../components/FeaturedProduct"
+import ProductCard from '../components/ProductCard';
 function BuyerDashboard() {
 
   const products = [
@@ -45,7 +45,6 @@ function BuyerDashboard() {
       rating: 5,
       reviews: 150,
     },
-    // Add more product objects as needed
   ];
 
   return (

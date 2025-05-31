@@ -4,41 +4,43 @@ import {
   MdOutlineShoppingBag,
   MdSearch,
 } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 const ComponentName = () => {
+  const navigate = useNavigate();
   return (
     <header className="container mx-auto px-4 py-2 flex justify-between items-center">
       <h1
-        className="text-2xl font-bold"
+        className="text-2xl font-bol  d"
         style={{ color: "var(--neutral-900)" }}
       >
         Exclusive
       </h1>
       <nav className="hidden md:flex space-x-6">
         <a
-          href="#"
-          className="hover:underline"
+          onClick={() => navigate('/')}
+          className="hover:underline cursor-pointer"
           style={{ color: "var(--neutral-800)" }}
         >
           Home
         </a>
         <a
-          href="#"
-          className="hover:underline"
+          onClick={() => navigate('/contact')}
+          className="hover:underline cursor-pointer"
           style={{ color: "var(---neutral-800)" }}
         >
           Contact
         </a>
         <a
-          href="#"
-          className="hover:underline"
+          onClick={() => navigate('/about')}
+          className="hover:underline cursor-pointer"
           style={{ color: "var(--neutral-800)" }}
         >
           About
         </a>
         <a
-          href="#"
-          className="hover:underline"
+          onClick={() => navigate('/signup')}
+          className="hover:underline cursor-pointer"
           style={{ color: "var(--neutral-800)" }}
         >
           Sign Up
@@ -69,12 +71,14 @@ const ComponentName = () => {
               style={{ color: "var(--neutral-700)" }}
             />
           </div>
-          <div className="w-8 h-8  bg-white flex items-center justify-center cursor-pointer">
+          <div onClick={() => navigate('/cart')} className="w-8 h-8  bg-white flex items-center justify-center cursor-pointer">
             <MdOutlineShoppingBag
               size={20}
               style={{ color: "var(--neutral-700)" }}
             />
+
           </div>
+
           <div className="w-8 h-8  bg-white flex items-center justify-center cursor-pointer">
             <MdOutlineMan size={20} style={{ color: "var(--neutral-700)" }} />
           </div>

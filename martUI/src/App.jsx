@@ -1,18 +1,17 @@
-import { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
-import BuyerDashboard from "./Buyer/BuyerDashboard";
-import Contact from "./Buyer/Components/Contact"
-import NotFound from "./pages/NotFound";
-import LoginPage from "./LoginPage";
-import NotificationDisplay from "./NotificationDisplay";
-import SellerDashboard from "./Seller/SellerDashboard";
-import SignupPage from "./SignupPage";
+import LoginPage from "./components/LoginPage"
+import NotificationDisplay from "./components/NotificationDisplay";
+import SignupPage from "./components/SignupPage";
+import BuyerDashboard from "./pages/buyer/BuyerDashboard"
+import Contact from "./components/Contact"
+import SellerDashboard from "./pages/seller/SellerDashboard"
 import FullScreenLoader from "./components/FullScreenLoader";
 import Header from "./components/Header";
-import Footer from "./Footer"
-import Checkout from "./Buyer/Components/Checkout";
+import Footer from "./components/Footer"
+import ProductDetails from "./pages/components/ProductDetails"
 import { useNavigate } from "react-router-dom";
+
 const PrivateRoute = ({ element, allowedRoles }) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const userRole = useSelector((state) => state.auth.user?.role);
@@ -37,27 +36,27 @@ function App() {
   const user = useSelector((state) => state.auth.user);
   const loading = useSelector((state) => state.auth.loading);
 
-  const toggleToSignup = useCallback(() => {
+  const toggleToSignup = () => {
     navigate("/signup");
-  }, [navigate]);
-  const toggleToLogin = useCallback(() => {
+  };
+  const toggleToLogin = () => {
     navigate("/login");
-  }, [navigate]);
+  };
 
-  useEffect(() => {
-    console.log("Auth state changed:", { isAuthenticated, user });
-    if (isAuthenticated && user) {
-      console.log("User role for navigation:", user.role);
 
-      if (user.role === "BUYER") {
-        console.log("Navigating to buyer dashboard...");
-        navigate("/buyer-dashboard");
-      } else if (user.role === "SELLER") {
-        console.log("Navigating to seller dashboard...");
-        navigate("/seller-dashboard");
-      }
+  console.log("Auth state changed:", { isAuthenticated, user });
+  if (isAuthenticated && user) {
+    console.log("User role for navigation:", user.role);
+
+    if (user.role === "BUYER") {
+      console.log("Navigating to buyer dashboard...");
+      navigate("/");
+    } else if (user.role === "SELLER") {
+      console.log("Navigating to seller dashboard...");
+      navigate("/seller");
     }
-  }, [isAuthenticated, user]);
+  }
+
 
   if (loading) {
     return <FullScreenLoader />;
@@ -69,18 +68,24 @@ function App() {
       <Routes>
         <Route
           path="/login"
-          element={<NotFound toggleToSignup={toggleToSignup} />}
+          element={<LoginPage toggleToSignup={toggleToSignup} />}
         />{" "}
         <Route
           path="/signup"
-          element={<Contact toggleToLogin={toggleToLogin} />}
+          element={<SignupPage toggleToLogin={toggleToLogin} />}
+        />
+        <Route
+        path="/contact"
+          element={<Contact />}
+        />
+        <Route
+        path="/about"
+          element={<Contact />}
         />
         <Route
           path="/"
-          element={<PrivateRoute element={<BuyerDashboard />} />}
-          allowedRoles={["BUYER"]}
-        />
-        <Route
+          element={<BuyerDashboard />} />
+          <Route
           path="/seller"
           element={
             <PrivateRoute

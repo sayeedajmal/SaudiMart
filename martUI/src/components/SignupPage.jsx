@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { signup } from "./api/auth";
-import { signupSuccess, authFailure } from "./redux/authActions";
+import { signup } from "../api/auth";
+import { signupSuccess, authFailure } from "../store/authActions";
 function SignupPage({ toggleToLogin }) {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
