@@ -35,7 +35,7 @@ services:
       context: .
       dockerfile: MartGateway/Dockerfile
     ports:
-      - "8080:8765"
+      - "8080:8080"
     networks:
       - saudimart-network
     env_file:
