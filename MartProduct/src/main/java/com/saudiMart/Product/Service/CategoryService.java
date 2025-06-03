@@ -24,7 +24,10 @@ public class CategoryService {
         return categoryRepository.findById(categoryId).orElseThrow(() -> new ProductException("Product not found"));
     }
 
-    public List<Category> getCategoriesByParent(Category parentCategory) {
+    public List<Category> getCategoriesByParent(Category parentCategory) throws ProductException {
+ if (parentCategory == null) {
+ throw new ProductException("Parent category cannot be null");
+ }
         return categoryRepository.findByParentCategory(parentCategory);
     }
 
@@ -32,15 +35,20 @@ public class CategoryService {
         return categoryRepository.findByIsActive(true);
     }
 
-    public Category createCategory(Category category) {
+    public Category createCategory(Category category) throws ProductException {
+ if (category == null) {
+ throw new ProductException("Category details cannot be null");
+ }
         return categoryRepository.save(category);
     }
 
-    public Category updateCategory(Long categoryId, Category categoryDetails) {
+    public Category updateCategory(Long categoryId, Category categoryDetails) throws ProductException {
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
         if (categoryOptional.isPresent()) {
             Category category = categoryOptional.get();
+ if (categoryDetails.getName() != null)
             category.setName(categoryDetails.getName());
+ if (categoryDetails.getDescription() != null)
             category.setDescription(categoryDetails.getDescription());
             category.setIsActive(categoryDetails.getIsActive());
             return categoryRepository.save(category);
@@ -49,6 +57,9 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long categoryId) {
-        categoryRepository.deleteById(categoryId);
+ Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+ if (categoryOptional.isPresent()) {
+ categoryRepository.deleteById(categoryId);
+ }
     }
 }

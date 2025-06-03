@@ -3,6 +3,7 @@ package com.saudiMart.Product.Controller;
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Service.ProductVariantService;
+import com.saudiMart.Product.Utils.ProductException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class ProductVariantController {
     private ProductVariantService productVariantService;
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<ProductVariant>>> getAllProductVariants() {
+    public ResponseEntity<ResponseWrapper<List<ProductVariant>>> getAllProductVariants() throws ProductException {
         List<ProductVariant> productVariants = productVariantService.getAllProductVariants();
         ResponseWrapper<List<ProductVariant>> response = new ResponseWrapper<>(true, "Successfully retrieved all product variants", productVariants);
         return ResponseEntity.ok(response);
@@ -38,7 +39,7 @@ public class ProductVariantController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseWrapper<ProductVariant>> createProductVariant(@RequestBody ProductVariant productVariant) {
+    public ResponseEntity<ResponseWrapper<ProductVariant>> createProductVariant(@RequestBody ProductVariant productVariant) throws ProductException {
         ProductVariant createdProductVariant = productVariantService.createProductVariant(productVariant);
         ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(true, "Successfully created product variant", createdProductVariant);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -57,7 +58,7 @@ public class ProductVariantController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteProductVariant(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<Void>> deleteProductVariant(@PathVariable Long id) throws ProductException {
         productVariantService.deleteProductVariant(id);
         ResponseWrapper<Void> response = new ResponseWrapper<>(true, "Successfully deleted product variant", null);
         return ResponseEntity.ok(response);

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.PriceTier;
 import com.saudiMart.Product.Repository.PriceTierRepository;
+import com.saudiMart.Product.Utils.ProductException;
 
 @Service
 public class PriceTierService {
@@ -19,28 +20,39 @@ public class PriceTierService {
         return priceTierRepository.findAll();
     }
 
-    public Optional<PriceTier> getPriceTierById(Long priceTierId) {
-        return priceTierRepository.findById(priceTierId);
+    public PriceTier getPriceTierById(Long priceTierId) throws ProductException {
+        return priceTierRepository.findById(priceTierId)
+ .orElseThrow(() -> new ProductException("Price Tier not found with id: " + priceTierId));
     }
 
-    public PriceTier createPriceTier(PriceTier priceTier) {
+    public PriceTier createPriceTier(PriceTier priceTier) throws ProductException {
+ if (priceTier == null) {
+ throw new ProductException("Price Tier cannot be null");
+ }
         return priceTierRepository.save(priceTier);
     }
 
-    public PriceTier updatePriceTier(Long priceTierId, PriceTier priceTierDetails) {
+    public PriceTier updatePriceTier(Long priceTierId, PriceTier priceTierDetails) throws ProductException {
+ if (priceTierDetails == null) {
+ throw new ProductException("Price Tier details cannot be null");
+ }
         Optional<PriceTier> priceTierOptional = priceTierRepository.findById(priceTierId);
         if (priceTierOptional.isPresent()) {
             PriceTier priceTier = priceTierOptional.get();
+            // Add null checks for individual fields if necessary
             priceTier.setMinimumQuantity(priceTierDetails.getMinimumQuantity());
             priceTier.setMaxQuantity(priceTierDetails.getMaxQuantity());
             priceTier.setPrice(priceTierDetails.getPrice());
             priceTier.setIsActive(priceTierDetails.getIsActive());
             return priceTierRepository.save(priceTier);
         }
-        return null; // Or throw an exception
+ throw new ProductException("Price Tier not found with id: " + priceTierId);
     }
 
-    public void deletePriceTier(Long priceTierId) {
+    public void deletePriceTier(Long priceTierId) throws ProductException {
+ if (!priceTierRepository.existsById(priceTierId)) {
+ throw new ProductException("Price Tier not found with id: " + priceTierId);
+ }
         priceTierRepository.deleteById(priceTierId);
     }
 }

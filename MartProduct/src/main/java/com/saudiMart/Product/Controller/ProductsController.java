@@ -4,6 +4,7 @@ import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Service.ProductsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.saudiMart.Product.Utils.ProductException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

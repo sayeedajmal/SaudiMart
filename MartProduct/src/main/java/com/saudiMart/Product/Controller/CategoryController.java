@@ -30,29 +30,31 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<Category>>> getAllCategories() {
+    public ResponseEntity<ResponseWrapper<List<Category>>> getAllCategories() throws ProductException {
         List<Category> categories = categoryService.getAllCategories();
 
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Category fetched successfully", categories));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Category>> getCategoryById(@PathVariable Long id) throws ProductException {
+ public ResponseEntity<ResponseWrapper<Category>> getCategoryById(@PathVariable Long id)
+ throws ProductException {
         Category category = categoryService.getCategoryById(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Category fetched successfully", category));
 
     }
 
     @PostMapping
-    public ResponseEntity<ResponseWrapper<Category>> createCategory(@RequestBody Category category) {
+ public ResponseEntity<ResponseWrapper<Category>> createCategory(@RequestBody Category category)
+ throws ProductException {
         Category createdCategory = categoryService.createCategory(category);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Category fetched successfully", createdCategory));
 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Category>> updateCategory(@PathVariable Long id,
-            @RequestBody Category category) {
+ public ResponseEntity<ResponseWrapper<Category>> updateCategory(@PathVariable Long id,
+ @RequestBody Category category) throws ProductException {
         Category updatedCategory = categoryService.updateCategory(id, category);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Category updated successfully", updatedCategory));
 
@@ -60,7 +62,7 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseWrapper<Void>> deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
+ categoryService.deleteCategory(id) throws ProductException;
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Category Deleted successfully", null));
 
     }
