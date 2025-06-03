@@ -2,6 +2,7 @@ package com.saudiMart.Product.Service;
 
 import com.saudiMart.Product.Model.ProductSpecification;
 import com.saudiMart.Product.Repository.ProductSpecificationRepository;
+import com.saudiMart.Product.Model.Products;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -23,6 +24,42 @@ public class ProductSpecificationService {
 
     public Optional<ProductSpecification> getProductSpecificationById(Long id) {
         return productSpecificationRepository.findById(id);
+    }
+
+    public Optional<ProductSpecification> findProductSpecificationBySpecId(Long specId) {
+        return Optional.ofNullable(productSpecificationRepository.findBySpecId(specId));
+    }
+
+    public List<ProductSpecification> findProductSpecificationsByProduct(Products product) {
+        return productSpecificationRepository.findByProduct(product);
+    }
+
+    public List<ProductSpecification> findProductSpecificationsByProductId(Long productId) {
+        return productSpecificationRepository.findByProductId(productId);
+    }
+
+    public List<ProductSpecification> findProductSpecificationsBySpecName(String specName) {
+        return productSpecificationRepository.findBySpecName(specName);
+    }
+
+    public List<ProductSpecification> findProductSpecificationsBySpecValue(String specValue) {
+        return productSpecificationRepository.findBySpecValue(specValue);
+    }
+
+    public List<ProductSpecification> findProductSpecificationsByUnit(String unit) {
+        return productSpecificationRepository.findByUnit(unit);
+    }
+
+    public List<ProductSpecification> findProductSpecificationsByDisplayOrder(Integer displayOrder) {
+        return productSpecificationRepository.findByDisplayOrder(displayOrder);
+    }
+
+    public Optional<ProductSpecification> findProductSpecificationByProductIdAndSpecName(Long productId, String specName) {
+        return Optional.ofNullable(productSpecificationRepository.findByProductIdAndSpecName(productId, specName));
+    }
+
+    public List<ProductSpecification> findProductSpecificationsByProductIdOrdered(Long productId) {
+        return productSpecificationRepository.findByProductIdOrderByDisplayOrderAsc(productId);
     }
 
     public ProductSpecification createProductSpecification(ProductSpecification productSpecification) {

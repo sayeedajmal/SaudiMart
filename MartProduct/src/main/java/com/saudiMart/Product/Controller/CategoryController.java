@@ -2,6 +2,7 @@ package com.saudiMart.Product.Controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.sql.Timestamp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -100,6 +101,61 @@ public class CategoryController {
         } catch (ProductException e) {
             return ResponseEntity.status(e.getStatus())
                     .body(new ResponseWrapper<>(e.getStatus().value(), e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/by-name/{name}")
+    public ResponseEntity<ResponseWrapper<Optional<Category>>> getCategoryByName(@PathVariable String name) {
+        try {
+            Optional<Category> category = categoryService.findCategoryByName(name);
+            return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Category retrieved successfully by name", category));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
+        }
+    }
+
+    @GetMapping("/active/{isActive}")
+    public ResponseEntity<ResponseWrapper<List<Category>>> getCategoriesByIsActive(@PathVariable Boolean isActive) {
+        try {
+            List<Category> categories = categoryService.findCategoriesByIsActive(isActive);
+            return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Categories retrieved successfully by active status", categories));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
+        }
+    }
+
+    @GetMapping("/by-parent")
+    public ResponseEntity<ResponseWrapper<List<Category>>> getCategoriesByParentCategory(@RequestBody Category parentCategory) {
+        try {
+            List<Category> categories = categoryService.findCategoriesByParentCategory(parentCategory);
+            return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Categories retrieved successfully by parent category", categories));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
+        }
+    }
+
+    @GetMapping("/by-parent-id/{parentCategoryId}")
+    public ResponseEntity<ResponseWrapper<List<Category>>> getCategoriesByParentCategoryId(@PathVariable Long parentCategoryId) {
+        try {
+            List<Category> categories = categoryService.findCategoriesByParentCategoryId(parentCategoryId);
+            return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Categories retrieved successfully by parent category ID", categories));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
+        }
+    }
+
+    @GetMapping("/created-between")
+    public ResponseEntity<ResponseWrapper<List<Category>>> getCategoriesByCreatedAtBetween(@RequestBody Timestamp[] timestamps) {
+        try {
+            List<Category> categories = categoryService.findCategoriesByCreatedAtBetween(timestamps[0], timestamps[1]);
+            return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Categories retrieved successfully by creation date range", categories));
+        } catch (Exception e) {
+ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+ .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
         }
     }
 }

@@ -2,6 +2,8 @@ package com.saudiMart.Product.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.sql.Timestamp;
+import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +57,38 @@ public class ProductVariantService {
 
     public Optional<ProductVariant> getProductVariantById(Long id) {
         return productVariantRepository.findById(id);
+    }
+
+    public ProductVariant findProductVariantByVariantId(Long variantId) {
+        return productVariantRepository.findByVariantId(variantId);
+    }
+
+    public ProductVariant findProductVariantBySku(String sku) {
+        return productVariantRepository.findBySku(sku);
+    }
+
+    public List<ProductVariant> findProductVariantsByVariantName(String variantName) {
+        return productVariantRepository.findByVariantName(variantName);
+    }
+
+    public List<ProductVariant> findProductVariantsByAdditionalPrice(BigDecimal additionalPrice) {
+        return productVariantRepository.findByAdditionalPrice(additionalPrice);
+    }
+
+    public List<ProductVariant> findProductVariantsByAvailable(Boolean available) {
+        return productVariantRepository.findByAvailable(available);
+    }
+
+    public List<ProductVariant> findProductVariantsByCreatedAtBetween(Timestamp start, Timestamp end) {
+        return productVariantRepository.findByCreatedAtBetween(start, end);
+    }
+
+    public Optional<ProductVariant> findProductVariantByProductIdAndSku(Long productId, String sku) {
+        return productVariantRepository.findByProductIdAndSku(productId, sku);
+    }
+
+    public List<ProductVariant> findProductVariantsByProductIdAndAvailable(Long productId, Boolean available) {
+        return productVariantRepository.findByProductIdAndAvailable(productId, available);
     }
 
 }

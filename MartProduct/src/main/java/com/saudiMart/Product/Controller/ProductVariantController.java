@@ -6,6 +6,8 @@ import com.saudiMart.Product.Service.ProductVariantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -90,4 +92,80 @@ public class ProductVariantController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
+
+ @GetMapping(\"/by-variant-id/{variantId}\")
+    public ResponseEntity<ResponseWrapper<ProductVariant>> findProductVariantByVariantId(@PathVariable Long variantId) {
+ ProductVariant productVariant = productVariantService.findProductVariantByVariantId(variantId);
+ if (productVariant != null) {
+ ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.OK.value(), \"Product variant retrieved successfully\", productVariant);
+ return ResponseEntity.ok(response);
+ } else {
+ ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.NOT_FOUND.value(), \"Product variant not found with variant ID: \" + variantId, null);
+ return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+ }
+    }
+
+ @GetMapping(\"/by-sku\")
+    public ResponseEntity<ResponseWrapper<ProductVariant>> findProductVariantBySku(@RequestBody String sku) {
+ ProductVariant productVariant = productVariantService.findProductVariantBySku(sku);
+ if (productVariant != null) {
+ ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.OK.value(), \"Product variant retrieved successfully\", productVariant);
+ return ResponseEntity.ok(response);
+ } else {
+ ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.NOT_FOUND.value(), \"Product variant not found with SKU: \" + sku, null);
+ return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+ }
+    }
+
+ @GetMapping(\"/by-variant-name\")
+    public ResponseEntity<ResponseWrapper<List<ProductVariant>>> findProductVariantsByVariantName(@RequestBody String variantName) {
+ List<ProductVariant> productVariants = productVariantService.findProductVariantsByVariantName(variantName);
+ ResponseWrapper<List<ProductVariant>> response = new ResponseWrapper<>(HttpStatus.OK.value(), \"Product variants retrieved successfully\", productVariants);
+ return ResponseEntity.ok(response);
+    }
+
+ @GetMapping(\"/by-additional-price/{additionalPrice}\")
+    public ResponseEntity<ResponseWrapper<List<ProductVariant>>> findProductVariantsByAdditionalPrice(@PathVariable BigDecimal additionalPrice) {
+ List<ProductVariant> productVariants = productVariantService.findProductVariantsByAdditionalPrice(additionalPrice);
+ ResponseWrapper<List<ProductVariant>> response = new ResponseWrapper<>(HttpStatus.OK.value(), \"Product variants retrieved successfully\", productVariants);
+ return ResponseEntity.ok(response);
+    }
+
+ @GetMapping(\"/available/{available}\")
+    public ResponseEntity<ResponseWrapper<List<ProductVariant>>> findProductVariantsByAvailable(@PathVariable Boolean available) {
+ List<ProductVariant> productVariants = productVariantService.findProductVariantsByAvailable(available);
+ ResponseWrapper<List<ProductVariant>> response = new ResponseWrapper<>(HttpStatus.OK.value(), \"Product variants retrieved successfully\", productVariants);
+ return ResponseEntity.ok(response);
+    }
+
+ @GetMapping(\"/created-between\")
+    public ResponseEntity<ResponseWrapper<List<ProductVariant>>> findProductVariantsByCreatedAtBetween(@RequestBody Timestamp[] timestamps) {
+ if (timestamps == null || timestamps.length != 2) {
+ return ResponseEntity.badRequest().body(new ResponseWrapper<>(HttpStatus.BAD_REQUEST.value(), \"Please provide both start and end timestamps\", null));
+ }
+ List<ProductVariant> productVariants = productVariantService.findProductVariantsByCreatedAtBetween(timestamps[0], timestamps[1]);
+ ResponseWrapper<List<ProductVariant>> response = new ResponseWrapper<>(HttpStatus.OK.value(), \"Product variants retrieved successfully\", productVariants);
+ return ResponseEntity.ok(response);
+    }
+
+ @GetMapping(\"/by-product-id/{productId}/sku\")
+    public ResponseEntity<ResponseWrapper<ProductVariant>> findProductVariantByProductIdAndSku(@PathVariable Long productId, @RequestBody String sku) {
+ Optional<ProductVariant> productVariant = productVariantService.findProductVariantByProductIdAndSku(productId, sku);
+ if (productVariant.isPresent()) {
+ ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.OK.value(), \"Product variant retrieved successfully\", productVariant.get());
+ return ResponseEntity.ok(response);
+ } else {
+ ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(HttpStatus.NOT_FOUND.value(), \"Product variant not found with product ID \" + productId + \" and SKU \" + sku, null);
+ return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+ }
+    }
+
+ @GetMapping(\"/by-product-id/{productId}/available/{available}\")
+    public ResponseEntity<ResponseWrapper<List<ProductVariant>>> findProductVariantsByProductIdAndAvailable(@PathVariable Long productId, @PathVariable Boolean available) {
+ List<ProductVariant> productVariants = productVariantService.findProductVariantsByProductIdAndAvailable(productId, available);
+ ResponseWrapper<List<ProductVariant>> response = new ResponseWrapper<>(HttpStatus.OK.value(), \"Product variants retrieved successfully\", productVariants);
+ return ResponseEntity.ok(response);
+    }
+
+
 }

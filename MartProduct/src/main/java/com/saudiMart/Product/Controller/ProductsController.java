@@ -7,6 +7,8 @@ import com.saudiMart.Product.Utils.ProductException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -93,5 +95,132 @@ public class ProductsController {
             ResponseWrapper<Void> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error deleting product: " + e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+    }
+
+    @GetMapping("/by-product-id/{productId}")
+    public ResponseEntity<ResponseWrapper<Optional<Products>>> findProductByProductId(@PathVariable Long productId) {
+        try {
+            Optional<Products> product = productsService.findProductByProductId(productId);
+            ResponseWrapper<Optional<Products>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Product fetched by product ID successfully", product);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ResponseWrapper<Optional<Products>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error fetching product by product ID: " + e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/by-category/{categoryId}")
+    public ResponseEntity<ResponseWrapper<List<Products>>> findProductsByCategoryId(@PathVariable Long categoryId) {
+        try {
+            List<Products> products = productsService.findProductsByCategoryId(categoryId);
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Products fetched by category ID successfully", products);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error fetching products by category ID: " + e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/by-name")
+    public ResponseEntity<ResponseWrapper<List<Products>>> findProductsByName(@RequestBody String name) {
+        try {
+            List<Products> products = productsService.findProductsByName(name);
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Products fetched by name successfully", products);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error fetching products by name: " + e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/search/name")
+    public ResponseEntity<ResponseWrapper<List<Products>>> searchProductsByName(@RequestBody String name) {
+        try {
+            List<Products> products = productsService.searchProductsByName(name);
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Products searched by name successfully", products);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error searching products by name: " + e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/by-sku/{sku}")
+    public ResponseEntity<ResponseWrapper<List<Products>>> findProductsBySku(@PathVariable String sku) {
+        try {
+            List<Products> products = productsService.findProductsBySku(sku);
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Products fetched by SKU successfully", products);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error fetching products by SKU: " + e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/available/{available}")
+    public ResponseEntity<ResponseWrapper<List<Products>>> findProductsByAvailable(@PathVariable Boolean available) {
+        try {
+            List<Products> products = productsService.findProductsByAvailable(available);
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Products fetched by availability successfully", products);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error fetching products by availability: " + e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/by-base-price/{basePrice}")
+    public ResponseEntity<ResponseWrapper<List<Products>>> findProductsByBasePrice(@PathVariable BigDecimal basePrice) {
+        try {
+            List<Products> products = productsService.findProductsByBasePrice(basePrice);
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Products fetched by base price successfully", products);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error fetching products by base price: " + e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/bulk-only/{isBulkOnly}")
+    public ResponseEntity<ResponseWrapper<List<Products>>> findProductsByIsBulkOnly(@PathVariable Boolean isBulkOnly) {
+        try {
+            List<Products> products = productsService.findProductsByIsBulkOnly(isBulkOnly);
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Products fetched by bulk only status successfully", products);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error fetching products by bulk only status: " + e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/by-min-order-quantity/{minimumOrderQuantity}")
+    public ResponseEntity<ResponseWrapper<List<Products>>> findProductsByMinimumOrderQuantity(@PathVariable Integer minimumOrderQuantity) {
+        try {
+            List<Products> products = productsService.findProductsByMinimumOrderQuantity(minimumOrderQuantity);
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Products fetched by minimum order quantity successfully", products);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error fetching products by minimum order quantity: " + e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/by-weight/{weight}")
+    public ResponseEntity<ResponseWrapper<List<Products>>> findProductsByWeight(@PathVariable BigDecimal weight) {
+        try {
+            List<Products> products = productsService.findProductsByWeight(weight);
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Products fetched by weight successfully", products);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error fetching products by weight: " + e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/by-weight-unit/{weightUnit}")
+    public ResponseEntity<ResponseWrapper<List<Products>>> findProductsByWeightUnit(@PathVariable String weightUnit) {
+        List<Products> products = productsService.findProductsByWeightUnit(weightUnit);
+        ResponseWrapper<List<Products>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Products fetched by weight unit successfully", products);
+        return ResponseEntity.ok(response);
     }
 }

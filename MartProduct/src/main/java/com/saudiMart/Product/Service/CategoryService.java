@@ -3,6 +3,7 @@ package com.saudiMart.Product.Service;
 import com.saudiMart.Product.Model.Category;
 import com.saudiMart.Product.Repository.CategoryRepository;
 import com.saudiMart.Product.Utils.ProductException;
+import java.sql.Timestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,5 +54,25 @@ public class CategoryService {
 
     public Optional<Category> getParentCategory(Long categoryId) throws ProductException {
         return categoryRepository.findById(categoryId).map(Category::getParentCategory);
+    }
+
+    public Optional<Category> findCategoryByName(String name) {
+ return Optional.ofNullable(categoryRepository.findByName(name));
+    }
+
+    public List<Category> findCategoriesByIsActive(Boolean isActive) {
+ return categoryRepository.findByIsActive(isActive);
+    }
+
+    public List<Category> findCategoriesByParentCategory(Category parentCategory) {
+ return categoryRepository.findByParentCategory(parentCategory);
+    }
+
+    public List<Category> findCategoriesByParentCategoryId(Long parentCategoryId) {
+ return categoryRepository.findByParentCategoryCategoryId(parentCategoryId);
+    }
+
+    public List<Category> findCategoriesByCreatedAtBetween(Timestamp start, Timestamp end) {
+ return categoryRepository.findByCreatedAtBetween(start, end);
     }
 }

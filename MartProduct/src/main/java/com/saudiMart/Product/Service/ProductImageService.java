@@ -2,6 +2,7 @@ package com.saudiMart.Product.Service;
 
 import com.saudiMart.Product.Model.ProductImage;
 import com.saudiMart.Product.Repository.ProductImageRepository;
+import com.saudiMart.Product.Model.Products;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,46 @@ public class ProductImageService {
         } else {
             throw new UnsupportedOperationException("Product image not found with id: " + id);
         }
+    }
+
+    public ProductImage findProductImageByImageId(Long imageId) {
+        return productImageRepository.findByImageId(imageId);
+    }
+
+    public List<ProductImage> findProductImagesByProduct(Products product) {
+        return productImageRepository.findByProduct(product);
+    }
+
+    public List<ProductImage> findProductImagesByVariantId(Long variantId) {
+        return productImageRepository.findByVariantId(variantId);
+    }
+
+    public List<ProductImage> findProductImagesByImageUrl(String imageUrl) {
+        return productImageRepository.findByImageUrl(imageUrl);
+    }
+
+    public List<ProductImage> findProductImagesByAltText(String altText) {
+        return productImageRepository.findByAltText(altText);
+    }
+
+    public List<ProductImage> findProductImagesByDisplayOrder(Integer displayOrder) {
+        return productImageRepository.findByDisplayOrder(displayOrder);
+    }
+
+    public List<ProductImage> findProductImagesByIsPrimary(Boolean isPrimary) {
+        return productImageRepository.findByIsPrimary(isPrimary);
+    }
+
+    public List<ProductImage> findProductImagesByCreatedAtBetween(Timestamp start, Timestamp end) {
+        return productImageRepository.findByCreatedAtBetween(start, end);
+    }
+
+    public List<ProductImage> findPrimaryProductImageByProductId(Long productId) {
+        return productImageRepository.findByProductIdAndIsPrimaryTrue(productId);
+    }
+
+    public List<ProductImage> findProductImagesByProductIdOrdered(Long productId) {
+        return productImageRepository.findByProductIdOrderByDisplayOrderAsc(productId);
     }
 
 }
