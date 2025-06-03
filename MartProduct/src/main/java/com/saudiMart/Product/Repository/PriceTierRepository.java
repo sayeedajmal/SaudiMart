@@ -1,26 +1,23 @@
 package com.saudiMart.Product.Repository;
 
-import com.saudiMart.Product.Model.PriceTier;
-import com.saudiMart.Product.Model.Products;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
+import com.saudiMart.Product.Model.PriceTier;
+import com.saudiMart.Product.Model.Products;
 
 @Repository
 public interface PriceTierRepository extends JpaRepository<PriceTier, Long> {
 
     // ✔ Find all price tiers for a given product
-    List<PriceTier> findByProduct(Products product);
 
     // ✔ Optional: find all active price tiers for a given product
     List<PriceTier> findByProductAndIsActiveTrue(Products product);
-
-    // ✔ Find by tier ID (alias for findById)
-    Optional<PriceTier> findByTierId(Long tierId);
 
     // ✔ Find price tiers with minimum quantity greater than or equal to a value
     List<PriceTier> findByMinimumQuantityGreaterThanEqual(Integer minQty);
@@ -45,6 +42,9 @@ public interface PriceTierRepository extends JpaRepository<PriceTier, Long> {
 
     List<PriceTier> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
-    Optional<PriceTier> findByProductAndMinimumQuantityLessThanEqualAndMaxQuantityGreaterThanEqual(Products product, Integer quantity1, Integer quantity2);
-    Optional<PriceTier> findByProductIdAndMinimumQuantityLessThanEqualAndMaxQuantityGreaterThanEqual(Long productId, Integer quantity1, Integer quantity2);
+    Optional<PriceTier> findByProductAndMinimumQuantityLessThanEqualAndMaxQuantityGreaterThanEqual(Products product,
+            Integer quantity1, Integer quantity2);
+
+    Optional<PriceTier> findByProductIdAndMinimumQuantityLessThanEqualAndMaxQuantityGreaterThanEqual(Long productId,
+            Integer quantity1, Integer quantity2);
 }

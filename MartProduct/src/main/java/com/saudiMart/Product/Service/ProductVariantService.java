@@ -1,9 +1,8 @@
 package com.saudiMart.Product.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.sql.Timestamp;
-import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,24 +70,17 @@ public class ProductVariantService {
         return productVariantRepository.findByVariantName(variantName);
     }
 
-    public List<ProductVariant> findProductVariantsByAdditionalPrice(BigDecimal additionalPrice) {
-        return productVariantRepository.findByAdditionalPrice(additionalPrice);
-    }
-
     public List<ProductVariant> findProductVariantsByAvailable(Boolean available) {
         return productVariantRepository.findByAvailable(available);
     }
 
-    public List<ProductVariant> findProductVariantsByCreatedAtBetween(Timestamp start, Timestamp end) {
-        return productVariantRepository.findByCreatedAtBetween(start, end);
-    }
-
-    public Optional<ProductVariant> findProductVariantByProductIdAndSku(Long productId, String sku) {
-        return productVariantRepository.findByProductIdAndSku(productId, sku);
-    }
-
     public List<ProductVariant> findProductVariantsByProductIdAndAvailable(Long productId, Boolean available) {
         return productVariantRepository.findByProductIdAndAvailable(productId, available);
+    }
+
+    public List<ProductVariant> findProductVariantsByAdditionalPrice(BigDecimal additionalPrice) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findProductVariantsByAdditionalPrice'");
     }
 
 }
