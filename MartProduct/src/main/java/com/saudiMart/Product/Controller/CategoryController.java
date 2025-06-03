@@ -59,11 +59,9 @@ public class CategoryController {
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Category updated successfully", updatedCategory));
 
     }
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteCategory(@PathVariable Long id) {
- categoryService.deleteCategory(id) throws ProductException;
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Category Deleted successfully", null));
-
+    public ResponseEntity<ResponseWrapper<Void>> deleteCategory(@PathVariable Long id) throws ProductException {
+        categoryService.deleteCategory(id);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Category deleted successfully", null));
     }
 }
