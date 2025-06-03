@@ -25,12 +25,10 @@ public class Products {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
-    @Column(name = "seller_id", nullable = false)
     private Long sellerId;
 
     @NotNull
     @Size(max = 255)
-    @Column(name = "name", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private String name;

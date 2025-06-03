@@ -26,13 +26,14 @@ public class ProductImage {
     @JoinColumn(name = "product_id", nullable = false)
     private Products product;
 
-    @Column(name = "variant_id")
+    @NotNull
     @ManyToOne
+    @JoinColumn(name = "variant_id")
     private Long variantId;
 
- @NotNull
+    @NotNull
     @Column(name = "image_url", nullable = false, length = 500)
- @Size(max = 500)
+    @Size(max = 500)
     private String imageUrl;
 
     @Column(name = "alt_text", length = 255)
