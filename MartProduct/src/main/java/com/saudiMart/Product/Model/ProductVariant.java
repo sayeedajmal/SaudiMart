@@ -26,7 +26,7 @@ public class ProductVariant {
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     @JoinColumn(name = "product_id", nullable = false)
-    private Long productId;
+    private Products products;
 
     @NotNull
     @Size(max = 50)
@@ -50,14 +50,6 @@ public class ProductVariant {
 
     public void setVariantId(Long variantId) {
         this.variantId = variantId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
     }
 
     public String getSku() {
