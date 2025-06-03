@@ -1,12 +1,13 @@
 package com.saudiMart.Product.Service;
 
-import com.saudiMart.Product.Model.ProductSpecification;
-import com.saudiMart.Product.Repository.ProductSpecificationRepository;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.saudiMart.Product.Model.ProductSpecification;
+import com.saudiMart.Product.Repository.ProductSpecificationRepository;
 
 @Service
 public class ProductSpecificationService {
@@ -30,10 +31,10 @@ public class ProductSpecificationService {
         Optional<ProductSpecification> productSpecificationOptional = productSpecificationRepository.findById(id);
         if (productSpecificationOptional.isPresent()) {
             ProductSpecification productSpecification = productSpecificationOptional.get();
-            // Assuming ProductSpecification has fields like name and value
-            productSpecification.setName(productSpecificationDetails.getName());
-            productSpecification.setValue(productSpecificationDetails.getValue());
-            // Update other fields as necessary
+            productSpecification.setSpecName(productSpecificationDetails.getSpecName());
+            productSpecification.setSpecValue(productSpecificationDetails.getSpecValue());
+            productSpecification.setUnit(productSpecificationDetails.getUnit());
+            productSpecification.setDisplayOrder(productSpecificationDetails.getDisplayOrder());
             return productSpecificationRepository.save(productSpecification);
         }
         return null;

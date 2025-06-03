@@ -32,10 +32,8 @@ public class ProductsService {
             Products product = productOptional.get();
             product.setName(productDetails.getName());
             product.setDescription(productDetails.getDescription());
-            product.setPrice(productDetails.getPrice());
-            product.setStock(productDetails.getStock());
+            product.setBasePrice(productDetails.getBasePrice());
             product.setCategory(productDetails.getCategory());
-            // You may need to update other fields as well
             return productsRepository.save(product);
         }
         return null;

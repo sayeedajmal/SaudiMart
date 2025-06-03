@@ -1,12 +1,13 @@
 package com.saudiMart.Product.Service;
 
-import com.saudiMart.Product.Model.ProductVariant;
-import com.saudiMart.Product.Repository.ProductVariantRepository;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.saudiMart.Product.Model.ProductVariant;
+import com.saudiMart.Product.Repository.ProductVariantRepository;
 
 @Service
 public class ProductVariantService {
@@ -30,12 +31,10 @@ public class ProductVariantService {
         Optional<ProductVariant> productVariantOptional = productVariantRepository.findById(id);
         if (productVariantOptional.isPresent()) {
             ProductVariant productVariant = productVariantOptional.get();
-            // Update fields based on productVariantDetails
             productVariant.setSku(productVariantDetails.getSku());
-            productVariant.setPrice(productVariantDetails.getPrice());
-            productVariant.setStock(productVariantDetails.getStock());
-            productVariant.setAttributes(productVariantDetails.getAttributes());
-            // Update other fields as needed
+            productVariant.setVariantName(productVariantDetails.getVariantName());
+            productVariant.setAdditionalPrice(productVariantDetails.getAdditionalPrice());
+            productVariant.setAvailable(productVariantDetails.getAvailable());
             return productVariantRepository.save(productVariant);
         }
         return null;

@@ -1,12 +1,14 @@
 package com.saudiMart.Product.Service;
 
-import com.saudiMart.Product.Model.Category;
-import com.saudiMart.Product.Repository.CategoryRepository;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.saudiMart.Product.Model.Category;
+import com.saudiMart.Product.Repository.CategoryRepository;
+import com.saudiMart.Product.Utils.ProductException;
 
 @Service
 public class CategoryService {
@@ -18,8 +20,8 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Optional<Category> getCategoryById(Long categoryId) {
-        return categoryRepository.findById(categoryId);
+    public Category getCategoryById(Long categoryId) throws ProductException {
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new ProductException("Product not found"));
     }
 
     public List<Category> getCategoriesByParent(Category parentCategory) {
