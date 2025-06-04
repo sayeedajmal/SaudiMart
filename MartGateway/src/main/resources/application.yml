@@ -31,3 +31,7 @@ jwt:
   secret: ${JWT_SECRET}
   tokenValidityInMilliSeconds: ${JWT_ACCESS_TOKEN_EXPIRE}
   tokenRefreshInMilliSeconds: ${JWT_REFRESH_TOKEN_EXPIRE}
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
