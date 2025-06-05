@@ -27,8 +27,8 @@ public class Users implements UserDetails {
     @Column(updatable = false, nullable = false)
     private String id = UUID.randomUUID().toString();
 
-    @Column(name = "username", nullable = false)
-    private String username; // e.g., "Sayeed Ajmal"
+    @Column(name = "name", nullable = false)
+    private String name; // e.g., "Sayeed Ajmal"
 
     @Column(unique = true, nullable = false)
     private String email; // e.g., "sayeed@example.com"

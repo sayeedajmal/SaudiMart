@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,14 +22,15 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Users implements UserDetails {
 
     @Id
     @Column(updatable = false, nullable = false)
     private String id = UUID.randomUUID().toString();
 
-    @Column(name = "username", nullable = false)
-    private String username; // e.g., "Sayeed Ajmal" This is the display name, not the login username
+    @Column(name = "name", nullable = false)
+    private String name; // e.g., "Sayeed Ajmal" This is the display name, not the login username
 
     @Column(unique = true, nullable = false)
     private String email; // e.g., "sayeed@example.com"

@@ -52,6 +52,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
      * @throws ServletException if an error occurs during request processing.
      * @throws IOException      if an I/O error occurs during request processing.
      */
+    @SuppressWarnings("null")
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
