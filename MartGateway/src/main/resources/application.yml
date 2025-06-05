@@ -4,7 +4,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}
 
 spring:
   application:
@@ -21,17 +21,23 @@ spring:
           uri: lb://SAUDIMARTAUTH
           predicates:
             - Path=/users/**
-            - Path=/auth/**
+            - Path=/authen/**
         - id: product-service
           uri: lb://SAUDIMARTPRODUCT
           predicates:
-            - Path=/api/**
+            - Path=/categories/**
+            - Path=/pricetiers/**
+            - Path=/productimages/**
+            - Path=/productspecifications/**
+            - Path=/productvariants/**
+            - Path=/products/**
+
 
 jwt:
-  secret: ${JWT_SECRET}
-  tokenValidityInMilliSeconds: ${JWT_ACCESS_TOKEN_EXPIRE}
-  tokenRefreshInMilliSeconds: ${JWT_REFRESH_TOKEN_EXPIRE}
-
+  secret: ${JWT_SECRET:salkfsdlakfsadlkfaskfldsafjlkjflksdflkwiousdfkdsflkfdfkdslfsdklafsklfdfdsf}
+  tokenValidityInMilliSeconds: ${JWT_ACCESS_TOKEN_EXPIRE:86400000}
+  tokenRefreshInMilliSeconds: ${JWT_REFRESH_TOKEN_EXPIRE:604800000}
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
