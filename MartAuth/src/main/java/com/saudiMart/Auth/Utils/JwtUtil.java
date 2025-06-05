@@ -180,7 +180,7 @@ public class JwtUtil {
                 .builder()
                 .setSubject(user.getEmail())
                 .claim("id", user.getId())
-                .claim("name", user.getUsername())
+                .claim("username", user.getUsername())
                 .claim("enabled", user.isEnabled())
                 .claim("accountNonLocked", user.isAccountNonLocked())
                 .claim("accountNonExpired", user.isAccountNonExpired())
