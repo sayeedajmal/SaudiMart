@@ -4,7 +4,7 @@ spring:
   main:
     allow-circular-references: true
   application:
-    name: MARTAUTH
+    name: SAUDIMARTAUTH
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/saudimartdb}
     username: ${DB_USERNAME:saudimart}

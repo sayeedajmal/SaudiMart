@@ -9,6 +9,7 @@ eureka:
 spring:
   application:
     name: MARTGATEWAY
+
   cloud:
     compatibility-verifier:
       enabled: false
@@ -20,18 +21,12 @@ spring:
         - id: auth-service
           uri: lb://SAUDIMARTAUTH
           predicates:
-            - Path=/users/**
-            - Path=/authen/**
+            - Path=/users/**,/authen/**
+
         - id: product-service
           uri: lb://SAUDIMARTPRODUCT
           predicates:
-            - Path=/categories/**
-            - Path=/pricetiers/**
-            - Path=/productimages/**
-            - Path=/productspecifications/**
-            - Path=/productvariants/**
-            - Path=/products/**
-
+            - Path=/categories/**,/pricetiers/**,/productimages/**,/productspecifications/**,/productvariants/**,/products/**
 
 jwt:
   secret: ${JWT_SECRET:salkfsdlakfsadlkfaskfldsafjlkjflksdflkwiousdfkdsflkfdfkdslfsdklafsklfdfdsf}
