@@ -1,7 +1,4 @@
-@import url(https://fonts.googleapis.com/css2?family=Lato&display=swap);
 @import url(https://fonts.googleapis.com/css2?family=Open+Sans&display=swap);
-@import url(https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200);
-
 
 @tailwind base;
 @tailwind components;
@@ -106,4 +103,5 @@
   --green-800: #2E7D32;
   --green-900: #1B5E20;
 
+  font-family: 'Open Sans', sans-serif;
 }

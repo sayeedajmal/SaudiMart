@@ -4,7 +4,7 @@ spring:
   main:
       allow-circular-references: true
   application:
-    name: saudiMartProduct
+    name: SAUDIMARTPRODUCT
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}

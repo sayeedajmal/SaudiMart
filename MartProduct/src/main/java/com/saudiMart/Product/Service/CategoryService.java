@@ -1,57 +1,65 @@
 package com.saudiMart.Product.Service;
 
-import com.saudiMart.Product.Model.Category;
-import com.saudiMart.Product.Repository.CategoryRepository;
-import com.saudiMart.Product.Utils.ProductException;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.saudiMart.Product.Model.Category;
+import com.saudiMart.Product.Repository.CategoryRepository;
+import com.saudiMart.Product.Utils.ProductException;
 
 @Service
 public class CategoryService {
 
-    private final CategoryRepository categoryRepository;
-
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+    private CategoryRepository categoryRepository;
 
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
 
-    public Optional<Category> getCategoryById(Long id) {
-        return categoryRepository.findById(id);
+    public Category getCategoryById(Long categoryId) throws ProductException {
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new ProductException("Product not found"));
     }
 
-    public Category createCategory(Category category) {
-        // Add any business logic or validation before saving
+    public List<Category> getCategoriesByParent(Category parentCategory) throws ProductException {
+ if (parentCategory == null) {
+ throw new ProductException("Parent category cannot be null");
+ }
+        return categoryRepository.findByParentCategory(parentCategory);
+    }
+
+    public List<Category> getActiveCategories() {
+        return categoryRepository.findByIsActive(true);
+    }
+
+    public Category createCategory(Category category) throws ProductException {
+ if (category == null) {
+ throw new ProductException("Category details cannot be null");
+ }
         return categoryRepository.save(category);
     }
 
-    public Category updateCategory(Long id, Category categoryDetails) throws ProductException {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new ProductException("Category not found with id: " + id));
-
-        category.setName(categoryDetails.getName());
-        category.setDescription(categoryDetails.getDescription());
-        category.setIsActive(categoryDetails.getIsActive());
-        // Update other fields as needed
-
-        return categoryRepository.save(category);
-    }
-
-    public void deleteCategory(Long id) throws ProductException {
-        if (!categoryRepository.existsById(id)) {
-            throw new ProductException("Category not found with id: " + id);
+    public Category updateCategory(Long categoryId, Category categoryDetails) throws ProductException {
+        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+        if (categoryOptional.isPresent()) {
+            Category category = categoryOptional.get();
+ if (categoryDetails.getName() != null)
+            category.setName(categoryDetails.getName());
+ if (categoryDetails.getDescription() != null)
+            category.setDescription(categoryDetails.getDescription());
+            category.setIsActive(categoryDetails.getIsActive());
+            return categoryRepository.save(category);
         }
-        categoryRepository.deleteById(id);
+        return null;
     }
 
-    public Optional<Category> getParentCategory(Long categoryId) throws ProductException {
-        return categoryRepository.findById(categoryId).map(Category::getParentCategory);
+    public void deleteCategory(Long categoryId) {
+ Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+ if (categoryOptional.isPresent()) {
+ categoryRepository.deleteById(categoryId);
+ }
     }
 }

@@ -3,8 +3,8 @@ import {
   loginSuccess,
   authRequest,
   signupSuccess
-} from '../redux/authActions';
-import { addNotification } from '../redux/notificationActions';
+} from '../store/authActions';
+import { addNotification } from '../store/notificationActions';
 
 const API_BASE_URL = 'http://localhost:8081';
 

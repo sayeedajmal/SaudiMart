@@ -4,11 +4,12 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}
 
 spring:
   application:
     name: MARTGATEWAY
+
   cloud:
     compatibility-verifier:
       enabled: false
@@ -18,16 +19,20 @@ spring:
         lower-case-service-id: true
       routes:
         - id: auth-service
-          uri: lb://MARTAUTH
+          uri: lb://SAUDIMARTAUTH
           predicates:
-            - Path=/users/**
-            - Path=/auth/**
+            - Path=/users/**,/authen/**
+
         - id: product-service
-          uri: lb://MARTPRODUCT
+          uri: lb://SAUDIMARTPRODUCT
           predicates:
-            - Path=/api/**
+            - Path=/categories/**,/pricetiers/**,/productimages/**,/productspecifications/**,/productvariants/**,/products/**
 
 jwt:
-  secret: ${JWT_SECRET}
-  tokenValidityInMilliSeconds: ${JWT_ACCESS_TOKEN_EXPIRE}
-  tokenRefreshInMilliSeconds: ${JWT_REFRESH_TOKEN_EXPIRE}
+  secret: ${JWT_SECRET:salkfsdlakfsadlkfaskfldsafjlkjflksdflkwiousdfkdsflkfdfkdslfsdklafsklfdfdsf}
+  tokenValidityInMilliSeconds: ${JWT_ACCESS_TOKEN_EXPIRE:86400000}
+  tokenRefreshInMilliSeconds: ${JWT_REFRESH_TOKEN_EXPIRE:604800000}
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG

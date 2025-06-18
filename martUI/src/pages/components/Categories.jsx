@@ -1,5 +1,5 @@
 import React from 'react';
-import { MdOutlineArrowForwardIos, MdOutlineArrowBackIosNew, MdOutlineVisibility, MdOutlineFavoriteBorder } from 'react-icons/md'; // Assuming react-icons are installed
+import { MdOutlineArrowForwardIos, MdOutlineArrowBackIosNew} from 'react-icons/md'; // Assuming react-icons are installed
 import ProductCard from './ProductCard';
 
 function Categories() {
@@ -16,7 +16,7 @@ function Categories() {
         {
             id: 1,
             image: 'https://via.placeholder.com/270x192', // Replace with actual image URL
-            discount: '40%',
+            discount: '40',
             title: 'HAVIT HV-G92 Gamepad',
             price: '$120',
             originalPrice: '$160',
@@ -26,7 +26,7 @@ function Categories() {
         {
             id: 2,
             image: 'https://via.placeholder.com/270x192', // Replace with actual image URL
-            discount: '35%',
+            discount: '35',
             title: 'Kruger&Matz KM135',
             price: '$960',
             originalPrice: '$1100',
@@ -36,7 +36,7 @@ function Categories() {
         {
             id: 3,
             image: 'https://via.placeholder.com/270x192', // Replace with actual image URL
-            discount: '30%',
+            discount: '30',
             title: 'IPS LCD Gaming Monitor',
             price: '$370',
             originalPrice: '$400',
@@ -46,7 +46,7 @@ function Categories() {
         {
             id: 4,
             image: 'https://via.placeholder.com/270x192', // Replace with actual image URL
-            discount: '25%',
+            discount: '25',
             title: 'CANON EOS DSLR Camera',
             price: '$375',
             originalPrice: '$500',
@@ -90,8 +90,8 @@ function Categories() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
                         {categories.map((category, index) => (
                             <div key={index} className="bg-neutral-50  p-6 flex flex-col items-center justify-center text-center space-y-3 hover:bg-red-400 transition cursor-pointer">
-                                <span className="material-symbols-outlined --neutral-900 text-4xl">{category.icon}</span> {/* Assuming Material Symbols are linked */}
-                                <p className="--neutral-900 text-sm font-medium">{category.name}</p>
+                                <span className="material-symbols-outlined --neutral-900 text-4xl">{category.icon}</span>
+                                <p className="text-black text-sm font-medium">{category.name}</p>
                             </div>
                         ))}
                     </div>

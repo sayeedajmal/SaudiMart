@@ -1,10 +1,8 @@
 package com.saudiMart.Product.Controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,85 +19,50 @@ import com.saudiMart.Product.Service.CategoryService;
 import com.saudiMart.Product.Utils.ProductException;
 
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/categories")
 public class CategoryController {
 
+    private final CategoryService categoryService;
+
     @Autowired
-    private CategoryService categoryService;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<Category>>> getAllCategories() {
+    public ResponseEntity<ResponseWrapper<List<Category>>> getAllCategories() throws ProductException {
         List<Category> categories = categoryService.getAllCategories();
-        return ResponseEntity
-                .ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Categories retrieved successfully", categories));
+
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Category fetched successfully", categories));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Optional<Category>>> getCategoryById(@PathVariable Long id)
+    public ResponseEntity<ResponseWrapper<Category>> getCategoryById(@PathVariable Long id)
             throws ProductException {
-        try {
-            Optional<Category> category = categoryService.getCategoryById(id);
-            return ResponseEntity
-                    .ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Category retrieved successfully", category));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
-        }
+        Category category = categoryService.getCategoryById(id);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Category fetched successfully", category));
+
     }
 
     @PostMapping
     public ResponseEntity<ResponseWrapper<Category>> createCategory(@RequestBody Category category)
             throws ProductException {
-        try {
-            Category createdCategory = categoryService.createCategory(category);
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseWrapper<>(HttpStatus.CREATED.value(),
-                    "Category created successfully", createdCategory));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
-        }
+        Category createdCategory = categoryService.createCategory(category);
+        return ResponseEntity.ok(new ResponseWrapper<>(201, "Category created successfully", createdCategory));
+
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseWrapper<Category>> updateCategory(@PathVariable Long id,
-            @RequestBody Category category) {
-        try {
-            Category updatedCategory = categoryService.updateCategory(id, category);
-            return ResponseEntity
-                    .ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Category updated successfully", updatedCategory));
-        } catch (ProductException e) {
-            return ResponseEntity.status(e.getStatus())
-                    .body(new ResponseWrapper<>(e.getStatus().value(), e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
-        }
+            @RequestBody Category category) throws ProductException {
+        Category updatedCategory = categoryService.updateCategory(id, category);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Category updated successfully", updatedCategory));
+
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteCategory(@PathVariable Long id) {
-        try {
-            categoryService.deleteCategory(id);
-            return ResponseEntity
-                    .ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Category deleted successfully", null));
-        } catch (ProductException e) {
-            return ResponseEntity.status(e.getStatus())
-                    .body(new ResponseWrapper<>(e.getStatus().value(), e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
-        }
-    }
-
-    @GetMapping("/{id}/parent")
-    public ResponseEntity<ResponseWrapper<Optional<Category>>> getParentCategory(@PathVariable Long id) {
-        try {
-            Optional<Category> parentCategory = categoryService.getParentCategory(id);
-            return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(),
-                    "Parent category retrieved successfully", parentCategory));
-        } catch (ProductException e) {
-            return ResponseEntity.status(e.getStatus())
-                    .body(new ResponseWrapper<>(e.getStatus().value(), e.getMessage(), null));
-        }
+    public ResponseEntity<ResponseWrapper<Void>> deleteCategory(@PathVariable Long id) throws ProductException {
+        categoryService.deleteCategory(id);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Category deleted successfully", null));
     }
 }

@@ -1,25 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
-
-    <parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
         <groupId>com.saudimart</groupId>
         <artifactId>SaudiMart</artifactId>
         <version>1.0.0</version>
     </parent>
-
+	<name>Auth</name>
     <artifactId>Auth</artifactId>
-    <description>Auth Module for SaudiMart</description>
-
-    <properties>
-        <java.version>17</java.version>
-    </properties>
-
-    <dependencies>
+	<description>Auth Module of SaudiMart</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
         <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -102,7 +109,7 @@
         </dependency>
     </dependencies>
 
-    <build>
+	<build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -119,5 +126,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

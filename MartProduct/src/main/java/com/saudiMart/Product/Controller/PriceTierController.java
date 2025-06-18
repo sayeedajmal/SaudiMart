@@ -1,67 +1,57 @@
 package com.saudiMart.Product.Controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.saudiMart.Product.Model.PriceTier;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Service.PriceTierService;
 import com.saudiMart.Product.Utils.ProductException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
-
 @RestController
-@RequestMapping("/api/price-tiers")
+@RequestMapping("/pricetiers")
 public class PriceTierController {
 
     @Autowired
     private PriceTierService priceTierService;
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<PriceTier>>> getAllPriceTiers() {
+ public ResponseEntity<ResponseWrapper<List<PriceTier>>> getAllPriceTiers() throws ProductException {
         List<PriceTier> priceTiers = priceTierService.getAllPriceTiers();
-        return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Price tiers retrieved successfully", priceTiers));
+ return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all price tiers", priceTiers));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<PriceTier>> getPriceTierById(@PathVariable Long id) {
-        Optional<PriceTier> priceTier = priceTierService.getPriceTierById(id);
-        return priceTier.map(tier -> ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Price tier retrieved successfully", tier)))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(HttpStatus.NOT_FOUND.value(), "Price tier not found", null)));
+ public ResponseEntity<ResponseWrapper<PriceTier>> getPriceTierById(@PathVariable Long id) throws ProductException {
+ PriceTier priceTier = priceTierService.getPriceTierById(id);
+ return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved price tier", priceTier));
     }
 
     @PostMapping
-    public ResponseEntity<ResponseWrapper<PriceTier>> createPriceTier(@RequestBody PriceTier priceTier) {
+ public ResponseEntity<ResponseWrapper<PriceTier>> createPriceTier(@RequestBody PriceTier priceTier) throws ProductException {
         PriceTier createdPriceTier = priceTierService.createPriceTier(priceTier);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseWrapper<>(HttpStatus.CREATED.value(), "Price tier created successfully", createdPriceTier));
+ return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully created price tier", createdPriceTier));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseWrapper<PriceTier>> updatePriceTier(@PathVariable Long id, @RequestBody PriceTier priceTierDetails) throws ProductException {
-        try {
-            PriceTier updatedPriceTier = priceTierService.updatePriceTier(id, priceTierDetails);
-            return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Price tier updated successfully", updatedPriceTier));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(HttpStatus.NOT_FOUND.value(), e.getMessage(), null));
-        }
+        PriceTier updatedPriceTier = priceTierService.updatePriceTier(id, priceTierDetails);
+ return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully updated price tier", updatedPriceTier));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseWrapper<Void>> deletePriceTier(@PathVariable Long id) throws ProductException {
-        try {
-            priceTierService.deletePriceTier(id);
-            return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Price tier deleted successfully", null));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(HttpStatus.NOT_FOUND.value(), e.getMessage(), null));
-        }
-    }
-
-    @GetMapping("/variant/{variantId}")
-    public ResponseEntity<ResponseWrapper<List<PriceTier>>> getPriceTiersByVariantId(@PathVariable Long variantId) {
-        List<PriceTier> priceTiers = priceTierService.getPriceTiersByVariantId(variantId);
-        return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Price tiers retrieved successfully for variant", priceTiers));
+        priceTierService.deletePriceTier(id);
+ return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted price tier", null));
     }
 }

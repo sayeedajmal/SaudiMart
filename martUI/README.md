@@ -1,12 +1,54 @@
-# React + Vite
+# saudiMART Frontend (martUI)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This directory contains the frontend application for the saudiMART B2B e-commerce platform. Built with modern web technologies, it provides a user-friendly interface for both buyers and sellers.
 
-Currently, two official plugins are available:
+## Technologies Used
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+*   **React**: A JavaScript library for building user interfaces.
+*   **Redux**: A predictable state container for managing application state.
+*   **Tailwind CSS**: A utility-first CSS framework for rapidly styling the UI.
+*   **Vite**: A fast build tool for modern web development.
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The project follows a structured approach to organize code for maintainability and scalability.
+
+
+
+# CURRENT STRUCTURE
+martUI/src/
+├── api/
+│   └── auth.js
+├── App.jsx
+├── assets/
+│   └── react.svg
+├── components/
+│   ├── Cart.jsx
+│   ├── Categories.jsx
+│   ├── Checkout.jsx
+│   ├── Contact.jsx
+│   ├── EditProfile.jsx
+│   ├── FeaturedProduct.jsx
+│   ├── Footer.jsx
+│   ├── FullScreenLoader.css
+│   ├── FullScreenLoader.jsx
+│   ├── Header.jsx
+│   ├── LoginPage.jsx
+│   ├── NotFound.jsx
+│   ├── NotificationDisplay.jsx
+│   ├── SignupPage.jsx
+│   ├── WishProduct.jsx
+│   └── Wishlist.jsx
+├── index.css
+├── main.jsx
+├── pages/
+│   ├── buyer/
+│   │   └── BuyerDashboard.jsx
+│   └── seller/
+│       └── SellerDashboard.jsx
+└── store/
+    ├── authActions.js
+    ├── authReducer.js
+    ├── notificationActions.js
+    ├── notificationReducer.js
+    └── store.js

@@ -1,6 +1,11 @@
 package com.saudimart.Gateway.Utils;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import javax.crypto.SecretKey;
@@ -53,12 +58,39 @@ public class JwtUtil {
      * @return the extracted user roles as a String, or null if not present or token
      *         is invalid.
      */
-    public String extractUserRoles(String token) {
+    public List<String> extractRolesList(String token) {
         try {
             Claims claims = extractAllClaims(token);
-            return claims.get("authorities", String.class);
+            Object authoritiesObj = claims.get("authorities");
+
+            if (authoritiesObj == null)
+                return Collections.emptyList();
+
+            // Case 1: JSON Array of Maps (from Redis)
+            if (authoritiesObj instanceof List<?>) {
+                List<?> rawList = (List<?>) authoritiesObj;
+
+                // Check if it's a List<Map<String, String>>
+                if (!rawList.isEmpty() && rawList.get(0) instanceof Map<?, ?>) {
+                    return rawList.stream()
+                            .map(item -> ((Map<?, ?>) item).get("authority"))
+                            .filter(Objects::nonNull)
+                            .map(Object::toString)
+                            .toList();
+                }
+            }
+
+            // Case 2: Comma-separated String (from DB or custom claim)
+            if (authoritiesObj instanceof String rolesCsv) {
+                return Arrays.stream(rolesCsv.split(","))
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .toList();
+            }
+
+            return Collections.emptyList();
         } catch (RuntimeException e) {
-            return null;
+            return Collections.emptyList();
         }
     }
 

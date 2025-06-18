@@ -5,96 +5,51 @@ import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 @Entity
 @Table(name = "product_variants")
+@Data
 public class ProductVariant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "variant_id")
-    private Long variantId;
+    private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
+    @JoinColumn(name = "product_id", nullable = false)
+    private Products product;
 
     @NotNull
     @Size(max = 50)
+    @Column(name = "sku", nullable = false, unique = true)
     private String sku;
 
     @Column(name = "variant_name")
     private String variantName;
 
-    @Column(name = "additional_price")
-    private BigDecimal additionalPrice;
+    @Column(name = "additional_price", precision = 10, scale = 2)
+    private BigDecimal additionalPrice = BigDecimal.ZERO;
 
     @Column(name = "available")
-    private Boolean available;
+    private Boolean available = true;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    // Getters and setters
-    public Long getVariantId() {
-        return variantId;
-    }
-
-    public void setVariantId(Long variantId) {
-        this.variantId = variantId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public String getSku() {
-        return sku;
-    }
-
-    public void setSku(String sku) {
-        this.sku = sku;
-    }
-
-    public String getVariantName() {
-        return variantName;
-    }
-
-    public void setVariantName(String variantName) {
-        this.variantName = variantName;
-    }
-
-    public BigDecimal getAdditionalPrice() {
-        return additionalPrice;
-    }
-
-    public void setAdditionalPrice(BigDecimal additionalPrice) {
-        this.additionalPrice = additionalPrice;
-    }
-
-    public Boolean getAvailable() {
-        return available;
-    }
-
-    public void setAvailable(Boolean available) {
-        this.available = available;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Timestamp(System.currentTimeMillis());
     }
 }

@@ -1,55 +1,58 @@
 package com.saudiMart.Product.Service;
 
-import com.saudiMart.Product.Model.PriceTier;
-import com.saudiMart.Product.Repository.PriceTierRepository;
-import com.saudiMart.Product.Utils.ProductException;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.saudiMart.Product.Model.PriceTier;
+import com.saudiMart.Product.Repository.PriceTierRepository;
+import com.saudiMart.Product.Utils.ProductException;
 
 @Service
 public class PriceTierService {
 
-    private final PriceTierRepository priceTierRepository;
-
     @Autowired
-    public PriceTierService(PriceTierRepository priceTierRepository) {
-        this.priceTierRepository = priceTierRepository;
-    }
+    private PriceTierRepository priceTierRepository;
 
     public List<PriceTier> getAllPriceTiers() {
         return priceTierRepository.findAll();
     }
 
-    public Optional<PriceTier> getPriceTierById(Long id) {
-        return priceTierRepository.findById(id);
+    public PriceTier getPriceTierById(Long priceTierId) throws ProductException {
+        return priceTierRepository.findById(priceTierId)
+ .orElseThrow(() -> new ProductException("Price Tier not found with id: " + priceTierId));
     }
 
-    public PriceTier createPriceTier(PriceTier priceTier) {
+    public PriceTier createPriceTier(PriceTier priceTier) throws ProductException {
+ if (priceTier == null) {
+ throw new ProductException("Price Tier cannot be null");
+ }
         return priceTierRepository.save(priceTier);
     }
 
-    public PriceTier updatePriceTier(Long id, PriceTier priceTierDetails) throws ProductException {
-        PriceTier priceTier = priceTierRepository.findById(id)
-                .orElseThrow(() -> new ProductException("PriceTier not found with id: " + id));
-
-        priceTier.setMinimumQuantity(priceTierDetails.getMinimumQuantity());
-        priceTier.setPrice(priceTierDetails.getPrice());
-        priceTier.setProductVariant(priceTierDetails.getProductVariant());
-
-        return priceTierRepository.save(priceTier);
-    }
-
-    public void deletePriceTier(Long id) throws ProductException {
-        if (!priceTierRepository.existsById(id)) {
-            throw new ProductException("PriceTier not found with id: " + id);
+    public PriceTier updatePriceTier(Long priceTierId, PriceTier priceTierDetails) throws ProductException {
+ if (priceTierDetails == null) {
+ throw new ProductException("Price Tier details cannot be null");
+ }
+        Optional<PriceTier> priceTierOptional = priceTierRepository.findById(priceTierId);
+        if (priceTierOptional.isPresent()) {
+            PriceTier priceTier = priceTierOptional.get();
+            // Add null checks for individual fields if necessary
+            priceTier.setMinimumQuantity(priceTierDetails.getMinimumQuantity());
+            priceTier.setMaxQuantity(priceTierDetails.getMaxQuantity());
+            priceTier.setPrice(priceTierDetails.getPrice());
+            priceTier.setIsActive(priceTierDetails.getIsActive());
+            return priceTierRepository.save(priceTier);
         }
-        priceTierRepository.deleteById(id);
+ throw new ProductException("Price Tier not found with id: " + priceTierId);
     }
 
-    public List<PriceTier> getPriceTiersByVariantId(Long variantId) {
-        return priceTierRepository.findByProductVariant_VariantId(variantId);
+    public void deletePriceTier(Long priceTierId) throws ProductException {
+ if (!priceTierRepository.existsById(priceTierId)) {
+ throw new ProductException("Price Tier not found with id: " + priceTierId);
+ }
+        priceTierRepository.deleteById(priceTierId);
     }
 }

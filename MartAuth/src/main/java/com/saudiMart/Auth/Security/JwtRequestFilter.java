@@ -72,14 +72,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     Users userDetails = (Users) userService.loadUserByUsername(email);
                     if (userDetails != null && jwtUtil.isTokenValid(jwt, userDetails)) {
-                        System.out.println("ROLE:" + userDetails.getRole());
                         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                                 userDetails, null,
                                 List.of(new SimpleGrantedAuthority("ROLE_" + userDetails.getRole())));
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                        chain.doFilter(request, response);
-                        return;
                     }
                 }
             } catch (UserException e) {
@@ -89,8 +86,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
 
         }
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write("Unauthorized");
         chain.doFilter(request, response);
     }
 }

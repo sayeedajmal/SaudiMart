@@ -1,52 +1,56 @@
 package com.saudiMart.Product.Service;
 
-import com.saudiMart.Product.Model.ProductSpecification;
-import com.saudiMart.Product.Repository.ProductSpecificationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.saudiMart.Product.Model.ProductSpecification;
+import com.saudiMart.Product.Repository.ProductSpecificationRepository;
+import com.saudiMart.Product.Utils.ProductException;
 
 @Service
 public class ProductSpecificationService {
 
-    private final ProductSpecificationRepository productSpecificationRepository;
-
     @Autowired
-    public ProductSpecificationService(ProductSpecificationRepository productSpecificationRepository) {
-        this.productSpecificationRepository = productSpecificationRepository;
-    }
+    private ProductSpecificationRepository productSpecificationRepository;
 
     public List<ProductSpecification> getAllProductSpecifications() {
         return productSpecificationRepository.findAll();
     }
 
-    public Optional<ProductSpecification> getProductSpecificationById(Long id) {
-        return productSpecificationRepository.findById(id);
+    public ProductSpecification getProductSpecificationById(Long id) throws ProductException {
+        return productSpecificationRepository.findById(id)
+                .orElseThrow(() -> new ProductException("Product specification not found with id: " + id));
     }
 
-    public ProductSpecification createProductSpecification(ProductSpecification productSpecification) {
+    public ProductSpecification createProductSpecification(ProductSpecification productSpecification) throws ProductException {
+        if (productSpecification == null) {
+            throw new ProductException("Product specification cannot be null");
+        }
         return productSpecificationRepository.save(productSpecification);
     }
 
-    public ProductSpecification updateProductSpecification(Long id, ProductSpecification productSpecificationDetails) {
-        Optional<ProductSpecification> optionalProductSpecification = productSpecificationRepository.findById(id);
-        if (optionalProductSpecification.isPresent()) {
-            ProductSpecification productSpecification = optionalProductSpecification.get();
-            productSpecification.setProduct(productSpecificationDetails.getProduct());
+    public ProductSpecification updateProductSpecification(Long id, ProductSpecification productSpecificationDetails) throws ProductException {
+        if (productSpecificationDetails == null) {
+            throw new ProductException("Product specification details cannot be null");
+        }
+        Optional<ProductSpecification> productSpecificationOptional = productSpecificationRepository.findById(id);
+        if (productSpecificationOptional.isPresent()) {
+            ProductSpecification productSpecification = productSpecificationOptional.get();
             productSpecification.setSpecName(productSpecificationDetails.getSpecName());
             productSpecification.setSpecValue(productSpecificationDetails.getSpecValue());
             productSpecification.setUnit(productSpecificationDetails.getUnit());
-            productSpecification.setDisplayOrder(productSpecificationDetails.getDisplayOrder());
             return productSpecificationRepository.save(productSpecification);
-        } else {
-            // Handle not found case, e.g., throw an exception
-            return null;
         }
+        throw new ProductException("Product specification not found with id: " + id);
     }
 
-    public boolean deleteProductSpecification(Long id) {
+    public void deleteProductSpecification(Long id) throws ProductException {
+        if (!productSpecificationRepository.existsById(id)) {
+            throw new ProductException("Product specification not found with id: " + id);
+        }
         productSpecificationRepository.deleteById(id);
-        return true;
     }
 }

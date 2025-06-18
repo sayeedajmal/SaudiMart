@@ -1,76 +1,57 @@
 package com.saudiMart.Product.Controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.saudiMart.Product.Model.ProductImage;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Service.ProductImageService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
+import com.saudiMart.Product.Utils.ProductException;
 
 @RestController
-@RequestMapping("/api/productimages")
+@RequestMapping("/productimages")
 public class ProductImageController {
 
-    private final ProductImageService productImageService;
-
     @Autowired
-    public ProductImageController(ProductImageService productImageService) {
-        this.productImageService = productImageService;
-    }
+    private ProductImageService productImageService;
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<ProductImage>>> getAllProductImages() {
+    public ResponseEntity<ResponseWrapper<List<ProductImage>>> getAllProductImages() throws ProductException {
         List<ProductImage> productImages = productImageService.getAllProductImages();
-        ResponseWrapper<List<ProductImage>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Product images fetched successfully", productImages);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/product/{productId}")
- public ResponseEntity<ResponseWrapper<List<ProductImage>>> getProductImagesByProductId(@PathVariable Long productId) {
- List<ProductImage> productImages = productImageService.getProductImagesByProductId(productId);
- ResponseWrapper<List<ProductImage>> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Product images fetched by product ID successfully", productImages);
- return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all product images.", productImages));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<ProductImage>> getProductImageById(@PathVariable Long id) {
-        Optional<ProductImage> productImage = productImageService.getProductImageById(id);
-        if (productImage.isPresent()) {
-            ResponseWrapper<ProductImage> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Product image fetched successfully", productImage.get());
-            return ResponseEntity.ok(response);
-        } else {
-            ResponseWrapper<ProductImage> response = new ResponseWrapper<>(HttpStatus.NOT_FOUND.value(), "Product image not found", null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+    public ResponseEntity<ResponseWrapper<ProductImage>> getProductImageById(@PathVariable Long id) throws ProductException  {
+        ProductImage productImage = productImageService.getProductImageById(id);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved product image.", productImage));
     }
 
     @PostMapping
-    public ResponseEntity<ResponseWrapper<ProductImage>> createProductImage(@RequestBody ProductImage productImage) {
-        ProductImage createdProductImage = productImageService.saveProductImage(productImage);
-        ResponseWrapper<ProductImage> response = new ResponseWrapper<>(HttpStatus.CREATED.value(), "Product image created successfully", createdProductImage);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<ResponseWrapper<ProductImage>> createProductImage(@RequestBody ProductImage productImage) throws ProductException {
+        ProductImage createdProductImage = productImageService.createProductImage(productImage);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully created product image.", createdProductImage));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<ProductImage>> updateProductImage(@PathVariable Long id, @RequestBody ProductImage productImageDetails) {
+    public ResponseEntity<ResponseWrapper<ProductImage>> updateProductImage(@PathVariable Long id, @RequestBody ProductImage productImageDetails) throws ProductException  {
         ProductImage updatedProductImage = productImageService.updateProductImage(id, productImageDetails);
-        if (updatedProductImage != null) {
-            ResponseWrapper<ProductImage> response = new ResponseWrapper<>(HttpStatus.OK.value(), "Product image updated successfully", updatedProductImage);
-            return ResponseEntity.ok(response);
-        } else {
-            ResponseWrapper<ProductImage> response = new ResponseWrapper<>(HttpStatus.NOT_FOUND.value(), "Product image not found", null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully updated product image.", updatedProductImage));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteProductImage(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<Void>> deleteProductImage(@PathVariable Long id) throws ProductException {
         productImageService.deleteProductImage(id);
-        ResponseWrapper<Void> response = new ResponseWrapper<>(HttpStatus.NO_CONTENT.value(), "Product image deleted successfully", null);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted product image.", null));
     }
 }

@@ -1,25 +1,20 @@
 package com.saudiMart.Product.Model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 @Entity
 @Table(name = "product_specifications")
+@Data
 public class ProductSpecification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long specId;
+    private Long id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Products product;
@@ -39,54 +34,4 @@ public class ProductSpecification {
 
     @Column(name = "display_order")
     private Integer displayOrder = 0;
-
-    // Getters and Setters
-
-    public Long getSpecId() {
-        return specId;
-    }
-
-    public void setSpecId(Long specId) {
-        this.specId = specId;
-    }
-
-    public Products getProduct() {
-        return product;
-    }
-
-    public void setProduct(Products product) {
-        this.product = product;
-    }
-
-    public String getSpecName() {
-        return specName;
-    }
-
-    public void setSpecName(String specName) {
-        this.specName = specName;
-    }
-
-    public String getSpecValue() {
-        return specValue;
-    }
-
-    public void setSpecValue(String specValue) {
-        this.specValue = specValue;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    public Integer getDisplayOrder() {
-        return displayOrder;
-    }
-
-    public void setDisplayOrder(Integer displayOrder) {
-        this.displayOrder = displayOrder;
-    }
 }
