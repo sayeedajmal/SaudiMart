@@ -38,9 +38,10 @@ spring:
               - "DELETE"
               - "OPTIONS"
             allowedHeaders:
-              - "*"
-            allowCredentials: true
-
+              - "Content-Type"
+              - "Accept"
+              - "Authorization"
+            allowCredentials: false
 jwt:
   secret: ${JWT_SECRET:salkfsdlakfsadlkfaskfldsafjlkjflksdflkwiousdfkdsflkfdfkdslfsdklafsklfdfdsf}
   tokenValidityInMilliSeconds: ${JWT_ACCESS_TOKEN_EXPIRE:86400000}
