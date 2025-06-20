@@ -1,8 +1,8 @@
 # Complete B2B E-Commerce Database Schema Design
 
-## 1. Core Reference Tables
+### 1. Core Reference Tables 
 
-### Categories Table
+#### Categories Table
 ```sql
 CREATE TABLE categories (
     category_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -15,7 +15,7 @@ CREATE TABLE categories (
 );
 ```
 
-### Addresses Table
+#### Addresses Table 
 ```sql
 CREATE TABLE addresses (
     address_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -34,9 +34,9 @@ CREATE TABLE addresses (
 );
 ```
 
-## 2. User Management
+### 2. User Management 
 
-### Users Table
+#### Users Table
 ```sql
 CREATE TABLE users (
     user_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -46,13 +46,13 @@ CREATE TABLE users (
     password_hash TEXT NOT NULL,
     role ENUM('BUYER','SELLER','ADMIN') NOT NULL,
     is_verified BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
-## 3. Product Management
+### 3. Product Management 
 
-### Products Table
+#### Products Table
 ```sql
 CREATE TABLE products (
     product_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -60,7 +60,7 @@ CREATE TABLE products (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     category_id BIGINT,
-    base_price DECIMAL(12,2),
+    base_price DECIMAL(12,2), -- ONLY base price here
     is_bulk_only BOOLEAN DEFAULT FALSE,
     minimum_order_quantity INT DEFAULT 1,
     weight DECIMAL(10,2),
@@ -75,26 +75,27 @@ CREATE TABLE products (
 );
 ```
 
-### Product Variants Table
+#### Product Variants Table
 ```sql
 CREATE TABLE product_variants (
     variant_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     product_id BIGINT NOT NULL,
     sku VARCHAR(50) NOT NULL UNIQUE,
     variant_name VARCHAR(100),
-    additional_price DECIMAL(10,2) DEFAULT 0,
+    additional_price DECIMAL(10,2) DEFAULT 0, -- ONLY additional price to base
     available BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 ```
 
-### Product Images Table
+#### Product Images Table (FIXED - Frontend Friendly)
+**PROBLEM SOLVED:** Choose ONE approach for images
 ```sql
 CREATE TABLE product_images (
     image_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    product_id BIGINT NOT NULL,
-    variant_id BIGINT,
+    product_id BIGINT NOT NULL, -- Always link to product
+    variant_id BIGINT NULL, -- Optional: only if image is variant-specific
     image_url VARCHAR(500) NOT NULL,
     alt_text VARCHAR(255),
     display_order INT DEFAULT 0,
@@ -105,7 +106,7 @@ CREATE TABLE product_images (
 );
 ```
 
-### Product Specifications Table
+#### Product Specifications Table 
 ```sql
 CREATE TABLE product_specifications (
     spec_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -118,23 +119,22 @@ CREATE TABLE product_specifications (
 );
 ```
 
-### Price Tiers Table
+#### Price Tiers Table
 ```sql
 CREATE TABLE price_tiers (
     tier_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     product_id BIGINT NOT NULL,
     min_quantity INT NOT NULL,
     max_quantity INT,
-    price_per_unit DECIMAL(12,2) NOT NULL,
+    price_per_unit DECIMAL(12,2) NOT NULL, -- ONLY for bulk pricing
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 ```
 
-## 4. Inventory Management
-
-### Warehouses Table
+### 4. Inventory Management
+#### Warehouses Table 
 ```sql
 CREATE TABLE warehouses (
     warehouse_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -148,12 +148,12 @@ CREATE TABLE warehouses (
 );
 ```
 
-### Inventory Table
+#### Inventory Table
 ```sql
 CREATE TABLE inventory (
     inventory_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     product_id BIGINT NOT NULL,
-    variant_id BIGINT,
+    variant_id BIGINT NULL, -- NULL = base product, NOT NULL = specific variant
     warehouse_id BIGINT NOT NULL,
     quantity INT NOT NULL DEFAULT 0,
     reserved_quantity INT NOT NULL DEFAULT 0,
@@ -166,9 +166,9 @@ CREATE TABLE inventory (
 );
 ```
 
-## 5. Contract Management
+### 5. Contract Management 
 
-### Contracts Table
+#### Contracts Table
 ```sql
 CREATE TABLE contracts (
     contract_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -188,7 +188,7 @@ CREATE TABLE contracts (
 );
 ```
 
-### Contract Items Table
+#### Contract Items Table 
 ```sql
 CREATE TABLE contract_items (
     contract_item_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -206,9 +206,9 @@ CREATE TABLE contract_items (
 );
 ```
 
-## 6. Order Management
+### 6. Order Management 
 
-### Orders Table
+#### Orders Table
 ```sql
 CREATE TABLE orders (
     order_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -240,7 +240,7 @@ CREATE TABLE orders (
 );
 ```
 
-### Order Items Table
+#### Order Items Table 
 ```sql
 CREATE TABLE order_items (
     order_item_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -262,7 +262,7 @@ CREATE TABLE order_items (
 );
 ```
 
-### Order Approvals Table
+#### Order Approvals Table 
 ```sql
 CREATE TABLE order_approvals (
     approval_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -278,9 +278,9 @@ CREATE TABLE order_approvals (
 );
 ```
 
-## 7. Payment Management
+### 7. Payment Management 
 
-### Payments Table
+#### Payments Table
 ```sql
 CREATE TABLE payments (
     payment_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -299,9 +299,9 @@ CREATE TABLE payments (
 );
 ```
 
-## 8. Additional B2B Features
+### 8. Additional B2B Features 
 
-### Credit Applications Table
+#### Credit Applications Table
 ```sql
 CREATE TABLE credit_applications (
     application_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -321,7 +321,7 @@ CREATE TABLE credit_applications (
 );
 ```
 
-### Quotes Table
+#### Quotes Table
 ```sql
 CREATE TABLE quotes (
     quote_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -341,7 +341,7 @@ CREATE TABLE quotes (
 );
 ```
 
-### Quote Items Table
+#### Quote Items Table
 ```sql
 CREATE TABLE quote_items (
     quote_item_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -357,3 +357,5 @@ CREATE TABLE quote_items (
     FOREIGN KEY (variant_id) REFERENCES product_variants(variant_id)
 );
 ```
+
+---
