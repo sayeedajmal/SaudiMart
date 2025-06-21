@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "product_images")
-@Data
+@Data@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ProductImage {
 
     @Id
@@ -19,6 +21,7 @@ public class ProductImage {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonBackReference("product-images")
     private Products product;
 
     @ManyToOne(fetch = FetchType.LAZY)

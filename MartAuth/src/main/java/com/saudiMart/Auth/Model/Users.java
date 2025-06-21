@@ -22,6 +22,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Users implements UserDetails {
 
@@ -38,6 +39,7 @@ public class Users implements UserDetails {
     @Column(unique = true)
     private String phoneNumber; // e.g., "+966512345678"
 
+ @JsonIgnore
     @Column(nullable = false)
     private String password; // Stored as bcrypt
 

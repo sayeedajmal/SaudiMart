@@ -2,6 +2,8 @@ package com.saudiMart.Product.Model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +20,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "inventory")
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Inventory {
 
     @Id
@@ -26,6 +29,7 @@ public class Inventory {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonBackReference("product-inventory")
     private Products product;
 
     @Column(name = "quantity", nullable = false)
