@@ -13,4 +13,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByParentCategory(Category parentCategory);
 
     List<Category> findByIsActive(Boolean isActive);
+
+    List<Category> findByNameContainingIgnoreCaseAndIsActive(String name, Boolean isActive);
+
+    List<Category> findByNameContainingIgnoreCase(String name);
 }

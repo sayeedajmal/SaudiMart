@@ -15,4 +15,6 @@ public interface ProductSpecificationRepository extends JpaRepository<ProductSpe
     List<ProductSpecification> findByProductOrderByDisplayOrderAsc(Products product);
 
     List<ProductSpecification> findBySpecNameContainingIgnoreCase(String keyword);
+
+    void deleteByProduct(Products product);
 }

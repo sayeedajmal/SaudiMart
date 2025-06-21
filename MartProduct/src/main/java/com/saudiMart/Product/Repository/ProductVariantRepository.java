@@ -18,4 +18,6 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
     List<ProductVariant> findByAvailableTrue();
 
     List<ProductVariant> findByProductAndAvailableTrue(Products product);
+
+    void deleteByProduct(Products product);
 }

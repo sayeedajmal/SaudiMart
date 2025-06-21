@@ -1,111 +1,116 @@
-### 1. **Users**
+Perfect! Let me list out the tables you need for different operations:
 
-- **Purpose**: Stores user details such as buyers, sellers, and admins.
-- **Used for**: User authentication, role management, and user-related activities.
-- **Example Usage**: User registration, login, managing access to platform features based on roles (e.g., Buyer, Seller, Admin).
+## 📋 Tables Needed for Different Operations
 
----
+### 🛍️ **Creating a New Product**
+**Required Tables:**
+1. `products` - Main product info
+2. `product_images` - Product photos
+3. `product_specifications` - Product details/specs
 
-### 2. **Price Tiers**
+**Optional Tables (if needed):**
+4. `product_variants` - If product has variants (size, color, etc.)
+5. `price_tiers` - If bulk pricing needed
+6. `inventory` - Stock levels per warehouse
 
-- **Purpose**: Stores price tiers for products based on quantities.
-- **Used for**: Pricing discounts based on the quantity purchased.
-- **Example Usage**: A seller can apply different prices depending on how many units a buyer orders (e.g., bulk pricing).
-
----
-
-### 3. **Contracts**
-
-- **Purpose**: Stores contracts between buyers and sellers, including start/end dates, payment terms, and contract status.
-- **Used for**: Managing B2B contracts, defining terms of trade.
-- **Example Usage**: A buyer and seller sign a contract specifying terms like delivery, payment methods, and agreed prices.
-
----
-
-### 4. **Contract Items**
-
-- **Purpose**: Stores the individual products and their negotiated prices under each contract.
-- **Used for**: Managing the specifics of each product or service agreed upon in a contract.
-- **Example Usage**: A contract specifies the negotiated price for a product, which is captured here.
+**Creation Order:**
+```
+1. products (first - get product_id)
+2. product_variants (if variants exist)
+3. product_images (link to product_id or variant_id)
+4. product_specifications 
+5. price_tiers (if bulk pricing)
+6. inventory (stock levels)
+```
 
 ---
 
-### 5. **Product Variants**
+### 🛒 **Creating an Order**
+**Required Tables:**
+1. `orders` - Main order info
+2. `order_items` - Products in the order
 
-- **Purpose**: Stores different variants of a product (e.g., sizes, colors).
-- **Used for**: Managing multiple versions of the same product.
-- **Example Usage**: A T-shirt might come in different sizes or colors, each with a different SKU.
+**Supporting Tables:**
+3. `addresses` - Shipping/billing addresses
+4. `users` - Buyer/seller info
+5. `products` - Product details
+6. `inventory` - Check stock availability
 
----
-
-### 6. **Product Specifications**
-
-- **Purpose**: Stores technical details and specifications of products.
-- **Used for**: Providing detailed product info to buyers.
-- **Example Usage**: A product like a laptop will have specifications like RAM size, screen size, processor type, etc.
-
----
-
-### 7. **Warehouses**
-
-- **Purpose**: Stores information about the seller's warehouse locations.
-- **Used for**: Managing product stock levels, handling shipping, and warehouse operations.
-- **Example Usage**: Products are stored in different warehouses for fulfillment.
+**Optional:**
+7. `contracts` - If contract-based pricing
+8. `order_approvals` - If approval workflow needed
 
 ---
 
-### 8. **Inventory**
+### 📄 **Creating a Quote**
+**Required Tables:**
+1. `quotes` - Main quote info  
+2. `quote_items` - Products in quote
 
-- **Purpose**: Tracks stock levels of products in specific warehouses.
-- **Used for**: Managing the inventory of products and their availability for sale.
-- **Example Usage**: A product in a warehouse has a certain number of units available for sale.
-
----
-
-### 9. **Products**
-
-- **Purpose**: Stores product information such as name, description, price, SKU, and availability.
-- **Used for**: Listing products for sale on the platform.
-- **Example Usage**: A seller adds products to the platform to be bought by buyers.
+**Supporting Tables:**
+3. `users` - Buyer/seller
+4. `products` - Product details
+5. `product_variants` - If variants quoted
 
 ---
 
-### 10. **Orders**
+### 🤝 **Creating a Contract**
+**Required Tables:**
+1. `contracts` - Main contract
+2. `contract_items` - Products with negotiated prices
 
-- **Purpose**: Stores details about orders placed by buyers, including products, quantities, shipping, and payment info.
-- **Used for**: Managing the lifecycle of an order, including approval, processing, shipping, and delivery.
-- **Example Usage**: A buyer places an order that includes several products and chooses a payment method.
-
----
-
-### 11. **Payments**
-
-- **Purpose**: Tracks payments made for orders, including payment status and transaction details.
-- **Used for**: Managing the payment process for each order.
-- **Example Usage**: A payment for an order is processed, and details are stored for future reference.
+**Supporting Tables:**
+3. `users` - Buyer/seller
+4. `products` - Products being contracted
 
 ---
 
-### 12. **Order Approvals**
-
-- **Purpose**: Stores approval workflow for orders, particularly for higher-value or restricted purchases.
-- **Used for**: Enforcing business rules where certain orders need approval before processing.
-- **Example Usage**: A purchase order over a certain amount may require approval from a platform admin or buyer's manager.
-
----
-
-### 13. **Order Items**
-
-- **Purpose**: Stores individual items that are part of an order, including product details, quantities, and prices.
-- **Used for**: Breaking down orders into individual items for processing, shipping, and payment.
-- **Example Usage**: A buyer’s order includes multiple items, each with its own product details and price.
+### 🏪 **Setting Up Seller Account**
+**Required Tables:**
+1. `users` - Seller account
+2. `addresses` - Business addresses
+3. `warehouses` - Storage locations
 
 ---
 
-### 14. **Addresses**
-
-- **Purpose**: Stores shipping and billing address information for users.
-- **Used for**: Managing buyer and seller address details for order fulfillment and invoicing.
-- **Example Usage**: When a buyer places an order, their shipping and billing address are stored for shipping the products.
+### 💳 **Processing Payment**
+**Required Tables:**
+1. `payments` - Payment record
+2. `orders` - Link to order being paid
 
 ---
+
+### 🏭 **Managing Inventory**
+**Required Tables:**
+1. `inventory` - Stock levels
+2. `warehouses` - Storage locations
+3. `products` - What products
+4. `product_variants` - Which variants
+
+---
+
+### 📊 **Credit Management**
+**Required Tables:**
+1. `credit_applications` - Credit requests
+2. `users` - Buyer/seller info
+
+---
+
+## 🎯 **Most Common Frontend Flows:**
+
+### **Flow 1: Add New Product (Seller)**
+```
+Tables: products → product_variants → product_images → product_specifications → price_tiers → inventory
+```
+
+### **Flow 2: Place Order (Buyer)**
+```
+Tables: orders → order_items (+ check inventory, products, addresses)
+```
+
+### **Flow 3: Request Quote (Buyer)**
+```
+Tables: quotes → quote_items (+ check products)
+```
+
+Does this help clarify which tables you need for each operation?

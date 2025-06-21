@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,7 @@ public class ProductsController {
     }
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseWrapper<List<Products>>> getAllProducts() {
         List<Products> products = productsService.getAllProducts();
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all products", products));
@@ -38,6 +40,7 @@ public class ProductsController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseWrapper<Products>> getProductById(@PathVariable Long id) throws ProductException {
+ @PreAuthorize("isAuthenticated()")
         Products product = productsService.getProductById(id);
 
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved product", product));
@@ -46,6 +49,7 @@ public class ProductsController {
 
     @PostMapping
     public ResponseEntity<ResponseWrapper<Products>> createProduct(@RequestBody Products product)
+ @PreAuthorize("hasRole('SELLER')")
             throws ProductException {
         Products createdProduct = productsService.createProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -54,6 +58,7 @@ public class ProductsController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseWrapper<Products>> updateProduct(@PathVariable Long id,
+ @PreAuthorize("hasRole('SELLER')")
             @RequestBody Products productDetails) throws ProductException {
         Products updatedProduct = productsService.updateProduct(id, productDetails);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -63,6 +68,7 @@ public class ProductsController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseWrapper<Void>> deleteProduct(@PathVariable Long id) {
+ @PreAuthorize("hasRole('SELLER')")
         productsService.deleteProduct(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted product", null));
     }

@@ -19,4 +19,6 @@ public interface PriceTierRepository extends JpaRepository<PriceTier, Long> {
     List<PriceTier> findByMinimumQuantityGreaterThanEqual(Integer minQty);
 
     List<PriceTier> findByPriceLessThanEqual(BigDecimal maxPrice);
+
+    void deleteByProduct(Products product);
 }

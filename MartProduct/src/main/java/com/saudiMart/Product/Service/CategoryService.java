@@ -20,6 +20,27 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
+    public Category createParentCategory(Category category) throws ProductException {
+        if (category == null) {
+            throw new ProductException("Category details cannot be null.");
+        }
+        if (category.getParentCategory() != null) {
+            throw new ProductException("Parent category cannot be set when creating a top-level category.");
+        }
+        return categoryRepository.save(category);
+    }
+    public List<Category> getAllActiveCategoriesByName(String name, Boolean inActive) {
+        if (name != null && isActive != null) {
+            return categoryRepository.findByNameContainingIgnoreCaseAndIsActive(name, inActive);
+        } else if (name != null) {
+            return categoryRepository.findByNameContainingIgnoreCase(name);
+        } else if (isActive != null) {
+         return categoryRepository.findByIsActive(isActive);
+        } else {
+        return categoryRepository.findAll();
+        }
+    }
+
     public Category getCategoryById(Long categoryId) throws ProductException {
         return categoryRepository.findById(categoryId).orElseThrow(() -> new ProductException("Product not found"));
     }
@@ -36,9 +57,17 @@ public class CategoryService {
     }
 
     public Category createCategory(Category category) throws ProductException {
- if (category == null) {
- throw new ProductException("Category details cannot be null");
- }
+       if (category == null) {
+            throw new ProductException("Category details cannot be null.");
+        }
+
+        if (category.getParentCategory() == null || category.getParentCategory().getId() == null) {
+            throw new ProductException("Child category must have a parent category.");
+        }
+
+        Optional<Category> parentOptional = categoryRepository.findById(category.getParentCategory().getId());
+        if (!parentOptional.isPresent()) { throw new ProductException("Parent category not found."); }
+        
         return categoryRepository.save(category);
     }
 

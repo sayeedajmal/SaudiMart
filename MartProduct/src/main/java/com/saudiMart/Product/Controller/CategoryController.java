@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.saudiMart.Product.Model.Category;
 import com.saudiMart.Product.Model.ResponseWrapper;
@@ -29,9 +31,18 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping
+
+ @GetMapping("/all")
     public ResponseEntity<ResponseWrapper<List<Category>>> getAllCategories() throws ProductException {
         List<Category> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "All categories fetched successfully", categories));
+    }
+
+    @GetMapping
+    public ResponseEntity<ResponseWrapper<List<Category>>> getAllActiveCategoriesByName(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Boolean isActive) throws ProductException {
+        List<Category> categories = categoryService.getAllActiveCategoriesByName(name, isActive);
 
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Category fetched successfully", categories));
     }
@@ -44,13 +55,21 @@ public class CategoryController {
 
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseWrapper<Category>> createCategory(@RequestBody Category category)
-            throws ProductException {
-        Category createdCategory = categoryService.createCategory(category);
-        return ResponseEntity.ok(new ResponseWrapper<>(201, "Category created successfully", createdCategory));
-
+    @PostMapping("/parent")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseWrapper<Category>> createParentCategory(@RequestBody Category category)
+    throws ProductException {
+    Category createdCategory = categoryService.createParentCategory(category);
+    return ResponseEntity.ok(new ResponseWrapper<>(201, "Parent category created successfully", createdCategory));
     }
+
+    @PostMapping
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<ResponseWrapper<Category>> createCategory(@RequestBody Category category)
+    throws ProductException {
+    Category createdCategory = categoryService.createCategory(category);
+    return ResponseEntity.ok(new ResponseWrapper<>(201, "Child category created successfully", createdCategory));
+        }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseWrapper<Category>> updateCategory(@PathVariable Long id,
