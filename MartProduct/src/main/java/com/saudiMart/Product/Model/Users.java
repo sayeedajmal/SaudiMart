@@ -59,9 +59,6 @@ public class Users implements UserDetails {
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;
 
-    @OneToMany(mappedBy = "seller") // Assuming the field in Products model is named "seller"
-    @JsonManagedReference("user-products")
-    private List<Products> products;
 
     @JsonIgnore
     @Override

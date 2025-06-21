@@ -20,16 +20,6 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Category createParentCategory(Category category) throws ProductException {
-        if (category == null) {
-            throw new ProductException("Category details cannot be null.");
-        }
-        if (category.getParentCategory() != null) {
-            throw new ProductException("Parent category cannot be set when creating a top-level category.");
-        }
-        return categoryRepository.save(category);
-    }
-
     public List<Category> getAllActiveCategoriesByName(String name, Boolean isActive) {
         if (name != null && isActive != null) {
             return categoryRepository.findByNameContainingIgnoreCaseAndIsActive(name, isActive);
@@ -46,13 +36,6 @@ public class CategoryService {
         return categoryRepository.findById(categoryId).orElseThrow(() -> new ProductException("Product not found"));
     }
 
-    public List<Category> getCategoriesByParent(Category parentCategory) throws ProductException {
-        if (parentCategory == null) {
-            throw new ProductException("Parent category cannot be null");
-        }
-        return categoryRepository.findByParentCategory(parentCategory);
-    }
-
     public List<Category> getActiveCategories() {
         return categoryRepository.findByIsActive(true);
     }
@@ -61,16 +44,10 @@ public class CategoryService {
         if (category == null) {
             throw new ProductException("Category details cannot be null.");
         }
-
-        if (category.getParentCategory() == null || category.getParentCategory().getId() == null) {
-            throw new ProductException("Child category must have a parent category.");
+        Optional<Category> existingCategory = categoryRepository.findByName(category.getName());
+        if (existingCategory.isPresent()) {
+            throw new ProductException("Category with name " + category.getName() + " already exists.");
         }
-
-        Optional<Category> parentOptional = categoryRepository.findById(category.getParentCategory().getId());
-        if (!parentOptional.isPresent()) {
-            throw new ProductException("Parent category not found.");
-        }
-
         return categoryRepository.save(category);
     }
 

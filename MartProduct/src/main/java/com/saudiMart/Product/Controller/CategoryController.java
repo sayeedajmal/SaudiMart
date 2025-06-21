@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.saudiMart.Product.Model.Category;
 import com.saudiMart.Product.Model.ResponseWrapper;
@@ -54,20 +53,11 @@ public class CategoryController {
 
     }
 
-    @PostMapping("/parent")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseWrapper<Category>> createParentCategory(@RequestBody Category category)
-            throws ProductException {
-        Category createdCategory = categoryService.createParentCategory(category);
-        return ResponseEntity.ok(new ResponseWrapper<>(201, "Parent category created successfully", createdCategory));
-    }
-
     @PostMapping
-    @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ResponseWrapper<Category>> createCategory(@RequestBody Category category)
             throws ProductException {
         Category createdCategory = categoryService.createCategory(category);
-        return ResponseEntity.ok(new ResponseWrapper<>(201, "Child category created successfully", createdCategory));
+        return ResponseEntity.ok(new ResponseWrapper<>(201, " new Category created successfully", createdCategory));
     }
 
     @PutMapping("/{id}")
