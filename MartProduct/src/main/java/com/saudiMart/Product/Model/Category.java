@@ -42,6 +42,10 @@ public class Category {
     @JsonManagedReference("parent-child-categories")
     private List<Category> childCategories;
 
+    @OneToMany(mappedBy = "category")
+    @JsonManagedReference("category-products")
+    private List<Products> products;
+
     @NotBlank(message = "Category name is mandatory")
     @Size(max = 100, message = "Category name cannot exceed 100 characters")
     @Column(name = "name", nullable = false)

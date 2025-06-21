@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -29,6 +30,7 @@ public class ProductVariant {
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     @JoinColumn(name = "product_id", nullable = false)
+ @JsonBackReference("product-variants")
     private Products product;
 
     @NotNull
