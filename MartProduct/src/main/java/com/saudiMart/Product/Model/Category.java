@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,7 +26,7 @@ import lombok.Data;
 @Entity
 @Table(name = "categories")
 @Data
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Category {
 
     @Id
@@ -34,11 +35,11 @@ public class Category {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id")
- @JsonBackReference("parent-child-categories")
+    @JsonBackReference("parent-child-categories")
     private Category parentCategory;
 
     @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
- @JsonManagedReference("parent-child-categories")
+    @JsonManagedReference("parent-child-categories")
     private List<Category> childCategories;
 
     @NotBlank(message = "Category name is mandatory")
