@@ -1,13 +1,14 @@
 package com.saudiMart.Product.Service;
 
-import com.saudiMart.Product.Model.ProductImage;
-import com.saudiMart.Product.Repository.ProductImageRepository;
-import com.saudiMart.Product.Utils.ProductException;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.saudiMart.Product.Model.ProductImage;
+import com.saudiMart.Product.Repository.ProductImageRepository;
+import com.saudiMart.Product.Utils.ProductException;
 
 @Service
 public class ProductImageService {
@@ -31,12 +32,14 @@ public class ProductImageService {
         return productImageRepository.save(productImage);
     }
 
-    public ProductImage updateProductImage(Long productImageId, ProductImage productImageDetails) throws ProductException {
+    public ProductImage updateProductImage(Long productImageId, ProductImage productImageDetails)
+            throws ProductException {
         if (productImageDetails == null) {
             throw new ProductException("Product image details cannot be null");
         }
         Optional<ProductImage> productImageOptional = productImageRepository.findById(productImageId);
-        ProductImage productImage = productImageOptional.orElseThrow(() -> new ProductException("Product image not found with id: " + productImageId));
+        ProductImage productImage = productImageOptional
+                .orElseThrow(() -> new ProductException("Product image not found with id: " + productImageId));
 
         productImage.setImageUrl(productImageDetails.getImageUrl());
         productImage.setProduct(productImageDetails.getProduct());

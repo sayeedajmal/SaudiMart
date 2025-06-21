@@ -28,25 +28,31 @@ public class ProductImageController {
     @GetMapping
     public ResponseEntity<ResponseWrapper<List<ProductImage>>> getAllProductImages() throws ProductException {
         List<ProductImage> productImages = productImageService.getAllProductImages();
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all product images.", productImages));
+        return ResponseEntity
+                .ok(new ResponseWrapper<>(200, "Successfully retrieved all product images.", productImages));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<ProductImage>> getProductImageById(@PathVariable Long id) throws ProductException  {
+    public ResponseEntity<ResponseWrapper<ProductImage>> getProductImageById(@PathVariable Long id)
+            throws ProductException {
         ProductImage productImage = productImageService.getProductImageById(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved product image.", productImage));
     }
 
     @PostMapping
-    public ResponseEntity<ResponseWrapper<ProductImage>> createProductImage(@RequestBody ProductImage productImage) throws ProductException {
+    public ResponseEntity<ResponseWrapper<ProductImage>> createProductImage(@RequestBody ProductImage productImage)
+            throws ProductException {
         ProductImage createdProductImage = productImageService.createProductImage(productImage);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully created product image.", createdProductImage));
+        return ResponseEntity
+                .ok(new ResponseWrapper<>(200, "Successfully created product image.", createdProductImage));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<ProductImage>> updateProductImage(@PathVariable Long id, @RequestBody ProductImage productImageDetails) throws ProductException  {
+    public ResponseEntity<ResponseWrapper<ProductImage>> updateProductImage(@PathVariable Long id,
+            @RequestBody ProductImage productImageDetails) throws ProductException {
         ProductImage updatedProductImage = productImageService.updateProductImage(id, productImageDetails);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully updated product image.", updatedProductImage));
+        return ResponseEntity
+                .ok(new ResponseWrapper<>(200, "Successfully updated product image.", updatedProductImage));
     }
 
     @DeleteMapping("/{id}")

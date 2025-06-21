@@ -39,8 +39,8 @@ public class ProductsController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseWrapper<Products>> getProductById(@PathVariable Long id) throws ProductException {
- @PreAuthorize("isAuthenticated()")
         Products product = productsService.getProductById(id);
 
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved product", product));
@@ -48,8 +48,8 @@ public class ProductsController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ResponseWrapper<Products>> createProduct(@RequestBody Products product)
- @PreAuthorize("hasRole('SELLER')")
             throws ProductException {
         Products createdProduct = productsService.createProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -57,8 +57,8 @@ public class ProductsController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ResponseWrapper<Products>> updateProduct(@PathVariable Long id,
- @PreAuthorize("hasRole('SELLER')")
             @RequestBody Products productDetails) throws ProductException {
         Products updatedProduct = productsService.updateProduct(id, productDetails);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -67,8 +67,8 @@ public class ProductsController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteProduct(@PathVariable Long id) {
- @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<ResponseWrapper<Void>> deleteProduct(@PathVariable Long id) throws ProductException {
         productsService.deleteProduct(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted product", null));
     }

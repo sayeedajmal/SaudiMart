@@ -31,8 +31,7 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-
- @GetMapping("/all")
+    @GetMapping("/all")
     public ResponseEntity<ResponseWrapper<List<Category>>> getAllCategories() throws ProductException {
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(new ResponseWrapper<>(200, "All categories fetched successfully", categories));
@@ -58,18 +57,18 @@ public class CategoryController {
     @PostMapping("/parent")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseWrapper<Category>> createParentCategory(@RequestBody Category category)
-    throws ProductException {
-    Category createdCategory = categoryService.createParentCategory(category);
-    return ResponseEntity.ok(new ResponseWrapper<>(201, "Parent category created successfully", createdCategory));
+            throws ProductException {
+        Category createdCategory = categoryService.createParentCategory(category);
+        return ResponseEntity.ok(new ResponseWrapper<>(201, "Parent category created successfully", createdCategory));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ResponseWrapper<Category>> createCategory(@RequestBody Category category)
-    throws ProductException {
-    Category createdCategory = categoryService.createCategory(category);
-    return ResponseEntity.ok(new ResponseWrapper<>(201, "Child category created successfully", createdCategory));
-        }
+            throws ProductException {
+        Category createdCategory = categoryService.createCategory(category);
+        return ResponseEntity.ok(new ResponseWrapper<>(201, "Child category created successfully", createdCategory));
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseWrapper<Category>> updateCategory(@PathVariable Long id,

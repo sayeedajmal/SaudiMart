@@ -22,36 +22,38 @@ import com.saudiMart.Product.Utils.ProductException;
 @RequestMapping("/pricetiers")
 public class PriceTierController {
 
-    @Autowired
-    private PriceTierService priceTierService;
+   @Autowired
+   private PriceTierService priceTierService;
 
-    @GetMapping
- public ResponseEntity<ResponseWrapper<List<PriceTier>>> getAllPriceTiers() throws ProductException {
-        List<PriceTier> priceTiers = priceTierService.getAllPriceTiers();
- return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all price tiers", priceTiers));
-    }
+   @GetMapping
+   public ResponseEntity<ResponseWrapper<List<PriceTier>>> getAllPriceTiers() throws ProductException {
+      List<PriceTier> priceTiers = priceTierService.getAllPriceTiers();
+      return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all price tiers", priceTiers));
+   }
 
-    @GetMapping("/{id}")
- public ResponseEntity<ResponseWrapper<PriceTier>> getPriceTierById(@PathVariable Long id) throws ProductException {
- PriceTier priceTier = priceTierService.getPriceTierById(id);
- return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved price tier", priceTier));
-    }
+   @GetMapping("/{id}")
+   public ResponseEntity<ResponseWrapper<PriceTier>> getPriceTierById(@PathVariable Long id) throws ProductException {
+      PriceTier priceTier = priceTierService.getPriceTierById(id);
+      return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved price tier", priceTier));
+   }
 
-    @PostMapping
- public ResponseEntity<ResponseWrapper<PriceTier>> createPriceTier(@RequestBody PriceTier priceTier) throws ProductException {
-        PriceTier createdPriceTier = priceTierService.createPriceTier(priceTier);
- return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully created price tier", createdPriceTier));
-    }
+   @PostMapping
+   public ResponseEntity<ResponseWrapper<PriceTier>> createPriceTier(@RequestBody PriceTier priceTier)
+         throws ProductException {
+      PriceTier createdPriceTier = priceTierService.createPriceTier(priceTier);
+      return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully created price tier", createdPriceTier));
+   }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<PriceTier>> updatePriceTier(@PathVariable Long id, @RequestBody PriceTier priceTierDetails) throws ProductException {
-        PriceTier updatedPriceTier = priceTierService.updatePriceTier(id, priceTierDetails);
- return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully updated price tier", updatedPriceTier));
-    }
+   @PutMapping("/{id}")
+   public ResponseEntity<ResponseWrapper<PriceTier>> updatePriceTier(@PathVariable Long id,
+         @RequestBody PriceTier priceTierDetails) throws ProductException {
+      PriceTier updatedPriceTier = priceTierService.updatePriceTier(id, priceTierDetails);
+      return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully updated price tier", updatedPriceTier));
+   }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deletePriceTier(@PathVariable Long id) throws ProductException {
-        priceTierService.deletePriceTier(id);
- return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted price tier", null));
-    }
+   @DeleteMapping("/{id}")
+   public ResponseEntity<ResponseWrapper<Void>> deletePriceTier(@PathVariable Long id) throws ProductException {
+      priceTierService.deletePriceTier(id);
+      return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted price tier", null));
+   }
 }

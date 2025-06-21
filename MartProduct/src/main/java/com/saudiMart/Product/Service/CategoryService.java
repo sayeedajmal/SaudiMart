@@ -29,15 +29,16 @@ public class CategoryService {
         }
         return categoryRepository.save(category);
     }
-    public List<Category> getAllActiveCategoriesByName(String name, Boolean inActive) {
+
+    public List<Category> getAllActiveCategoriesByName(String name, Boolean isActive) {
         if (name != null && isActive != null) {
-            return categoryRepository.findByNameContainingIgnoreCaseAndIsActive(name, inActive);
+            return categoryRepository.findByNameContainingIgnoreCaseAndIsActive(name, isActive);
         } else if (name != null) {
             return categoryRepository.findByNameContainingIgnoreCase(name);
         } else if (isActive != null) {
-         return categoryRepository.findByIsActive(isActive);
+            return categoryRepository.findByIsActive(isActive);
         } else {
-        return categoryRepository.findAll();
+            return categoryRepository.findAll();
         }
     }
 
@@ -46,9 +47,9 @@ public class CategoryService {
     }
 
     public List<Category> getCategoriesByParent(Category parentCategory) throws ProductException {
- if (parentCategory == null) {
- throw new ProductException("Parent category cannot be null");
- }
+        if (parentCategory == null) {
+            throw new ProductException("Parent category cannot be null");
+        }
         return categoryRepository.findByParentCategory(parentCategory);
     }
 
@@ -57,7 +58,7 @@ public class CategoryService {
     }
 
     public Category createCategory(Category category) throws ProductException {
-       if (category == null) {
+        if (category == null) {
             throw new ProductException("Category details cannot be null.");
         }
 
@@ -66,8 +67,10 @@ public class CategoryService {
         }
 
         Optional<Category> parentOptional = categoryRepository.findById(category.getParentCategory().getId());
-        if (!parentOptional.isPresent()) { throw new ProductException("Parent category not found."); }
-        
+        if (!parentOptional.isPresent()) {
+            throw new ProductException("Parent category not found.");
+        }
+
         return categoryRepository.save(category);
     }
 
@@ -75,10 +78,10 @@ public class CategoryService {
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
         if (categoryOptional.isPresent()) {
             Category category = categoryOptional.get();
- if (categoryDetails.getName() != null)
-            category.setName(categoryDetails.getName());
- if (categoryDetails.getDescription() != null)
-            category.setDescription(categoryDetails.getDescription());
+            if (categoryDetails.getName() != null)
+                category.setName(categoryDetails.getName());
+            if (categoryDetails.getDescription() != null)
+                category.setDescription(categoryDetails.getDescription());
             category.setIsActive(categoryDetails.getIsActive());
             return categoryRepository.save(category);
         }
@@ -86,9 +89,9 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long categoryId) {
- Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
- if (categoryOptional.isPresent()) {
- categoryRepository.deleteById(categoryId);
- }
+        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+        if (categoryOptional.isPresent()) {
+            categoryRepository.deleteById(categoryId);
+        }
     }
 }

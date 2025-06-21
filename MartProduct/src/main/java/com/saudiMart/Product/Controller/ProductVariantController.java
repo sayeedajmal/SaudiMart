@@ -35,7 +35,8 @@ public class ProductVariantController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<ProductVariant>> getProductVariantById(@PathVariable Long id) throws ProductException {
+    public ResponseEntity<ResponseWrapper<ProductVariant>> getProductVariantById(@PathVariable Long id)
+            throws ProductException {
         ProductVariant productVariant = productVariantService.getProductVariantById(id);
 
         ResponseWrapper<ProductVariant> response = new ResponseWrapper<>(200, "Successfully retrieved product variant",

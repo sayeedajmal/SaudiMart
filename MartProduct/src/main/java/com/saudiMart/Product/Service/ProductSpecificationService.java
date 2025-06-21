@@ -25,14 +25,16 @@ public class ProductSpecificationService {
                 .orElseThrow(() -> new ProductException("Product specification not found with id: " + id));
     }
 
-    public ProductSpecification createProductSpecification(ProductSpecification productSpecification) throws ProductException {
+    public ProductSpecification createProductSpecification(ProductSpecification productSpecification)
+            throws ProductException {
         if (productSpecification == null) {
             throw new ProductException("Product specification cannot be null");
         }
         return productSpecificationRepository.save(productSpecification);
     }
 
-    public ProductSpecification updateProductSpecification(Long id, ProductSpecification productSpecificationDetails) throws ProductException {
+    public ProductSpecification updateProductSpecification(Long id, ProductSpecification productSpecificationDetails)
+            throws ProductException {
         if (productSpecificationDetails == null) {
             throw new ProductException("Product specification details cannot be null");
         }
