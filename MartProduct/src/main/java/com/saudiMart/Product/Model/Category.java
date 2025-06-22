@@ -30,6 +30,11 @@ public class Category {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Size(max = 255, message = "Image URL cannot exceed 255 characters")
+    @Column(name = "image_url")
+    @NotBlank(message = "Image URL is mandatory")
+    private String imageUrl;
+
     @Column(name = "description")
     private String description;
 

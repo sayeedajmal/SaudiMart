@@ -74,6 +74,13 @@ public class ProductsService {
         }
 
         if (product.getPriceTiers() != null) {
+            // Add validation for price tiers
+            for (PriceTier tier : product.getPriceTiers()) {
+                if (tier.getPrice() == null) {
+                    throw new ProductException("Price cannot be null for price tiers");
+                }
+                // You can add more validation here if needed, e.g., for minimumQuantity
+            }
             product.getPriceTiers().forEach(tier -> tier.setProduct(product));
         }
 
@@ -149,9 +156,15 @@ public class ProductsService {
         }
     }
 
-    private void updatePriceTiers(Products product, List<PriceTier> incomingTiers) {
+    private void updatePriceTiers(Products product, List<PriceTier> incomingTiers) throws ProductException {
         priceTierRepository.deleteByProduct(product);
         if (incomingTiers != null) {
+            // Add validation for price tiers
+            for (PriceTier tier : incomingTiers) {
+                if (tier.getPrice() == null) {
+                    throw new ProductException("Price cannot be null for price tiers");
+                }
+            }
             incomingTiers.forEach(tier -> {
                 tier.setProduct(product);
                 priceTierRepository.save(tier);
