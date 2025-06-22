@@ -10,7 +10,6 @@ import com.saudiMart.Product.Model.PriceTier;
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Repository.PriceTierRepository;
-import com.saudiMart.Product.Repository.ProductImageRepository;
 import com.saudiMart.Product.Repository.ProductVariantRepository;
 import com.saudiMart.Product.Repository.ProductsRepository;
 import com.saudiMart.Product.Utils.ProductException;
