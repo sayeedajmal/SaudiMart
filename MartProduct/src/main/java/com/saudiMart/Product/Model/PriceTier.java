@@ -21,7 +21,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
 @Entity
-@Table(name = "price_tiers")
+@Table(name = "variant_price_tiers")
 @Data
 public class PriceTier {
 
@@ -30,32 +30,39 @@ public class PriceTier {
     private Long id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    @JsonBackReference("product-priceTiers")
-    private Products product;
+ @ManyToOne(fetch = FetchType.LAZY)
+ @JoinColumn(name = "variant_id", nullable = false)
+ @JsonBackReference("variant-priceTiers")
+ private ProductVariant variant;
 
     @NotNull
     @Positive(message = "Minimum quantity must be positive")
     @Column(name = "minimum_quantity", nullable = false)
-    private Integer minimumQuantity;
+ private Integer minQuantity;
 
     @Column(name = "max_quantity")
     private Integer maxQuantity;
 
     @NotNull
-    @PositiveOrZero(message = "Price must be zero or positive")
+ @Positive(message = "Price per unit must be positive")
     @Column(name = "price_per_unit", nullable = false, precision = 12, scale = 2)
-    private BigDecimal price;
+ private BigDecimal pricePerUnit;
+
+    @NotNull
+    @Column(name = "discount_percent", nullable = false, precision = 5, scale = 2)
+ @PositiveOrZero(message = "Discount percent must be zero or positive")
+ private BigDecimal discountPercent = BigDecimal.ZERO;
 
     @Column(name = "is_active")
     private Boolean isActive = true;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
+
 }

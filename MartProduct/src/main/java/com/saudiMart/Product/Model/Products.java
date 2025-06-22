@@ -14,6 +14,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -26,18 +27,22 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Entity
-@Table(name = "products")
+@Table(name = "products", indexes = {
+    @Index(name = "idx_products_seller_id", columnList = "seller_id"),
+    @Index(name = "idx_products_category_id", columnList = "category_id"),
+    @Index(name = "idx_products_sku", columnList = "sku"),
+    @Index(name = "idx_products_available", columnList = "available")
+})
+
 @Data
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Products {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller_id", nullable = false)
     //@JsonBackReference("user-products")
     private Users seller;
 
@@ -47,7 +52,6 @@ public class Products {
     private String name;
 
     @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -92,9 +96,9 @@ public class Products {
     @Column(name = "dimensions", length = 50)
     private String dimensions;
 
-    @Size(max = 50)
-    @Column(name = "sku", length = 50, unique = true)
-    private String sku;
+ @Size(max = 50)
+ @Column(name = "sku", length = 50, unique = true)
+ private String sku;
 
     @Column(name = "available")
     private Boolean available = true;

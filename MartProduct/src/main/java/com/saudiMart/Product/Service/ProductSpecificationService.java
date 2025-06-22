@@ -6,8 +6,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.saudiMart.Product.Model.Products; // Import Products
 import com.saudiMart.Product.Model.ProductSpecification;
 import com.saudiMart.Product.Repository.ProductSpecificationRepository;
+import com.saudiMart.Product.Repository.ProductsRepository; // Import ProductsRepository
 import com.saudiMart.Product.Utils.ProductException;
 
 @Service
@@ -15,6 +17,9 @@ public class ProductSpecificationService {
 
     @Autowired
     private ProductSpecificationRepository productSpecificationRepository;
+
+    @Autowired // Autowire ProductsRepository
+    private ProductsRepository productsRepository;
 
     public List<ProductSpecification> getAllProductSpecifications() {
         return productSpecificationRepository.findAll();
@@ -24,6 +29,21 @@ public class ProductSpecificationService {
         return productSpecificationRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Product specification not found with id: " + id));
     }
+
+     public List<ProductSpecification> getProductSpecificationsByProductId(Long productId) throws ProductException {
+         Products product = productsRepository.findById(productId)
+                .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
+        return productSpecificationRepository.findByProduct(product);
+    }
+
+     public List<ProductSpecification> getProductSpecificationsByProductIdAndSpecName(Long productId, String specName) throws ProductException {
+         Products product = productsRepository.findById(productId)
+                .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
+        return productSpecificationRepository.findByProduct(product).stream()
+                .filter(spec -> spec.getSpecName().equalsIgnoreCase(specName))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
 
     public ProductSpecification createProductSpecification(ProductSpecification productSpecification)
             throws ProductException {
@@ -41,9 +61,14 @@ public class ProductSpecificationService {
         Optional<ProductSpecification> productSpecificationOptional = productSpecificationRepository.findById(id);
         if (productSpecificationOptional.isPresent()) {
             ProductSpecification productSpecification = productSpecificationOptional.get();
-            productSpecification.setSpecName(productSpecificationDetails.getSpecName());
-            productSpecification.setSpecValue(productSpecificationDetails.getSpecValue());
-            productSpecification.setUnit(productSpecificationDetails.getUnit());
+             if (productSpecificationDetails.getSpecName() != null) // Add null check
+                 productSpecification.setSpecName(productSpecificationDetails.getSpecName());
+             if (productSpecificationDetails.getSpecValue() != null) // Add null check
+                 productSpecification.setSpecValue(productSpecificationDetails.getSpecValue());
+             if (productSpecificationDetails.getUnit() != null) // Add null check
+                 productSpecification.setUnit(productSpecificationDetails.getUnit());
+             if (productSpecificationDetails.getDisplayOrder() != null) // Add null check
+                 productSpecification.setDisplayOrder(productSpecificationDetails.getDisplayOrder());
             return productSpecificationRepository.save(productSpecification);
         }
         throw new ProductException("Product specification not found with id: " + id);

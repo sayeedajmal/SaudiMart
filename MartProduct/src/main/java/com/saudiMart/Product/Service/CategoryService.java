@@ -33,7 +33,13 @@ public class CategoryService {
     }
 
     public Category getCategoryById(Long categoryId) throws ProductException {
-        return categoryRepository.findById(categoryId).orElseThrow(() -> new ProductException("Product not found"));
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ProductException("Category not found with id: " + categoryId));
+    }
+
+     public Category getCategoryByName(String name) throws ProductException {
+        return categoryRepository.findByName(name)
+                .orElseThrow(() -> new ProductException("Category not found with name: " + name));
     }
 
     public List<Category> getActiveCategories() {
@@ -53,22 +59,26 @@ public class CategoryService {
 
     public Category updateCategory(Long categoryId, Category categoryDetails) throws ProductException {
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+ if (categoryDetails == null) {
+ throw new ProductException("Category details cannot be null for update.");
+        }
         if (categoryOptional.isPresent()) {
             Category category = categoryOptional.get();
             if (categoryDetails.getName() != null)
                 category.setName(categoryDetails.getName());
-            if (categoryDetails.getDescription() != null)
+            if (categoryDetails.getDescription() != null) // Added null check
                 category.setDescription(categoryDetails.getDescription());
-            category.setIsActive(categoryDetails.getIsActive());
+            if(categoryDetails.getIsActive() != null) // Added null check
+                 category.setIsActive(categoryDetails.getIsActive());
             return categoryRepository.save(category);
         }
-        return null;
+        throw new ProductException("Category not found with id: " + categoryId); // Added exception
     }
 
-    public void deleteCategory(Long categoryId) {
-        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
-        if (categoryOptional.isPresent()) {
-            categoryRepository.deleteById(categoryId);
+    public void deleteCategory(Long categoryId) throws ProductException { // Added throws exception
+         if (!categoryRepository.existsById(categoryId)) { // Changed check for clarity
+            throw new ProductException("Category not found with id: " + categoryId);
         }
+        categoryRepository.deleteById(categoryId);
     }
 }

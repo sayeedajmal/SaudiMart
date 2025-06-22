@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -19,7 +20,10 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Entity
-@Table(name = "product_variants")
+@Table(name = "product_variants", indexes = {
+    @Index(name = "idx_variants_product_id", columnList = "product_id"),
+    @Index(name = "idx_variants_sku", columnList = "sku")
+})
 @Data
 public class ProductVariant {
 
@@ -41,9 +45,12 @@ public class ProductVariant {
     @Column(name = "variant_name")
     private String variantName;
 
-    @Column(name = "additional_price", precision = 10, scale = 2)
-    private BigDecimal additionalPrice = BigDecimal.ZERO;
+    @Column(name = "additional_price", precision = 10, scale = 2, nullable = false)
+    private BigDecimal additionalPrice;
 
+    @NotNull
+ @Column(name = "base_price", nullable = false, precision = 12, scale = 2)
+    private BigDecimal basePrice;
     @Column(name = "available")
     private Boolean available = true;
 

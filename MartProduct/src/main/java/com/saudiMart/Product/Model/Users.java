@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -24,6 +25,13 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "users")
+
+@Table(name = "users",
+    indexes = {
+
+    @Index(name = "idx_users_email", columnList = "email"),
+    @Index(name = "idx_users_role", columnList = "role")
+})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Users implements UserDetails {
 

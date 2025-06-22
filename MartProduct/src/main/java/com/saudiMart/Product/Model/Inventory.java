@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Index;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -18,7 +19,10 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "inventory")
+@Table(name = "inventory", indexes = {
+    @Index(name = "idx_inventory_product_warehouse", columnList = "product_id,variant_id,warehouse_id"),
+    @Index(name = "idx_inventory_warehouse_id", columnList = "warehouse_id")
+})
 @Data
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Inventory {
