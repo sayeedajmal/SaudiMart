@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.saudiMart.Product.Model.PriceTier;
+import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
 
 @Repository
@@ -21,4 +22,8 @@ public interface PriceTierRepository extends JpaRepository<PriceTier, Long> {
     List<PriceTier> findByPriceLessThanEqual(BigDecimal maxPrice);
 
     void deleteByProduct(Products product);
+
+    List<PriceTier> findByVariantAndIsActiveTrue(ProductVariant variant);
+
+    List<PriceTier> findByVariant(ProductVariant variant);
 }

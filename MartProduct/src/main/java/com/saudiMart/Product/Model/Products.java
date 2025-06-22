@@ -28,14 +28,14 @@ import lombok.Data;
 
 @Entity
 @Table(name = "products", indexes = {
-    @Index(name = "idx_products_seller_id", columnList = "seller_id"),
-    @Index(name = "idx_products_category_id", columnList = "category_id"),
-    @Index(name = "idx_products_sku", columnList = "sku"),
-    @Index(name = "idx_products_available", columnList = "available")
+        @Index(name = "idx_products_seller_id", columnList = "seller_id"),
+        @Index(name = "idx_products_category_id", columnList = "category_id"),
+        @Index(name = "idx_products_sku", columnList = "sku"),
+        @Index(name = "idx_products_available", columnList = "available")
 })
 
 @Data
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Products {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +43,7 @@ public class Products {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    //@JsonBackReference("user-products")
+    // @JsonBackReference("user-products")
     private Users seller;
 
     @NotNull
@@ -52,6 +52,8 @@ public class Products {
     private String name;
 
     @Column(name = "description", columnDefinition = "TEXT")
+    @Size(max = 1000)
+    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -96,9 +98,9 @@ public class Products {
     @Column(name = "dimensions", length = 50)
     private String dimensions;
 
- @Size(max = 50)
- @Column(name = "sku", length = 50, unique = true)
- private String sku;
+    @Size(max = 50)
+    @Column(name = "sku", length = 50, unique = true)
+    private String sku;
 
     @Column(name = "available")
     private Boolean available = true;

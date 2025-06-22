@@ -14,6 +14,7 @@ CREATE TABLE categories (
     parent_category_id BIGINT,
     name VARCHAR(100) NOT NULL,
     description TEXT,
+    imageUrl TEXT,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

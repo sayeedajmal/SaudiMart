@@ -1,12 +1,13 @@
 package com.saudiMart.Product.Repository;
 
-import com.saudiMart.Product.Model.ProductVariant;
-import com.saudiMart.Product.Model.Products;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
+import com.saudiMart.Product.Model.ProductVariant;
+import com.saudiMart.Product.Model.Products;
 
 @Repository
 public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long> {

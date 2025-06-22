@@ -1,29 +1,29 @@
 package com.saudiMart.Product.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.saudiMart.Product.Model.Category;
 import com.saudiMart.Product.Model.Inventory;
-import com.saudiMart.Product.Model.PriceTier;
 import com.saudiMart.Product.Model.ProductImage;
 import com.saudiMart.Product.Model.ProductSpecification;
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
+import com.saudiMart.Product.Repository.CategoryRepository;
 import com.saudiMart.Product.Repository.InventoryRepository;
 import com.saudiMart.Product.Repository.PriceTierRepository;
 import com.saudiMart.Product.Repository.ProductImageRepository;
 import com.saudiMart.Product.Repository.ProductSpecificationRepository;
 import com.saudiMart.Product.Repository.ProductVariantRepository;
 import com.saudiMart.Product.Repository.ProductsRepository;
-import com.saudiMart.Product.Repository.CategoryRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
 @Service
@@ -79,13 +79,13 @@ public class ProductsService {
     }
 
     public List<Products> getProductsByCategoryId(Long categoryId) throws ProductException {
-         Category category = categoryRepository.findById(categoryId)
+        Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ProductException("Category not found with id: " + categoryId));
         return productsRepository.findByCategory(category);
     }
 
-     public List<Products> getAvailableProductsByCategoryId(Long categoryId) throws ProductException {
-          Category category = categoryRepository.findById(categoryId)
+    public List<Products> getAvailableProductsByCategoryId(Long categoryId) throws ProductException {
+        Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ProductException("Category not found with id: " + categoryId));
         return productsRepository.findByCategory(category).stream()
                 .filter(Products::getAvailable)
@@ -98,17 +98,12 @@ public class ProductsService {
             throw new ProductException("Product cannot be null");
         }
 
-
         if (product.getImages() != null) {
             product.getImages().forEach(image -> image.setProduct(product));
         }
 
         if (product.getSpecifications() != null) {
             product.getSpecifications().forEach(spec -> spec.setProduct(product));
-        }
-
-        if (product.getPriceTiers() != null) {
-            product.getPriceTiers().forEach(tier -> tier.setProduct(product));
         }
 
         if (product.getVariants() != null) {
@@ -123,183 +118,136 @@ public class ProductsService {
     }
 
     @Transactional
-    public Products updateProduct(Long productId, Products productDetails) throws ProductException {
-        if (productDetails == null) {
+    public Products updateProduct(Long productId, Products newProduct) throws ProductException {
+        if (newProduct == null) {
             throw new ProductException("Product details cannot be null");
         }
 
-        Products existingProduct = productsRepository.findById(productId)
+        Products oldProduct = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product with ID " + productId + " not found"));
 
-        if (productDetails.getName() != null)
-            existingProduct.setName(productDetails.getName());
-        if (productDetails.getDescription() != null)
-            existingProduct.setDescription(productDetails.getDescription());
-        if (productDetails.getBasePrice() != null)
-            existingProduct.setBasePrice(productDetails.getBasePrice());
-        if (productDetails.getCategory() != null)
-            existingProduct.setCategory(productDetails.getCategory());
-        if (productDetails.getIsBulkOnly() != null)
-            existingProduct.setIsBulkOnly(productDetails.getIsBulkOnly());
-        if (productDetails.getMinimumOrderQuantity() != null)
-            existingProduct.setMinimumOrderQuantity(productDetails.getMinimumOrderQuantity());
-        if (productDetails.getWeight() != null)
-            existingProduct.setWeight(productDetails.getWeight());
-        if (productDetails.getWeightUnit() != null)
-            existingProduct.setWeightUnit(productDetails.getWeightUnit());
-        if (productDetails.getDimensions() != null)
-            existingProduct.setDimensions(productDetails.getDimensions());
-        if (productDetails.getSku() != null)
-            existingProduct.setSku(productDetails.getSku());
-        if (productDetails.getAvailable() != null)
-            existingProduct.setAvailable(productDetails.getAvailable());
+        if (newProduct.getName() != null)
+            oldProduct.setName(newProduct.getName());
+        if (newProduct.getDescription() != null)
+            oldProduct.setDescription(newProduct.getDescription());
+        if (newProduct.getBasePrice() != null)
+            oldProduct.setBasePrice(newProduct.getBasePrice());
+        if (newProduct.getCategory() != null)
+            oldProduct.setCategory(newProduct.getCategory());
+        if (newProduct.getIsBulkOnly() != null)
+            oldProduct.setIsBulkOnly(newProduct.getIsBulkOnly());
+        if (newProduct.getMinimumOrderQuantity() != null)
+            oldProduct.setMinimumOrderQuantity(newProduct.getMinimumOrderQuantity());
+        if (newProduct.getWeight() != null)
+            oldProduct.setWeight(newProduct.getWeight());
+        if (newProduct.getWeightUnit() != null)
+            oldProduct.setWeightUnit(newProduct.getWeightUnit());
+        if (newProduct.getDimensions() != null)
+            oldProduct.setDimensions(newProduct.getDimensions());
+        if (newProduct.getSku() != null)
+            oldProduct.setSku(newProduct.getSku());
+        if (newProduct.getAvailable() != null)
+            oldProduct.setAvailable(newProduct.getAvailable());
 
-        updateProductImages(existingProduct, productDetails.getImages());
-        updateProductSpecifications(existingProduct, productDetails.getSpecifications());
-        updatePriceTiers(existingProduct, productDetails.getPriceTiers());
-        updateInventory(existingProduct, productDetails.getInventory());
-        updateProductVariants(existingProduct, productDetails.getVariants());
+        updateProductImages(oldProduct, newProduct.getImages());
+        updateProductSpecifications(oldProduct, newProduct.getSpecifications());
+        // updatePriceTiers(oldProduct, newProduct.getPriceTiers());
+        updateInventory(oldProduct, newProduct.getInventory());
+        updateProductVariants(oldProduct, newProduct.getVariants());
 
-
-        return productsRepository.save(existingProduct);
+        return productsRepository.save(oldProduct);
     }
 
-    private void updateProductImages(Products product, List<ProductImage> incomingImages) {
-        List<ProductImage> existingImages = productImageRepository.findByProduct(product);
+    private void updateProductImages(Products oldProduct, List<ProductImage> newImages) {
+        List<ProductImage> existingImages = productImageRepository.findByProduct(oldProduct);
 
-        Map<Long, ProductImage> existingImagesMap = existingImages.stream()
-                .filter(image -> image.getId() != null)
-                .collect(Collectors.toMap(ProductImage::getId, image -> image));
+        if (newImages != null) {
+            for (ProductImage incomingImage : newImages) {
+                Optional<ProductImage> existingImageOpt = existingImages.stream()
+                        .filter(image -> image.getId() != null && image.getId().equals(incomingImage.getId()))
+                        .findFirst();
 
-        Map<Long, ProductImage> incomingImagesMap = new HashMap<>();
-        if (incomingImages != null) {
-            incomingImages.stream()
-                    .filter(image -> image.getId() != null)
-                    .forEach(image -> incomingImagesMap.put(image.getId(), image));
-        }
-
-        List<ProductImage> imagesToSave = new ArrayList<>();
-        List<ProductImage> imagesToDelete = new ArrayList<>();
-
-        if (incomingImages != null) {
-            for (ProductImage incomingImage : incomingImages) {
-                if (incomingImage.getId() != null && existingImagesMap.containsKey(incomingImage.getId())) {
-                    ProductImage existingImage = existingImagesMap.get(incomingImage.getId());
-                    existingImage.setImageUrl(incomingImage.getImageUrl());
-                    existingImage.setAltText(incomingImage.getAltText());
-                    existingImage.setDisplayOrder(incomingImage.getDisplayOrder());
-                    existingImage.setIsPrimary(incomingImage.getIsPrimary());
-                    imagesToSave.add(existingImage);
+                if (existingImageOpt.isPresent()) {
+                    ProductImage existingImage = existingImageOpt.get();
+                    if (incomingImage.getImageUrl() != null)
+                        existingImage.setImageUrl(incomingImage.getImageUrl());
+                    if (incomingImage.getAltText() != null)
+                        existingImage.setAltText(incomingImage.getAltText());
+                    if (incomingImage.getDisplayOrder() != null)
+                        existingImage.setDisplayOrder(incomingImage.getDisplayOrder());
+                    if (incomingImage.getIsPrimary() != null)
+                        existingImage.setIsPrimary(incomingImage.getIsPrimary());
                 } else {
-                    incomingImage.setProduct(product);
-                    imagesToSave.add(incomingImage);
+                    incomingImage.setProduct(oldProduct);
+                    existingImages.add(incomingImage);
                 }
             }
         }
 
-        for (ProductImage existingImage : existingImages) {
-            if (existingImage.getId() != null && !incomingImagesMap.containsKey(existingImage.getId())) {
-                imagesToDelete.add(existingImage);
-            }
-        }
-
-        productImageRepository.deleteAll(imagesToDelete);
-        productImageRepository.saveAll(imagesToSave);
+        productImageRepository.saveAll(existingImages);
     }
 
+    private void updateProductSpecifications(Products oldProduct, List<ProductSpecification> incomingSpecs) {
+        List<ProductSpecification> existingSpecs = productSpecificationRepository.findByProduct(oldProduct);
 
-    private void updateProductSpecifications(Products product, List<ProductSpecification> incomingSpecs) {
-         List<ProductSpecification> existingSpecs = productSpecificationRepository.findByProduct(product);
-
-         Map<Long, ProductSpecification> existingSpecsMap = existingSpecs.stream()
+        Map<Long, ProductSpecification> existingSpecsMap = existingSpecs.stream()
                 .filter(spec -> spec.getId() != null)
                 .collect(Collectors.toMap(ProductSpecification::getId, spec -> spec));
 
-        Map<Long, ProductSpecification> incomingSpecsMap = new HashMap<>();
-        if (incomingSpecs != null) {
-            incomingSpecs.stream()
-                    .filter(spec -> spec.getId() != null)
-                    .forEach(spec -> incomingSpecsMap.put(spec.getId(), spec));
-        }
-
         List<ProductSpecification> specsToSave = new ArrayList<>();
-        List<ProductSpecification> specsToDelete = new ArrayList<>();
 
-        // Process incoming specifications
         if (incomingSpecs != null) {
             for (ProductSpecification incomingSpec : incomingSpecs) {
-                if (incomingSpec.getId() != null && existingSpecsMap.containsKey(incomingSpec.getId())) {
-                    // Existing specification - update it
+                if (incomingSpec.getId() != null) {
                     ProductSpecification existingSpec = existingSpecsMap.get(incomingSpec.getId());
-                    existingSpec.setSpecName(incomingSpec.getSpecName());
-                    existingSpec.setSpecValue(incomingSpec.getSpecValue());
-                    existingSpec.setUnit(incomingSpec.getUnit());
-                    existingSpec.setDisplayOrder(incomingSpec.getDisplayOrder());
-                    specsToSave.add(existingSpec);
-                } else if (incomingSpec.getId() == null) {
-                    // New specification - set product and add to save list
-                    incomingSpec.setProduct(product);
+                    if (existingSpec != null) {
+                        existingSpec.setSpecName(incomingSpec.getSpecName());
+                        existingSpec.setSpecValue(incomingSpec.getSpecValue());
+                        existingSpec.setUnit(incomingSpec.getUnit());
+                        existingSpec.setDisplayOrder(incomingSpec.getDisplayOrder());
+                        specsToSave.add(existingSpec);
+                    }
+                } else {
+                    incomingSpec.setProduct(oldProduct);
                     specsToSave.add(incomingSpec);
                 }
             }
         }
 
-        // Process existing specifications to identify deletions
-        for (ProductSpecification existingSpec : existingSpecs) {
-            if (existingSpec.getId() != null && !incomingSpecsMap.containsKey(existingSpec.getId())) {
-                // Existing specification not in incoming list - mark for deletion
-                specsToDelete.add(existingSpec);
-            }
-        }
-
-        // Perform deletions and saves
-        productSpecificationRepository.deleteAll(specsToDelete);
         productSpecificationRepository.saveAll(specsToSave);
     }
 
+    // private void updatePriceTiers(Products product, List<PriceTier>
+    // incomingTiers) {
+    // List<PriceTier> existingTiers = priceTierRepository.findByProduct(product);
 
-    private void updatePriceTiers(Products product, List<PriceTier> incomingTiers) {
-        List<PriceTier> existingTiers = priceTierRepository.findByProduct(product);
+    // Map<Long, PriceTier> existingTiersMap = existingTiers.stream()
+    // .filter(tier -> tier.getId() != null)
+    // .collect(Collectors.toMap(PriceTier::getId, tier -> tier));
 
-        Map<Long, PriceTier> existingTiersMap = existingTiers.stream()
-                .filter(tier -> tier.getId() != null)
-                .collect(Collectors.toMap(PriceTier::getId, tier -> tier));
+    // List<PriceTier> tiersToSave = new ArrayList<>();
 
-        Map<Long, PriceTier> incomingTiersMap = new HashMap<>();
-        if (incomingTiers != null) {
-            incomingTiers.stream()
-                    .filter(tier -> tier.getId() != null)
-                    .forEach(tier -> incomingTiersMap.put(tier.getId(), tier));
-        }
+    // if (incomingTiers != null) {
+    // for (PriceTier incomingTier : incomingTiers) {
+    // if (incomingTier.getId() != null &&
+    // existingTiersMap.containsKey(incomingTier.getId())) {
+    // PriceTier existingTier = existingTiersMap.get(incomingTier.getId());
+    // // Update properties as needed, excluding product association
+    // existingTier.setMinQuantity(incomingTier.getMinQuantity());
+    // existingTier.setMaxQuantity(incomingTier.getMaxQuantity());
+    // existingTier.setPricePerUnit(incomingTier.getPricePerUnit());
+    // existingTier.setDiscountPercent(incomingTier.getDiscountPercent());
+    // existingTier.setIsActive(incomingTier.getIsActive());
+    // tiersToSave.add(existingTier);
+    // } else {
+    // incomingTier.setVariant(product);
+    // tiersToSave.add(incomingTier);
+    // }
+    // }
+    // }
 
-        List<PriceTier> tiersToSave = new ArrayList<>();
-        List<PriceTier> tiersToDelete = new ArrayList<>();
-
-        if (incomingTiers != null) {
-            for (PriceTier incomingTier : incomingTiers) {
-                if (incomingTier.getId() != null && existingTiersMap.containsKey(incomingTier.getId())) {
-                    PriceTier existingTier = existingTiersMap.get(incomingTier.getId());
-                    // Update properties as needed, excluding product association
-                    existingTier.setMinimumQuantity(incomingTier.getMinimumQuantity());
-                    existingTier.setMaxQuantity(incomingTier.getMaxQuantity());
-                    existingTier.setPricePerUnit(incomingTier.getPricePerUnit());
-                    existingTier.setDiscountPercent(incomingTier.getDiscountPercent());
-                    existingTier.setIsActive(incomingTier.getIsActive());
-                    tiersToSave.add(existingTier);
-                } else {
-                    incomingTier.setProduct(product);
-                    tiersToSave.add(incomingTier);
-                }
-            }
-        }
-
-        // Identify price tiers to delete (existing tiers not in the incoming list)
-        for (PriceTier existingTier : existingTiers) {
-            if (existingTier.getId() != null && !incomingTiersMap.containsKey(existingTier.getId())) {
-                tiersToDelete.add(existingTier);
-            }
-        }
-    }
+    // priceTierRepository.saveAll(tiersToSave);
+    // }
 
     private void updateInventory(Products product, Inventory incomingInventory) {
         Optional<Inventory> existing = inventoryRepository.findByProduct(product);
@@ -340,7 +288,6 @@ public class ProductsService {
             for (ProductVariant incomingVariant : incomingVariants) {
                 if (incomingVariant.getId() != null && existingVariantsMap.containsKey(incomingVariant.getId())) {
                     ProductVariant existingVariant = existingVariantsMap.get(incomingVariant.getId());
-                    // Update properties as needed, excluding product association
                     existingVariant.setSku(incomingVariant.getSku());
                     existingVariant.setVariantName(incomingVariant.getVariantName());
                     existingVariant.setAdditionalPrice(incomingVariant.getAdditionalPrice());
@@ -360,7 +307,6 @@ public class ProductsService {
             }
         }
     }
-
 
     @Transactional
     public void deleteProduct(Long productId) throws ProductException {

@@ -12,27 +12,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Index;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "users")
-
-@Table(name = "users",
-    indexes = {
-
-    @Index(name = "idx_users_email", columnList = "email"),
-    @Index(name = "idx_users_role", columnList = "role")
+@Table(name = "users", indexes = {
+        @Index(name = "idx_users_email", columnList = "email"),
+        @Index(name = "idx_users_role", columnList = "role")
 })
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Users implements UserDetails {
 
     @Id
@@ -66,7 +60,6 @@ public class Users implements UserDetails {
     private boolean accountNonExpired = true;
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;
-
 
     @JsonIgnore
     @Override
