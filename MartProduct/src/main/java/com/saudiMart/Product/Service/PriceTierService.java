@@ -58,6 +58,11 @@ public class PriceTierService {
         if (priceTier == null) {
             throw new ProductException("Price Tier cannot be null");
         }
+        // Ensure the associated variant exists
+ ProductVariant variant = productVariantRepository.findById(priceTier.getVariant().getId())
+ .orElseThrow(() -> new ProductException("Product Variant not found with id: " + priceTier.getVariant().getId()));
+        priceTier.setVariant(variant);
+
         return priceTierRepository.save(priceTier);
     }
 
@@ -87,6 +92,10 @@ public class PriceTierService {
             existingPriceTier.setIsActive(priceTierDetails.getIsActive());
         }
 
+        // Ensure the variant association is not changed during update
+        if (priceTierDetails.getVariant() != null && !existingPriceTier.getVariant().getId().equals(priceTierDetails.getVariant().getId())) {
+            throw new ProductException("Cannot change the associated product variant for a price tier during update.");
+        }
         return priceTierRepository.save(existingPriceTier);
     }
 }

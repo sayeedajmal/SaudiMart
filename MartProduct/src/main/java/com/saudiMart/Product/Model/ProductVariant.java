@@ -2,8 +2,11 @@ package com.saudiMart.Product.Model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -46,8 +50,9 @@ public class ProductVariant {
     @Column(name = "variant_name")
     private String variantName;
 
-    @Column(name = "additional_price", precision = 10, scale = 2, nullable = false)
-    private BigDecimal additionalPrice;
+    @OneToMany(mappedBy = "variant", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("variant-priceTiers")
+    private List<PriceTier> priceTiers;
 
     @NotNull
     @Column(name = "base_price", nullable = false, precision = 12, scale = 2)

@@ -6,8 +6,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.saudiMart.Product.Model.PriceTier;
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
+import com.saudiMart.Product.Repository.PriceTierRepository;
+import com.saudiMart.Product.Repository.ProductImageRepository;
 import com.saudiMart.Product.Repository.ProductVariantRepository;
 import com.saudiMart.Product.Repository.ProductsRepository;
 import com.saudiMart.Product.Utils.ProductException;
@@ -20,6 +23,9 @@ public class ProductVariantService {
 
     @Autowired
     private ProductsRepository productsRepository;
+
+ @Autowired
+ private PriceTierRepository priceTierRepository;
 
     public List<ProductVariant> getAllProductVariants() {
         return productVariantRepository.findAll();
@@ -74,9 +80,10 @@ public class ProductVariantService {
                 productVariant.setSku(productVariantDetails.getSku());
             }
             if (productVariantDetails.getVariantName() != null)
-                productVariant.setVariantName(productVariantDetails.getVariantName());
-            if (productVariantDetails.getAdditionalPrice() != null)
-                productVariant.setAdditionalPrice(productVariantDetails.getAdditionalPrice());
+ productVariant.setVariantName(productVariantDetails.getVariantName());
+ // additionalPrice removed as per schema change
+ if (productVariantDetails.getBasePrice() != null)
+                productVariant.setBasePrice(productVariantDetails.getBasePrice());
             if (productVariantDetails.getAvailable() != null)
                 productVariant.setAvailable(productVariantDetails.getAvailable());
             return productVariantRepository.save(productVariant);
@@ -89,5 +96,47 @@ public class ProductVariantService {
             throw new ProductException("Product Variant not found with id: " + id);
         }
         productVariantRepository.deleteById(id);
+    }
+
+    // Price Tier methods
+    public PriceTier addPriceTierToVariant(Long variantId, PriceTier priceTier) throws ProductException {
+        ProductVariant variant = getProductVariantById(variantId);
+        if (priceTier == null) {
+            throw new ProductException("Price Tier cannot be null");
+        }
+        priceTier.setVariant(variant);
+        return priceTierRepository.save(priceTier);
+    }
+
+    public PriceTier updatePriceTier(Long tierId, PriceTier updatedTierDetails) throws ProductException {
+        Optional<PriceTier> tierOptional = priceTierRepository.findById(tierId);
+        if (tierOptional.isPresent()) {
+            PriceTier existingTier = tierOptional.get();
+            if (updatedTierDetails.getMinQuantity() != null)
+                existingTier.setMinQuantity(updatedTierDetails.getMinQuantity());
+            if (updatedTierDetails.getMaxQuantity() != null)
+                existingTier.setMaxQuantity(updatedTierDetails.getMaxQuantity());
+            if (updatedTierDetails.getPricePerUnit() != null)
+                existingTier.setPricePerUnit(updatedTierDetails.getPricePerUnit());
+            if (updatedTierDetails.getDiscountPercent() != null)
+                existingTier.setDiscountPercent(updatedTierDetails.getDiscountPercent());
+            if (updatedTierDetails.getIsActive() != null)
+                existingTier.setIsActive(updatedTierDetails.getIsActive());
+
+            return priceTierRepository.save(existingTier);
+        }
+        throw new ProductException("Price Tier not found with id: " + tierId);
+    }
+
+    public void deletePriceTier(Long tierId) throws ProductException {
+        if (!priceTierRepository.existsById(tierId)) {
+            throw new ProductException("Price Tier not found with id: " + tierId);
+        }
+        priceTierRepository.deleteById(tierId);
+    }
+
+    public List<PriceTier> getPriceTiersByVariantId(Long variantId) throws ProductException {
+        ProductVariant variant = getProductVariantById(variantId);
+ return priceTierRepository.findByVariant(variant);
     }
 }

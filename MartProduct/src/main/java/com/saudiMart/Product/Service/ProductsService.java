@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.saudiMart.Product.Model.Category;
@@ -20,13 +19,10 @@ import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Repository.CategoryRepository;
 import com.saudiMart.Product.Repository.InventoryRepository;
 import com.saudiMart.Product.Repository.PriceTierRepository;
-import com.saudiMart.Product.Repository.ProductImageRepository;
-import com.saudiMart.Product.Repository.ProductSpecificationRepository;
 import com.saudiMart.Product.Repository.ProductVariantRepository;
 import com.saudiMart.Product.Repository.ProductsRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
-@Service
 public class ProductsService {
 
     @Autowired
@@ -39,10 +35,7 @@ public class ProductsService {
     private ProductSpecificationRepository productSpecificationRepository;
 
     @Autowired
-    private PriceTierRepository priceTierRepository;
-
-    @Autowired
-    private InventoryRepository inventoryRepository;
+    private ProductVariantService productVariantService;
 
     @Autowired
     private ProductVariantRepository productVariantRepository;
@@ -60,9 +53,7 @@ public class ProductsService {
                 .orElseThrow(() -> new ProductException("Product with ID " + productId + " not found"));
 
         product.setImages(productImageRepository.findByProduct(product));
-        product.setSpecifications(productSpecificationRepository.findByProduct(product));
-        product.setPriceTiers(priceTierRepository.findByProduct(product));
-        inventoryRepository.findByProduct(product).ifPresent(product::setInventory);
+ product.setSpecifications(productSpecificationRepository.findByProduct(product));
         product.setVariants(productVariantRepository.findByProduct(product));
 
         return product;
@@ -110,10 +101,6 @@ public class ProductsService {
             product.getVariants().forEach(variant -> variant.setProduct(product));
         }
 
-        if (product.getInventory() != null) {
-            product.getInventory().setProduct(product);
-        }
-
         return productsRepository.save(product);
     }
 
@@ -132,8 +119,6 @@ public class ProductsService {
             oldProduct.setDescription(newProduct.getDescription());
         if (newProduct.getBasePrice() != null)
             oldProduct.setBasePrice(newProduct.getBasePrice());
-        if (newProduct.getCategory() != null)
-            oldProduct.setCategory(newProduct.getCategory());
         if (newProduct.getIsBulkOnly() != null)
             oldProduct.setIsBulkOnly(newProduct.getIsBulkOnly());
         if (newProduct.getMinimumOrderQuantity() != null)
@@ -149,9 +134,7 @@ public class ProductsService {
         if (newProduct.getAvailable() != null)
             oldProduct.setAvailable(newProduct.getAvailable());
 
-        updateProductImages(oldProduct, newProduct.getImages());
-        updateProductSpecifications(oldProduct, newProduct.getSpecifications());
-        // updatePriceTiers(oldProduct, newProduct.getPriceTiers());
+ updateProductImages(oldProduct, newProduct.getImages());
         updateInventory(oldProduct, newProduct.getInventory());
         updateProductVariants(oldProduct, newProduct.getVariants());
 
@@ -217,55 +200,6 @@ public class ProductsService {
         productSpecificationRepository.saveAll(specsToSave);
     }
 
-    // private void updatePriceTiers(Products product, List<PriceTier>
-    // incomingTiers) {
-    // List<PriceTier> existingTiers = priceTierRepository.findByProduct(product);
-
-    // Map<Long, PriceTier> existingTiersMap = existingTiers.stream()
-    // .filter(tier -> tier.getId() != null)
-    // .collect(Collectors.toMap(PriceTier::getId, tier -> tier));
-
-    // List<PriceTier> tiersToSave = new ArrayList<>();
-
-    // if (incomingTiers != null) {
-    // for (PriceTier incomingTier : incomingTiers) {
-    // if (incomingTier.getId() != null &&
-    // existingTiersMap.containsKey(incomingTier.getId())) {
-    // PriceTier existingTier = existingTiersMap.get(incomingTier.getId());
-    // // Update properties as needed, excluding product association
-    // existingTier.setMinQuantity(incomingTier.getMinQuantity());
-    // existingTier.setMaxQuantity(incomingTier.getMaxQuantity());
-    // existingTier.setPricePerUnit(incomingTier.getPricePerUnit());
-    // existingTier.setDiscountPercent(incomingTier.getDiscountPercent());
-    // existingTier.setIsActive(incomingTier.getIsActive());
-    // tiersToSave.add(existingTier);
-    // } else {
-    // incomingTier.setVariant(product);
-    // tiersToSave.add(incomingTier);
-    // }
-    // }
-    // }
-
-    // priceTierRepository.saveAll(tiersToSave);
-    // }
-
-    private void updateInventory(Products product, Inventory incomingInventory) {
-        Optional<Inventory> existing = inventoryRepository.findByProduct(product);
-
-        if (incomingInventory != null) {
-            if (existing.isPresent()) {
-                Inventory old = existing.get();
-                old.setQuantity(incomingInventory.getQuantity());
-                old.setReservedQuantity(incomingInventory.getReservedQuantity());
-                inventoryRepository.save(old);
-            } else {
-                incomingInventory.setProduct(product);
-                inventoryRepository.save(incomingInventory);
-            }
-        } else {
-            existing.ifPresent(inventoryRepository::delete);
-        }
-    }
 
     private void updateProductVariants(Products product, List<ProductVariant> incomingVariants) {
         List<ProductVariant> existingVariants = productVariantRepository.findByProduct(product);
@@ -315,8 +249,6 @@ public class ProductsService {
 
         productImageRepository.deleteByProduct(product);
         productSpecificationRepository.deleteByProduct(product);
-        priceTierRepository.deleteByProduct(product);
-        inventoryRepository.deleteByProduct(product);
         productVariantRepository.deleteByProduct(product);
 
         productsRepository.delete(product);
