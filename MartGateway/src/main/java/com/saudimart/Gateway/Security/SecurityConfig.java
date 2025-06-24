@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.saudimart.Gateway.Security.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
@@ -29,6 +30,8 @@ public class SecurityConfig {
             .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
             .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
             .authorizeExchange(ex -> ex
+                .antMatchers(HttpMethod.OPTIONS, "/categories/**", "/pricetiers/**", "/productimages/**", "/productspecifications/**", "/productvariants/**", "/products/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/categories/**", "/pricetiers/**", "/productimages/**", "/productspecifications/**", "/productvariants/**", "/products/**").permitAll()
                 .pathMatchers("/authen/**", "/actuator/**", "/users/**").permitAll()
                 .anyExchange().authenticated()
             )
