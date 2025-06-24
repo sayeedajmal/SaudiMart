@@ -1,13 +1,13 @@
 package com.saudiMart.Product.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.Contract;
-import com.saudiMart.Product.Model.ContractStatus;
+import com.saudiMart.Product.Model.Users;
+import com.saudiMart.Product.Model.Contract.ContractStatus;
 import com.saudiMart.Product.Repository.ContractRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
@@ -78,12 +78,12 @@ public class ContractService {
         contractRepository.deleteById(id);
     }
 
-    public List<Contract> getContractsByBuyerId(Long buyerId) {
-        return contractRepository.findByBuyerId(buyerId);
+    public List<Contract> getContractsByBuyer(Users user) {
+        return contractRepository.findByBuyer(user);
     }
 
-    public List<Contract> getContractsBySellerId(Long sellerId) {
-        return contractRepository.findBySellerId(sellerId);
+    public List<Contract> getContractsBySeller(Users user) {
+        return contractRepository.findBySeller(user);
     }
 
     public List<Contract> getContractsByStatus(ContractStatus status) {

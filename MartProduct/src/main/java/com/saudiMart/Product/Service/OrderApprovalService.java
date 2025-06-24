@@ -1,14 +1,17 @@
 package com.saudiMart.Product.Service;
 
-import com.saudiMart.Product.Model.OrderApproval;
-import com.saudiMart.Product.Model.enums.OrderApprovalStatus; // Assuming you create this enum
-import com.saudiMart.Product.Repository.OrderApprovalRepository;
-import com.saudiMart.Product.Utils.ProductException;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.saudiMart.Product.Model.Order;
+import com.saudiMart.Product.Model.OrderApproval;
+import com.saudiMart.Product.Model.OrderApproval.OrderApprovalStatus;
+import com.saudiMart.Product.Model.Users;
+import com.saudiMart.Product.Repository.OrderApprovalRepository;
+import com.saudiMart.Product.Utils.ProductException;
 
 @Service
 public class OrderApprovalService {
@@ -20,9 +23,9 @@ public class OrderApprovalService {
         return orderApprovalRepository.findAll();
     }
 
-    public OrderApproval getOrderApprovalById(Long id) throws ProductException {
+    public OrderApproval getOrderApprovalBy(Long id) throws ProductException {
         return orderApprovalRepository.findById(id)
-                .orElseThrow(() -> new ProductException("Order Approval not found with id: " + id));
+                .orElseThrow(() -> new ProductException("Order Approval not found with : " + id));
     }
 
     public OrderApproval createOrderApproval(OrderApproval orderApproval) throws ProductException {
@@ -49,22 +52,22 @@ public class OrderApprovalService {
                 orderApproval.setApprovalDate(orderApprovalDetails.getApprovalDate());
             return orderApprovalRepository.save(orderApproval);
         }
-        throw new ProductException("Order Approval not found with id: " + id);
+        throw new ProductException("Order Approval not found with : " + id);
     }
 
     public void deleteOrderApproval(Long id) throws ProductException {
         if (!orderApprovalRepository.existsById(id)) {
-            throw new ProductException("Order Approval not found with id: " + id);
+            throw new ProductException("Order Approval not found with : " + id);
         }
         orderApprovalRepository.deleteById(id);
     }
 
-    public List<OrderApproval> getOrderApprovalsByOrderId(Long orderId) {
-        return orderApprovalRepository.findByOrderId(orderId);
+    public List<OrderApproval> getOrderApprovalsByOrder(Order order) {
+        return orderApprovalRepository.findByOrder(order);
     }
 
-    public List<OrderApproval> getOrderApprovalsByApproverId(Long approverId) {
-        return orderApprovalRepository.findByApproverId(approverId);
+    public List<OrderApproval> getOrderApprovalsByApprover(Users approver) {
+        return orderApprovalRepository.findByApprover(approver);
     }
 
     public List<OrderApproval> getOrderApprovalsByStatus(OrderApprovalStatus status) {

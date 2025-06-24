@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.Address;
+import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Repository.AddressRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
@@ -25,8 +26,8 @@ public class AddressService {
                 .orElseThrow(() -> new ProductException("Address not found with id: " + id));
     }
 
-    public List<Address> getAddressesByUserId(Long userId) {
-        return addressRepository.findByUserId(userId);
+    public List<Address> getAddressesByUser(Users user) {
+        return addressRepository.findByUser(user);
     }
 
     public Address createAddress(Address address) throws ProductException {

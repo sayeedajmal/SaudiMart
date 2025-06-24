@@ -2,7 +2,6 @@ package com.saudiMart.Product.Model;
 
 import java.sql.Timestamp;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -23,37 +22,37 @@ import lombok.Data;
 
 @Entity
 @Table(name = "inventory", indexes = {
-    @Index(name = "idx_inventory_product_warehouse", columnList = "product_id,variant_id,warehouse_id"),
-    @Index(name = "idx_inventory_warehouse_id", columnList = "warehouse_id")
+        @Index(name = "idx_inventory_product_warehouse", columnList = "product_id,variant_id,warehouse_id"),
+        @Index(name = "idx_inventory_warehouse_id", columnList = "warehouse_id")
 }, uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"product_id", "variant_id", "warehouse_id"})
+        @UniqueConstraint(columnNames = { "product_id", "variant_id", "warehouse_id" })
 })
 @Data
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Inventory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
- @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Products product;
 
- @ManyToOne(fetch = FetchType.LAZY)
- @JoinColumn(name = "variant_id")
- private ProductVariant variant;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "variant_id")
+    private ProductVariant variant;
 
- @ManyToOne(fetch = FetchType.LAZY)
- @JoinColumn(name = "warehouse_id", nullable = false)
- private Warehouse warehouse;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouse_id", nullable = false)
+    private Warehouse warehouse;
 
     @Column(name = "quantity", nullable = false)
- @PositiveOrZero
+    @PositiveOrZero
     private Integer quantity = 0;
 
     @Column(name = "reserved_quantity", nullable = false)
- @PositiveOrZero
+    @PositiveOrZero
     private Integer reservedQuantity = 0;
 
     @Column(name = "created_at", updatable = false)

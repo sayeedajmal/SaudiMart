@@ -65,6 +65,9 @@ public class CreditApplication {
     @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
 
+    @Column(name = "on_update", updatable = true)
+    private LocalDateTime updatedAt;
+
     @PrePersist
     protected void onCreate() {
         applicationDate = LocalDateTime.now();
@@ -73,4 +76,5 @@ public class CreditApplication {
     public enum CreditApplicationStatus {
         PENDING, APPROVED, REJECTED, EXPIRED
     }
+
 }

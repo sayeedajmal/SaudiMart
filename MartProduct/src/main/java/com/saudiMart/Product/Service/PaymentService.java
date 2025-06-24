@@ -1,14 +1,15 @@
 package com.saudiMart.Product.Service;
 
-import com.saudiMart.Product.Model.Payment;
-import com.saudiMart.Product.Model.PaymentStatus; // Assuming PaymentStatus enum exists
-import com.saudiMart.Product.Repository.PaymentRepository;
-import com.saudiMart.Product.Utils.ProductException;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.saudiMart.Product.Model.Order;
+import com.saudiMart.Product.Model.Payment;
+import com.saudiMart.Product.Model.Payment.PaymentStatus;
+import com.saudiMart.Product.Repository.PaymentRepository;
+import com.saudiMart.Product.Utils.ProductException;
 
 @Service
 public class PaymentService {
@@ -25,8 +26,8 @@ public class PaymentService {
                 .orElseThrow(() -> new ProductException("Payment not found with id: " + id));
     }
 
-    public List<Payment> getPaymentsByOrderId(Long orderId) {
-        return paymentRepository.findByOrderId(orderId);
+    public List<Payment> getPaymentsByOrder(Order order) {
+        return paymentRepository.findByOrder(order);
     }
 
     public List<Payment> getPaymentsByPaymentStatus(PaymentStatus status) {

@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.Order;
-import com.saudiMart.Product.Model.OrderStatus;
+import com.saudiMart.Product.Model.Order.OrderStatus;
+import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Repository.OrderRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
@@ -27,12 +28,12 @@ public class OrderService {
                 .orElseThrow(() -> new ProductException("Order not found with id: " + id));
     }
 
-    public List<Order> getOrdersByBuyerId(Long buyerId) {
-        return orderRepository.findByBuyerId(buyerId);
+    public List<Order> getOrdersByBuyer(Users user) {
+        return orderRepository.findByBuyer(user);
     }
 
-    public List<Order> getOrdersBySellerId(Long sellerId) {
-        return orderRepository.findBySellerId(sellerId);
+    public List<Order> getOrdersBySeller(Users user) {
+        return orderRepository.findBySeller(user);
     }
 
     public List<Order> getOrdersByStatus(OrderStatus status) {
@@ -47,7 +48,6 @@ public class OrderService {
         if (order == null) {
             throw new ProductException("Order cannot be null");
         }
-        // Additional validation or business logic can be added here before saving
         return orderRepository.save(order);
     }
 
@@ -58,7 +58,6 @@ public class OrderService {
         Optional<Order> orderOptional = orderRepository.findById(id);
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
-            // Update fields based on orderDetails
             if (orderDetails.getShippingAddress() != null)
                 order.setShippingAddress(orderDetails.getShippingAddress());
             if (orderDetails.getBillingAddress() != null)
@@ -87,9 +86,6 @@ public class OrderService {
                 order.setDiscountAmount(orderDetails.getDiscountAmount());
             if (orderDetails.getTotalPrice() != null)
                 order.setTotalPrice(orderDetails.getTotalPrice());
-
-            // Relationships like buyer, seller, contract should ideally not be changed in an update method like this
-            // If needed, separate methods for handling relationship updates should be considered.
 
             return orderRepository.save(order);
         }

@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Model.Warehouse;
 import com.saudiMart.Product.Repository.WarehouseRepository;
 import com.saudiMart.Product.Utils.ProductException;
@@ -25,8 +26,8 @@ public class WarehouseService {
                 .orElseThrow(() -> new ProductException("Warehouse not found with id: " + id));
     }
 
-    public List<Warehouse> getWarehousesBySellerId(Long sellerId) {
-        return warehouseRepository.findBySellerId(sellerId);
+    public List<Warehouse> getWarehousesBySeller(Users user) {
+        return warehouseRepository.findBySeller(user);
     }
 
     public Warehouse createWarehouse(Warehouse warehouse) throws ProductException {

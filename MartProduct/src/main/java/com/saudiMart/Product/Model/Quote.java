@@ -26,7 +26,7 @@ import lombok.Data;
         @Index(name = "idx_quotes_buyer_seller", columnList = "buyer_id, seller_id"),
         @Index(name = "idx_quotes_status", columnList = "status")
 }, uniqueConstraints = {
-    @UniqueConstraint(columnNames = "quote_number")
+        @UniqueConstraint(columnNames = "quote_number")
 })
 @Data
 public class Quote {

@@ -23,8 +23,8 @@ public class ProductVariantService {
     @Autowired
     private ProductsRepository productsRepository;
 
- @Autowired
- private PriceTierRepository priceTierRepository;
+    @Autowired
+    private PriceTierRepository priceTierRepository;
 
     public List<ProductVariant> getAllProductVariants() {
         return productVariantRepository.findAll();
@@ -79,9 +79,9 @@ public class ProductVariantService {
                 productVariant.setSku(productVariantDetails.getSku());
             }
             if (productVariantDetails.getVariantName() != null)
- productVariant.setVariantName(productVariantDetails.getVariantName());
- // additionalPrice removed as per schema change
- if (productVariantDetails.getBasePrice() != null)
+                productVariant.setVariantName(productVariantDetails.getVariantName());
+            // additionalPrice removed as per schema change
+            if (productVariantDetails.getBasePrice() != null)
                 productVariant.setBasePrice(productVariantDetails.getBasePrice());
             if (productVariantDetails.getAvailable() != null)
                 productVariant.setAvailable(productVariantDetails.getAvailable());
@@ -136,6 +136,6 @@ public class ProductVariantService {
 
     public List<PriceTier> getPriceTiersByVariantId(Long variantId) throws ProductException {
         ProductVariant variant = getProductVariantById(variantId);
- return priceTierRepository.findByVariant(variant);
+        return priceTierRepository.findByVariant(variant);
     }
 }

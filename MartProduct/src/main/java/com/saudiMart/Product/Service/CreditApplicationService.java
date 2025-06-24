@@ -1,5 +1,6 @@
 package com.saudiMart.Product.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.CreditApplication;
-import com.saudiMart.Product.Model.CreditApplicationStatus; // Assuming you create this enum
+import com.saudiMart.Product.Model.CreditApplication.CreditApplicationStatus;
+import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Repository.CreditApplicationRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
@@ -58,8 +60,7 @@ public class CreditApplicationService {
             if (creditApplicationDetails.getNotes() != null)
                 existingCreditApplication.setNotes(creditApplicationDetails.getNotes());
 
-            // You might want to update updated_at here manually or rely on @PreUpdate
-            // existingCreditApplication.setUpdatedAt(LocalDateTime.now());
+            existingCreditApplication.setUpdatedAt(LocalDateTime.now());
 
             return creditApplicationRepository.save(existingCreditApplication);
         }
@@ -73,19 +74,19 @@ public class CreditApplicationService {
         creditApplicationRepository.deleteById(id);
     }
 
-    public List<CreditApplication> getCreditApplicationsByBuyerId(Long buyerId) {
-        return creditApplicationRepository.findByBuyerId(buyerId);
+    public List<CreditApplication> getCreditApplicationsByBuyer(Users user) {
+        return creditApplicationRepository.findByBuyer(user);
     }
 
-    public List<CreditApplication> getCreditApplicationsBySellerId(Long sellerId) {
-        return creditApplicationRepository.findBySellerId(sellerId);
+    public List<CreditApplication> getCreditApplicationsBySeller(Users user) {
+        return creditApplicationRepository.findBySeller(user);
     }
 
     public List<CreditApplication> getCreditApplicationsByStatus(CreditApplicationStatus status) {
         return creditApplicationRepository.findByStatus(status);
     }
 
-    public List<CreditApplication> getCreditApplicationsByReviewerId(Long reviewerId) {
-        return creditApplicationRepository.findByReviewerId(reviewerId);
+    public List<CreditApplication> getCreditApplicationsByReviewerId(Users user) {
+        return creditApplicationRepository.findByReviewer(user);
     }
 }

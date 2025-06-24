@@ -6,7 +6,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.saudiMart.Product.Model.Contract;
 import com.saudiMart.Product.Model.ContractItem;
+import com.saudiMart.Product.Model.ProductVariant;
+import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Repository.ContractItemRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
@@ -25,18 +28,17 @@ public class ContractItemService {
                 .orElseThrow(() -> new ProductException("Contract Item not found with id: " + id));
     }
 
-    public List<ContractItem> getContractItemsByContractId(Long contractId) {
-        return contractItemRepository.findByContractId(contractId);
+    public List<ContractItem> getContractItemsByContract(Contract contract) {
+        return contractItemRepository.findByContract(contract);
     }
 
-    public List<ContractItem> getContractItemsByProductId(Long productId) {
-        return contractItemRepository.findByProductId(productId);
+    public List<ContractItem> getContractItemsByProduct(Products products) {
+        return contractItemRepository.findByProduct(products);
     }
 
-    public List<ContractItem> getContractItemsByVariantId(Long variantId) {
-        return contractItemRepository.findByVariantId(variantId);
+    public List<ContractItem> getContractItemsByVariant(ProductVariant variant) {
+        return contractItemRepository.findByVariant(variant);
     }
-
 
     public ContractItem createContractItem(ContractItem contractItem) throws ProductException {
         if (contractItem == null) {
@@ -64,7 +66,7 @@ public class ContractItemService {
             if (contractItemDetails.getDiscountPercent() != null) {
                 contractItem.setDiscountPercent(contractItemDetails.getDiscountPercent());
             }
-             if (contractItemDetails.getIsActive() != null) {
+            if (contractItemDetails.getIsActive() != null) {
                 contractItem.setIsActive(contractItemDetails.getIsActive());
             }
             // Assuming product and variant are not changed during update of a contract item

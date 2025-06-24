@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.saudiMart.Product.Model.Order;
 import com.saudiMart.Product.Model.OrderItem;
+import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Repository.OrderItemRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
@@ -20,17 +22,17 @@ public class OrderItemService {
         return orderItemRepository.findAll();
     }
 
-    public OrderItem getOrderItemById(Long id) throws ProductException {
+    public OrderItem getOrderItemBy(Long id) throws ProductException {
         return orderItemRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Order item not found with id: " + id));
     }
 
-    public List<OrderItem> getOrderItemsByOrderId(Long orderId) {
-        return orderItemRepository.findByOrderId(orderId);
+    public List<OrderItem> getOrderItemsByOrder(Order order) {
+        return orderItemRepository.findByOrder(order);
     }
 
-    public List<OrderItem> getOrderItemsByProductId(Long productId) {
-        return orderItemRepository.findByProductId(productId);
+    public List<OrderItem> getOrderItemsByProduct(Products product) {
+        return orderItemRepository.findByProduct(product);
     }
 
     public OrderItem createOrderItem(OrderItem orderItem) throws ProductException {
@@ -63,10 +65,13 @@ public class OrderItemService {
                 orderItem.setStatus(orderItemDetails.getStatus());
             if (orderItemDetails.getNotes() != null)
                 orderItem.setNotes(orderItemDetails.getNotes());
-            // Relationships should be handled carefully, maybe in a higher-level service
-            // if (orderItemDetails.getOrder() != null) orderItem.setOrder(orderItemDetails.getOrder());
-            // if (orderItemDetails.getProduct() != null) orderItem.setProduct(orderItemDetails.getProduct());
-            // if (orderItemDetails.getVariant() != null) orderItem.setVariant(orderItemDetails.getVariant());
+
+            if (orderItemDetails.getOrder() != null)
+                orderItem.setOrder(orderItemDetails.getOrder());
+            if (orderItemDetails.getProduct() != null)
+                orderItem.setProduct(orderItemDetails.getProduct());
+            if (orderItemDetails.getVariant() != null)
+                orderItem.setVariant(orderItemDetails.getVariant());
             return orderItemRepository.save(orderItem);
         }
         throw new ProductException("Order item not found with id: " + id);

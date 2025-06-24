@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.saudiMart.Product.Model.CreditApplication;
-import com.saudiMart.Product.Model.CreditApplicationStatus;
+import com.saudiMart.Product.Model.CreditApplication.CreditApplicationStatus;
 import com.saudiMart.Product.Model.Users;
 
 @Repository

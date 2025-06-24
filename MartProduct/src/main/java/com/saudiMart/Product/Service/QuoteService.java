@@ -1,14 +1,16 @@
 package com.saudiMart.Product.Service;
 
-import com.saudiMart.Product.Model.Quote;
-import com.saudiMart.Product.Model.QuoteStatus; // Assuming QuoteStatus enum is created
-import com.saudiMart.Product.Repository.QuoteRepository;
-import com.saudiMart.Product.Utils.ProductException;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.saudiMart.Product.Model.Quote;
+import com.saudiMart.Product.Model.Users;
+import com.saudiMart.Product.Model.Quote.QuoteStatus;
+import com.saudiMart.Product.Repository.QuoteRepository;
+import com.saudiMart.Product.Utils.ProductException;
 
 @Service
 public class QuoteService {
@@ -74,12 +76,12 @@ public class QuoteService {
         quoteRepository.deleteById(id);
     }
 
-    public List<Quote> getQuotesByBuyerId(Long buyerId) {
-        return quoteRepository.findByBuyerId(buyerId);
+    public List<Quote> getQuotesByBuyer(Users user) {
+        return quoteRepository.findByBuyer(user);
     }
 
-    public List<Quote> getQuotesBySellerId(Long sellerId) {
-        return quoteRepository.findBySellerId(sellerId);
+    public List<Quote> getQuotesBySeller(Users user) {
+        return quoteRepository.findBySeller(user);
     }
 
     public List<Quote> getQuotesByStatus(QuoteStatus status) {

@@ -55,7 +55,8 @@ public class QuoteItem {
     private BigDecimal discountPercent = BigDecimal.ZERO;
 
     @NotNull
-    @PositiveOrZero(message = "Total price must be zero or positive") // Schema has > 0 check, but derived value could be 0
+    @PositiveOrZero(message = "Total price must be zero or positive") // Schema has > 0 check, but derived value could
+                                                                      // be 0
     @Column(name = "total_price", nullable = false, precision = 12, scale = 2)
     private BigDecimal totalPrice;
 }

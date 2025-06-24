@@ -69,9 +69,13 @@ public class Users implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.password;
+        return "haha how dumb you are";
     }
 
+
+    public void setPassword(String password) {
+        
+    }
     @Override
     public String getUsername() {
         return this.email; // Using email as the username for UserDetails
