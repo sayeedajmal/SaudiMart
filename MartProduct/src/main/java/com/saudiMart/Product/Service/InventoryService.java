@@ -30,6 +30,7 @@ public class InventoryService {
 
     public List<Inventory> getInventoryByProduct(Products product) {
         return inventoryRepository.findByProduct(product);
+
     }
 
     public List<Inventory> getInventoryByVariant(ProductVariant variant) {

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,11 +18,27 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class GatewayAuthFilter extends OncePerRequestFilter {
 
+    @SuppressWarnings("null")
     @Override
-    protected void doFilterInternal(@SuppressWarnings("null") HttpServletRequest request,
-            @SuppressWarnings("null") HttpServletResponse response, @SuppressWarnings("null") FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+        String method = request.getMethod();
+
+        // Skip public endpoints
+        if ((HttpMethod.GET.matches(method) && path.matches("^/(products|categories)(/.*)?$")) ||
+                (HttpMethod.OPTIONS.matches(method) && path.matches("^/(products|categories)(/.*)?$"))) {
+
+            System.out.println("ITS FROM THE PRODUCT OPENED ENDPOINT, HERE'S THE PATH: " + path);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        System.out.println("Hello! I am Pinged here");
+
+        // Extract Gateway-passed headers
         String userId = request.getHeader("X-User-Id");
         String userRoles = request.getHeader("X-User-Roles");
 
@@ -31,9 +48,7 @@ public class GatewayAuthFilter extends OncePerRequestFilter {
                     .collect(Collectors.toList());
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userId,
-                    null,
-                    authorities);
+                    userId, null, authorities);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

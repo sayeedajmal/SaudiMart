@@ -35,13 +35,11 @@ public class CategoryController {
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(new ResponseWrapper<>(200, "All categories fetched successfully", categories));
     }
-
     @GetMapping
     public ResponseEntity<ResponseWrapper<List<Category>>> getAllActiveCategoriesByName(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Boolean isActive) throws ProductException {
         List<Category> categories = categoryService.getAllActiveCategoriesByName(name, isActive);
-
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Category fetched successfully", categories));
     }
 

@@ -35,42 +35,53 @@ public class CreditApplicationController {
     @GetMapping
     public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getAllCreditApplications() {
         List<CreditApplication> creditApplications = creditApplicationService.getAllCreditApplications();
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all credit applications", creditApplications));
+        return ResponseEntity
+                .ok(new ResponseWrapper<>(200, "Successfully retrieved all credit applications", creditApplications));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseWrapper<CreditApplication>> getCreditApplicationById(@PathVariable Long id) {
         try {
             CreditApplication creditApplication = creditApplicationService.getCreditApplicationById(id);
-            return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved credit application", creditApplication));
+            return ResponseEntity
+                    .ok(new ResponseWrapper<>(200, "Successfully retrieved credit application", creditApplication));
         } catch (ProductException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
         }
     }
 
     @PostMapping
-    public ResponseEntity<ResponseWrapper<CreditApplication>> createCreditApplication(@RequestBody CreditApplication creditApplication) {
+    public ResponseEntity<ResponseWrapper<CreditApplication>> createCreditApplication(
+            @RequestBody CreditApplication creditApplication) {
         try {
-            CreditApplication createdCreditApplication = creditApplicationService.createCreditApplication(creditApplication);
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseWrapper<>(201, "Successfully created credit application", createdCreditApplication));
+            CreditApplication createdCreditApplication = creditApplicationService
+                    .createCreditApplication(creditApplication);
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    new ResponseWrapper<>(201, "Successfully created credit application", createdCreditApplication));
         } catch (ProductException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseWrapper<>(400, e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<CreditApplication>> updateCreditApplication(@PathVariable Long id, @RequestBody CreditApplication creditApplicationDetails) {
+    public ResponseEntity<ResponseWrapper<CreditApplication>> updateCreditApplication(@PathVariable Long id,
+            @RequestBody CreditApplication creditApplicationDetails) {
         try {
-            CreditApplication updatedCreditApplication = creditApplicationService.updateCreditApplication(id, creditApplicationDetails);
-            return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully updated credit application", updatedCreditApplication));
+            CreditApplication updatedCreditApplication = creditApplicationService.updateCreditApplication(id,
+                    creditApplicationDetails);
+            return ResponseEntity.ok(
+                    new ResponseWrapper<>(200, "Successfully updated credit application", updatedCreditApplication));
         } catch (ProductException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
         }
     }
 
@@ -82,31 +93,40 @@ public class CreditApplicationController {
         } catch (ProductException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
         }
     }
 
     @GetMapping("/buyer/{userId}")
-    public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsByBuyer(@PathVariable Users userId) {
+    public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsByBuyer(
+            @PathVariable Users userId) {
         List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsByBuyer(userId);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved credit applications by buyer", creditApplications));
+        return ResponseEntity.ok(
+                new ResponseWrapper<>(200, "Successfully retrieved credit applications by buyer", creditApplications));
     }
 
     @GetMapping("/seller/{userId}")
-    public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsBySeller(@PathVariable Users userId) {
+    public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsBySeller(
+            @PathVariable Users userId) {
         List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsBySeller(userId);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved credit applications by seller", creditApplications));
+        return ResponseEntity.ok(
+                new ResponseWrapper<>(200, "Successfully retrieved credit applications by seller", creditApplications));
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsByStatus(@PathVariable CreditApplicationStatus status) {
+    public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsByStatus(
+            @PathVariable CreditApplicationStatus status) {
         List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsByStatus(status);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved credit applications by status", creditApplications));
+        return ResponseEntity.ok(
+                new ResponseWrapper<>(200, "Successfully retrieved credit applications by status", creditApplications));
     }
 
     @GetMapping("/reviewer/{userId}")
-    public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsByReviewer(@PathVariable Users userId) {
+    public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsByReviewer(
+            @PathVariable Users userId) {
         List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsByReviewer(userId);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved credit applications by reviewer", creditApplications));
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved credit applications by reviewer",
+                creditApplications));
     }
 }

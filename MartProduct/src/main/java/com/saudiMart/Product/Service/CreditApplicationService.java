@@ -86,7 +86,7 @@ public class CreditApplicationService {
         return creditApplicationRepository.findByStatus(status);
     }
 
-    public List<CreditApplication> getCreditApplicationsByReviewerId(Users user) {
+    public List<CreditApplication> getCreditApplicationsByReviewer(Users user) {
         return creditApplicationRepository.findByReviewer(user);
     }
 }

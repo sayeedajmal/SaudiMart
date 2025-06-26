@@ -27,14 +27,9 @@ public class QuoteItemController {
     private QuoteItemService quoteItemService;
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getAllQuoteItems() {
-        try {
-            List<QuoteItem> quoteItems = quoteItemService.getAllQuoteItems();
-            return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all quote items.", quoteItems));
-        } catch (ProductException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), null));
-        }
+    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getAllQuoteItems() throws ProductException {
+        List<QuoteItem> quoteItems = quoteItemService.getAllQuoteItems();
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all quote items.", quoteItems));
     }
 
     @GetMapping("/{id}")
@@ -56,7 +51,8 @@ public class QuoteItemController {
         try {
             QuoteItem createdQuoteItem = quoteItemService.createQuoteItem(quoteItem);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(new ResponseWrapper<>(HttpStatus.CREATED.value(), "Successfully created quote item.", createdQuoteItem));
+                    .body(new ResponseWrapper<>(HttpStatus.CREATED.value(), "Successfully created quote item.",
+                            createdQuoteItem));
         } catch (ProductException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseWrapper<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null));
@@ -96,35 +92,26 @@ public class QuoteItemController {
     }
 
     @GetMapping("/quote/{quoteId}")
-    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByQuoteId(@PathVariable Long quoteId) {
-        try {
-            List<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByQuoteId(quoteId);
-            return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved quote items by quote ID.", quoteItems));
-        } catch (ProductException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), null));
-        }
+    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByQuoteId(@PathVariable Long quoteId)
+            throws ProductException {
+        List<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByQuoteId(quoteId);
+        return ResponseEntity
+                .ok(new ResponseWrapper<>(200, "Successfully retrieved quote items by quote ID.", quoteItems));
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByProductId(@PathVariable Long productId) {
-        try {
-            List<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByProductId(productId);
-            return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved quote items by product ID.", quoteItems));
-        } catch (ProductException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), null));
-        }
+    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByProductId(@PathVariable Long productId)
+            throws ProductException {
+        List<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByProductId(productId);
+        return ResponseEntity
+                .ok(new ResponseWrapper<>(200, "Successfully retrieved quote items by product ID.", quoteItems));
     }
 
     @GetMapping("/variant/{variantId}")
-    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByVariantId(@PathVariable Long variantId) {
-        try {
-            List<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByVariantId(variantId);
-            return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved quote items by variant ID.", quoteItems));
-        } catch (ProductException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), null));
-        }
+    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByVariantId(@PathVariable Long variantId)
+            throws ProductException {
+        List<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByVariantId(variantId);
+        return ResponseEntity
+                .ok(new ResponseWrapper<>(200, "Successfully retrieved quote items by variant ID.", quoteItems));
     }
 }

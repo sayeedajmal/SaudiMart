@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,9 +34,13 @@ public class JwtAuthenticationFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         var request = exchange.getRequest();
         var response = exchange.getResponse();
+        String path = request.getPath().value();
+        HttpMethod method = request.getMethod();
 
-        // Skip public endpoints
-        if (request.getPath().value().matches("^/(authen|actuator|users)(/.*)?$")) {
+        if (path.matches("^/(authen|actuator|users)(/.*)?$") ||
+                (HttpMethod.GET.equals(method) && path.matches("^/(products|categories)(/.*)?$")) ||
+                (HttpMethod.OPTIONS.equals(method) && path.matches("^/(products|categories)(/.*)?$"))) {
+                System.out.println("ITS FROM THE GATEWAY OPENEND POINT HERES THE PATH: "+path);
             return chain.filter(exchange);
         }
 
@@ -76,7 +81,7 @@ public class JwtAuthenticationFilter implements WebFilter {
         // Set authentication in the security context
         var auth = new UsernamePasswordAuthenticationToken(userId, null, authorities);
         var ctx = new SecurityContextImpl(auth);
-
+        System.out.println("ITS FROM THE GATEWAY WITH AUTHORIZATION HERE IS THE PATH: "+path);
         return chain.filter(exchange.mutate().request(modifiedRequest).build())
                 .contextWrite(ReactiveSecurityContextHolder.withSecurityContext(Mono.just(ctx)));
     }

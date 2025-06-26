@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.saudiMart.Product.Model.Contract;
 import com.saudiMart.Product.Model.ContractItem;
+import com.saudiMart.Product.Model.ProductVariant;
+import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Service.ContractItemService;
 import com.saudiMart.Product.Utils.ProductException;
@@ -29,7 +32,8 @@ public class ContractItemController {
     @GetMapping
     public ResponseEntity<ResponseWrapper<List<ContractItem>>> getAllContractItems() throws ProductException {
         List<ContractItem> contractItems = contractItemService.getAllContractItems();
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all contract items", contractItems));
+        return ResponseEntity
+                .ok(new ResponseWrapper<>(200, "Successfully retrieved all contract items", contractItems));
     }
 
     @GetMapping("/{id}")
@@ -61,25 +65,25 @@ public class ContractItemController {
     }
 
     @GetMapping("/contract/{contractId}")
-    public ResponseEntity<ResponseWrapper<List<ContractItem>>> getContractItemsByContractId(
-            @PathVariable Long contractId) throws ProductException {
-        List<ContractItem> contractItems = contractItemService.getContractItemsByContractId(contractId);
+    public ResponseEntity<ResponseWrapper<List<ContractItem>>> getContractItemsByContract(
+            Contract contract) throws ProductException {
+        List<ContractItem> contractItems = contractItemService.getContractItemsByContract(contract);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved contract items by contract ID", contractItems));
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<ResponseWrapper<List<ContractItem>>> getContractItemsByProductId(
-            @PathVariable Long productId) throws ProductException {
-        List<ContractItem> contractItems = contractItemService.getContractItemsByProductId(productId);
+    public ResponseEntity<ResponseWrapper<List<ContractItem>>> getContractItemsByProduct(
+            Products product) throws ProductException {
+        List<ContractItem> contractItems = contractItemService.getContractItemsByProduct(product);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved contract items by product ID", contractItems));
     }
 
     @GetMapping("/variant/{variantId}")
-    public ResponseEntity<ResponseWrapper<List<ContractItem>>> getContractItemsByVariantId(
-            @PathVariable Long variantId) throws ProductException {
-        List<ContractItem> contractItems = contractItemService.getContractItemsByVariantId(variantId);
+    public ResponseEntity<ResponseWrapper<List<ContractItem>>> getContractItemsByVariant(
+            ProductVariant variant) throws ProductException {
+        List<ContractItem> contractItems = contractItemService.getContractItemsByVariant(variant);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved contract items by variant ID", contractItems));
     }
