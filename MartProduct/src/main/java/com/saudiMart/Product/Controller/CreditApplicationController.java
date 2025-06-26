@@ -19,6 +19,7 @@ import com.saudiMart.Product.Model.CreditApplication.CreditApplicationStatus;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Service.CreditApplicationService;
+import com.saudiMart.Product.Service.UserService;
 import com.saudiMart.Product.Utils.ProductException;
 
 @RestController
@@ -27,9 +28,12 @@ public class CreditApplicationController {
 
     private final CreditApplicationService creditApplicationService;
 
+    private final UserService userService;
+
     @Autowired
-    public CreditApplicationController(CreditApplicationService creditApplicationService) {
+    public CreditApplicationController(CreditApplicationService creditApplicationService, UserService userService) {
         this.creditApplicationService = creditApplicationService;
+ this.userService = userService;
     }
 
     @GetMapping
@@ -100,33 +104,57 @@ public class CreditApplicationController {
 
     @GetMapping("/buyer/{userId}")
     public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsByBuyer(
-            @PathVariable Users userId) {
-        List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsByBuyer(userId);
-        return ResponseEntity.ok(
-                new ResponseWrapper<>(200, "Successfully retrieved credit applications by buyer", creditApplications));
+ @PathVariable String userId) {
+ try {
+ Users user = userService.getUserById(userId);
+ List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsByBuyer(user);
+ return ResponseEntity.ok(
+ new ResponseWrapper<>(200, "Successfully retrieved credit applications by buyer", creditApplications));
+ } catch (ProductException e) {
+ return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
+ } catch (Exception e) {
+ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+ .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
+ }
     }
 
     @GetMapping("/seller/{userId}")
     public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsBySeller(
-            @PathVariable Users userId) {
-        List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsBySeller(userId);
-        return ResponseEntity.ok(
-                new ResponseWrapper<>(200, "Successfully retrieved credit applications by seller", creditApplications));
+ @PathVariable String userId) {
+ try {
+ Users user = userService.getUserById(userId);
+ List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsBySeller(user);
+ return ResponseEntity.ok(
+ new ResponseWrapper<>(200, "Successfully retrieved credit applications by seller", creditApplications));
+ } catch (ProductException e) {
+ return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
+ } catch (Exception e) {
+ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+ .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
+ }
     }
 
     @GetMapping("/status/{status}")
     public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsByStatus(
             @PathVariable CreditApplicationStatus status) {
         List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsByStatus(status);
-        return ResponseEntity.ok(
-                new ResponseWrapper<>(200, "Successfully retrieved credit applications by status", creditApplications));
+ return ResponseEntity.ok(
+ new ResponseWrapper<>(200, "Successfully retrieved credit applications by status", creditApplications));
     }
 
     @GetMapping("/reviewer/{userId}")
     public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsByReviewer(
-            @PathVariable Users userId) {
-        List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsByReviewer(userId);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved credit applications by reviewer",
-                creditApplications));
+ @PathVariable String userId) {
+ try {
+ Users user = userService.getUserById(userId);
+ List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsByReviewer(user);
+ return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved credit applications by reviewer",
+ creditApplications));
+ } catch (ProductException e) {
+ return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
+ } catch (Exception e) {
+ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+ .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
+ }
     }
 }

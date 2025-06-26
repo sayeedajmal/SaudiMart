@@ -19,11 +19,14 @@ import com.saudiMart.Product.Model.Contract.ContractStatus;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Service.ContractService;
+import com.saudiMart.Product.Service.UserService;
 import com.saudiMart.Product.Utils.ProductException;
 
 @RestController
 @RequestMapping("/contracts")
 public class ContractController {
+    @Autowired
+    private UserService userService;
 
     private final ContractService contractService;
 
@@ -66,16 +69,18 @@ public class ContractController {
     }
 
     @GetMapping("/buyer/{userId}")
-    public ResponseEntity<ResponseWrapper<List<Contract>>> getContractsByBuyer(Users user)
+    public ResponseEntity<ResponseWrapper<List<Contract>>> getContractsByBuyer(@PathVariable String userId)
             throws ProductException {
+        Users user = userService.getUserById(userId); // Fetch the User object
         List<Contract> contracts = contractService.getContractsByBuyer(user);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved contracts for buyer", contracts));
     }
 
     @GetMapping("/seller/{userId}")
-    public ResponseEntity<ResponseWrapper<List<Contract>>> getContractsBySeller(Users users)
+    public ResponseEntity<ResponseWrapper<List<Contract>>> getContractsBySeller(@PathVariable String userId)
             throws ProductException {
-        List<Contract> contracts = contractService.getContractsBySeller(users);
+        Users seller = userService.getUserById(userId); // Fetch the User object
+        List<Contract> contracts = contractService.getContractsBySeller(seller);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved contracts for seller", contracts));
     }
 

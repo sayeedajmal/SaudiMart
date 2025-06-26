@@ -19,6 +19,7 @@ import com.saudiMart.Product.Model.Quote.QuoteStatus;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Service.QuoteService;
+import com.saudiMart.Product.Service.UserService;
 import com.saudiMart.Product.Utils.ProductException;
 
 @RestController
@@ -27,9 +28,12 @@ public class QuoteController {
 
     private final QuoteService quoteService;
 
+ private final UserService userService;
+
     @Autowired
-    public QuoteController(QuoteService quoteService) {
+    public QuoteController(QuoteService quoteService, UserService userService) {
         this.quoteService = quoteService;
+ this.userService = userService;
     }
 
     @GetMapping
@@ -65,20 +69,16 @@ public class QuoteController {
     }
 
     @GetMapping("/buyer/{userId}")
-    public ResponseEntity<ResponseWrapper<List<Quote>>> getQuotesByBuyer(@PathVariable Users userId) {
-        // Note: Assuming the Users object can be resolved from the path variable
-        // based on its ID by Spring or a custom argument resolver.
-        // You might need to adjust this based on how user IDs are handled.
-        List<Quote> quotes = quoteService.getQuotesByBuyer(userId);
+ public ResponseEntity<ResponseWrapper<List<Quote>>> getQuotesByBuyer(@PathVariable String userId) throws ProductException {
+ Users buyer = userService.getUserById(userId);
+ List<Quote> quotes = quoteService.getQuotesByBuyer(buyer);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved quotes by buyer", quotes));
     }
 
     @GetMapping("/seller/{userId}")
-    public ResponseEntity<ResponseWrapper<List<Quote>>> getQuotesBySeller(@PathVariable Users userId) {
-        // Note: Assuming the Users object can be resolved from the path variable
-        // based on its ID by Spring or a custom argument resolver.
-        // You might need to adjust this based on how user IDs are handled.
-        List<Quote> quotes = quoteService.getQuotesBySeller(userId);
+ public ResponseEntity<ResponseWrapper<List<Quote>>> getQuotesBySeller(@PathVariable String userId) throws ProductException {
+ Users users = userService.getUserById(userId);
+        List<Quote> quotes = quoteService.getQuotesBySeller(users);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved quotes by seller", quotes));
     }
 
