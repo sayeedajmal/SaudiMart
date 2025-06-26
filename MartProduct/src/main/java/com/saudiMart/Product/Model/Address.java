@@ -22,7 +22,7 @@ import lombok.Data;
 
 @Entity
 @Table(name = "addresses", indexes = {
-    @Index(name = "idx_addresses_user_id", columnList = "user_id")
+        @Index(name = "idx_addresses_user_id", columnList = "user_id")
 })
 @Data
 public class Address {

@@ -1,7 +1,9 @@
 package com.saudimart.Gateway.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpStatus;
@@ -10,15 +12,13 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.server.ServerWebExchange;
+
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.Map;
-
-@Configuration
-@Order(-1) // Ensure this exception handler is ordered before default handlers
+@Order(-1)
 public class GatewayErrorWebExceptionHandler implements ErrorWebExceptionHandler {
 
+    @SuppressWarnings("null")
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
         ServerHttpResponse response = exchange.getResponse();
