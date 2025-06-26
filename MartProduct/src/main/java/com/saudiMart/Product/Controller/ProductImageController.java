@@ -33,7 +33,7 @@ public class ProductImageController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<ProductImage>> getProductImageById(@PathVariable Long id)
+    public ResponseEntity<ResponseWrapper<ProductImage>> getProductImageById(@PathVariable String id)
             throws ProductException {
         ProductImage productImage = productImageService.getProductImageById(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved product image.", productImage));
@@ -48,7 +48,7 @@ public class ProductImageController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<ProductImage>> updateProductImage(@PathVariable Long id,
+    public ResponseEntity<ResponseWrapper<ProductImage>> updateProductImage(@PathVariable String id,
             @RequestBody ProductImage productImageDetails) throws ProductException {
         ProductImage updatedProductImage = productImageService.updateProductImage(id, productImageDetails);
         return ResponseEntity
@@ -56,7 +56,7 @@ public class ProductImageController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteProductImage(@PathVariable Long id) throws ProductException {
+    public ResponseEntity<ResponseWrapper<Void>> deleteProductImage(@PathVariable String id) throws ProductException {
         productImageService.deleteProductImage(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted product image.", null));
     }

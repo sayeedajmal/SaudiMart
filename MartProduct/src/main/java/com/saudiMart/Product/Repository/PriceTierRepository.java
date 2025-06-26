@@ -10,7 +10,7 @@ import com.saudiMart.Product.Model.PriceTier;
 import com.saudiMart.Product.Model.ProductVariant;
 
 @Repository
-public interface PriceTierRepository extends JpaRepository<PriceTier, Long> {
+public interface PriceTierRepository extends JpaRepository<PriceTier, String> {
 
     List<PriceTier> findByMinQuantityGreaterThanEqual(Integer minQty);
 

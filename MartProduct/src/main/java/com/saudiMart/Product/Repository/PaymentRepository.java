@@ -10,7 +10,7 @@ import com.saudiMart.Product.Model.Payment;
 import com.saudiMart.Product.Model.Payment.PaymentStatus;
 
 @Repository
-public interface PaymentRepository extends JpaRepository<Payment, Long> {
+public interface PaymentRepository extends JpaRepository<Payment, String> {
 
     List<Payment> findByOrder(Order order);
 

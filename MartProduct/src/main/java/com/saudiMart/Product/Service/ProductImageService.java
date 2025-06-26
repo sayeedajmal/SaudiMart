@@ -30,24 +30,24 @@ public class ProductImageService {
         return productImageRepository.findAll();
     }
 
-    public ProductImage getProductImageById(Long productImageId) throws ProductException {
+    public ProductImage getProductImageById(String productImageId) throws ProductException {
         return productImageRepository.findById(productImageId)
                 .orElseThrow(() -> new ProductException("Product image not found with id: " + productImageId));
     }
 
-    public List<ProductImage> getProductImagesByProductId(Long productId) throws ProductException {
+    public List<ProductImage> getProductImagesByProductId(String productId) throws ProductException {
         Products product = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
         return productImageRepository.findByProduct(product);
     }
 
-    public List<ProductImage> getProductImagesByVariantId(Long variantId) throws ProductException {
+    public List<ProductImage> getProductImagesByVariantId(String variantId) throws ProductException {
         ProductVariant variant = productVariantRepository.findById(variantId)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
         return productImageRepository.findByVariant(variant);
     }
 
-    public Optional<ProductImage> getPrimaryProductImageByProductId(Long productId) throws ProductException {
+    public Optional<ProductImage> getPrimaryProductImageByProductId(String productId) throws ProductException {
         Products product = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
         return productImageRepository.findByProductAndIsPrimaryTrue(product).stream().findFirst();
@@ -60,7 +60,7 @@ public class ProductImageService {
         return productImageRepository.save(productImage);
     }
 
-    public ProductImage updateProductImage(Long productImageId, ProductImage productImageDetails)
+    public ProductImage updateProductImage(String productImageId, ProductImage productImageDetails)
             throws ProductException {
         if (productImageDetails == null) {
             throw new ProductException("Product image details cannot be null");
@@ -81,7 +81,7 @@ public class ProductImageService {
         return productImageRepository.save(productImage);
     }
 
-    public void deleteProductImage(Long productImageId) throws ProductException {
+    public void deleteProductImage(String productImageId) throws ProductException {
         if (!productImageRepository.existsById(productImageId)) {
             throw new ProductException("Product image not found with id: " + productImageId);
         }

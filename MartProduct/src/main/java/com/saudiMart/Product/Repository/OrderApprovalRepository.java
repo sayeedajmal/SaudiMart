@@ -11,7 +11,7 @@ import com.saudiMart.Product.Model.OrderApproval.OrderApprovalStatus;
 import com.saudiMart.Product.Model.Users;
 
 @Repository
-public interface OrderApprovalRepository extends JpaRepository<OrderApproval, Long> {
+public interface OrderApprovalRepository extends JpaRepository<OrderApproval, String> {
 
     List<OrderApproval> findByOrder(Order order);
 

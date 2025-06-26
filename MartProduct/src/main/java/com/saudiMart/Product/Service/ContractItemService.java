@@ -23,7 +23,7 @@ public class ContractItemService {
         return contractItemRepository.findAll();
     }
 
-    public ContractItem getContractItemById(Long id) throws ProductException {
+    public ContractItem getContractItemById(String id) throws ProductException {
         return contractItemRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Contract Item not found with id: " + id));
     }
@@ -47,7 +47,7 @@ public class ContractItemService {
         return contractItemRepository.save(contractItem);
     }
 
-    public ContractItem updateContractItem(Long id, ContractItem contractItemDetails) throws ProductException {
+    public ContractItem updateContractItem(String id, ContractItem contractItemDetails) throws ProductException {
         if (contractItemDetails == null) {
             throw new ProductException("Contract Item details cannot be null for update");
         }
@@ -75,7 +75,7 @@ public class ContractItemService {
         throw new ProductException("Contract Item not found with id: " + id);
     }
 
-    public void deleteContractItem(Long id) throws ProductException {
+    public void deleteContractItem(String id) throws ProductException {
         if (!contractItemRepository.existsById(id)) {
             throw new ProductException("Contract Item not found with id: " + id);
         }

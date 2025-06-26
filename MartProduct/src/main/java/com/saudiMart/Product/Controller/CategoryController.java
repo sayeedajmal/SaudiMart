@@ -35,6 +35,7 @@ public class CategoryController {
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(new ResponseWrapper<>(200, "All categories fetched successfully", categories));
     }
+
     @GetMapping
     public ResponseEntity<ResponseWrapper<List<Category>>> getAllActiveCategoriesByName(
             @RequestParam(required = false) String name,
@@ -44,7 +45,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Category>> getCategoryById(@PathVariable Long id)
+    public ResponseEntity<ResponseWrapper<Category>> getCategoryById(@PathVariable String id)
             throws ProductException {
         Category category = categoryService.getCategoryById(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Category fetched successfully", category));
@@ -59,7 +60,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Category>> updateCategory(@PathVariable Long id,
+    public ResponseEntity<ResponseWrapper<Category>> updateCategory(@PathVariable String id,
             @RequestBody Category category) throws ProductException {
         Category updatedCategory = categoryService.updateCategory(id, category);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Category updated successfully", updatedCategory));
@@ -67,7 +68,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteCategory(@PathVariable Long id) throws ProductException {
+    public ResponseEntity<ResponseWrapper<Void>> deleteCategory(@PathVariable String id) throws ProductException {
         categoryService.deleteCategory(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Category deleted successfully", null));
     }

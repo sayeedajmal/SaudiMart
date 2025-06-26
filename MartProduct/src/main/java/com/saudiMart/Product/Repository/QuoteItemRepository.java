@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface QuoteItemRepository extends JpaRepository<QuoteItem, Long> {
+public interface QuoteItemRepository extends JpaRepository<QuoteItem, String> {
 
     List<QuoteItem> findByQuote(Quote quote);
 
@@ -16,9 +16,9 @@ public interface QuoteItemRepository extends JpaRepository<QuoteItem, Long> {
 
     List<QuoteItem> findByVariant(ProductVariant variant);
 
-    List<QuoteItem> findByQuoteId(Long quoteId);
+    List<QuoteItem> findByQuoteId(String quoteId);
 
-    List<QuoteItem> findByProductId(Long productId);
+    List<QuoteItem> findByProductId(String productId);
 
-    List<QuoteItem> findByVariantId(Long variantId);
+    List<QuoteItem> findByVariantId(String variantId);
 }

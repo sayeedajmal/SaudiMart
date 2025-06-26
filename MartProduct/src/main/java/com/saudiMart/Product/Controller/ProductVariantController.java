@@ -35,7 +35,7 @@ public class ProductVariantController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<ProductVariant>> getProductVariantById(@PathVariable Long id)
+    public ResponseEntity<ResponseWrapper<ProductVariant>> getProductVariantById(@PathVariable String id)
             throws ProductException {
         ProductVariant productVariant = productVariantService.getProductVariantById(id);
 
@@ -54,7 +54,7 @@ public class ProductVariantController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<ProductVariant>> updateProductVariant(@PathVariable Long id,
+    public ResponseEntity<ResponseWrapper<ProductVariant>> updateProductVariant(@PathVariable String id,
             @RequestBody ProductVariant productVariantDetails) throws ProductException {
         ProductVariant updatedProductVariant = productVariantService.updateProductVariant(id, productVariantDetails);
         if (updatedProductVariant != null) {
@@ -68,7 +68,7 @@ public class ProductVariantController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteProductVariant(@PathVariable Long id) throws ProductException {
+    public ResponseEntity<ResponseWrapper<Void>> deleteProductVariant(@PathVariable String id) throws ProductException {
         productVariantService.deleteProductVariant(id);
         ResponseWrapper<Void> response = new ResponseWrapper<>(200, "Successfully deleted product variant", null);
         return ResponseEntity.ok(response);

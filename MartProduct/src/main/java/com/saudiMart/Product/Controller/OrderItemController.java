@@ -31,15 +31,17 @@ public class OrderItemController {
     @GetMapping
     public ResponseEntity<ResponseWrapper<List<OrderItem>>> getAllOrderItems() {
         List<OrderItem> orderItems = orderItemService.getAllOrderItems();
-        ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(200, "Successfully retrieved all order items", orderItems);
+        ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(200, "Successfully retrieved all order items",
+                orderItems);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<OrderItem>> getOrderItemBy(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<OrderItem>> getOrderItemBy(@PathVariable String id) {
         try {
             OrderItem orderItem = orderItemService.getOrderItemBy(id);
-            ResponseWrapper<OrderItem> response = new ResponseWrapper<>(200, "Successfully retrieved order item", orderItem);
+            ResponseWrapper<OrderItem> response = new ResponseWrapper<>(200, "Successfully retrieved order item",
+                    orderItem);
             return ResponseEntity.ok(response);
         } catch (ProductException e) {
             ResponseWrapper<OrderItem> response = new ResponseWrapper<>(404, e.getMessage(), null);
@@ -51,34 +53,40 @@ public class OrderItemController {
     public ResponseEntity<ResponseWrapper<OrderItem>> createOrderItem(@RequestBody OrderItem orderItem) {
         try {
             OrderItem createdOrderItem = orderItemService.createOrderItem(orderItem);
-            ResponseWrapper<OrderItem> response = new ResponseWrapper<>(201, "Successfully created order item", createdOrderItem);
+            ResponseWrapper<OrderItem> response = new ResponseWrapper<>(201, "Successfully created order item",
+                    createdOrderItem);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (ProductException e) {
-            ResponseWrapper<OrderItem> response = new ResponseWrapper<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
+            ResponseWrapper<OrderItem> response = new ResponseWrapper<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(),
+                    null);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception e) {
-             ResponseWrapper<OrderItem> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred while creating the order item", null);
-             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            ResponseWrapper<OrderItem> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    "An error occurred while creating the order item", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<OrderItem>> updateOrderItem(@PathVariable Long id, @RequestBody OrderItem orderItemDetails) {
+    public ResponseEntity<ResponseWrapper<OrderItem>> updateOrderItem(@PathVariable String id,
+            @RequestBody OrderItem orderItemDetails) {
         try {
             OrderItem updatedOrderItem = orderItemService.updateOrderItem(id, orderItemDetails);
-            ResponseWrapper<OrderItem> response = new ResponseWrapper<>(200, "Successfully updated order item", updatedOrderItem);
+            ResponseWrapper<OrderItem> response = new ResponseWrapper<>(200, "Successfully updated order item",
+                    updatedOrderItem);
             return ResponseEntity.ok(response);
         } catch (ProductException e) {
             ResponseWrapper<OrderItem> response = new ResponseWrapper<>(404, e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
-            ResponseWrapper<OrderItem> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred while updating the order item", null);
+            ResponseWrapper<OrderItem> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    "An error occurred while updating the order item", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteOrderItem(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<Void>> deleteOrderItem(@PathVariable String id) {
         try {
             orderItemService.deleteOrderItem(id);
             ResponseWrapper<Void> response = new ResponseWrapper<>(200, "Successfully deleted order item", null);
@@ -87,13 +95,14 @@ public class OrderItemController {
             ResponseWrapper<Void> response = new ResponseWrapper<>(404, e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
-            ResponseWrapper<Void> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred while deleting the order item", null);
+            ResponseWrapper<Void> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    "An error occurred while deleting the order item", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
     @GetMapping("/order/{orderId}")
-    public ResponseEntity<ResponseWrapper<List<OrderItem>>> getOrderItemsByOrder(@PathVariable Long orderId) {
+    public ResponseEntity<ResponseWrapper<List<OrderItem>>> getOrderItemsByOrder(@PathVariable String orderId) {
         // Assuming you have a method in OrderService to get an Order by ID
         // and then pass that Order object to orderItemService.getOrderItemsByOrder
         // For now, let's assume OrderService can return an Order by ID
@@ -102,17 +111,19 @@ public class OrderItemController {
             order.setId(orderId); // Set the ID for the placeholder Order
 
             List<OrderItem> orderItems = orderItemService.getOrderItemsByOrder(order);
-            ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(200, "Successfully retrieved order items for order", orderItems);
+            ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(200,
+                    "Successfully retrieved order items for order", orderItems);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred while retrieving order items by order", null);
+            ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    "An error occurred while retrieving order items by order", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<ResponseWrapper<List<OrderItem>>> getOrderItemsByProduct(@PathVariable Long productId) {
-         // Assuming you have a method in ProductsService to get a Product by ID
+    public ResponseEntity<ResponseWrapper<List<OrderItem>>> getOrderItemsByProduct(@PathVariable String productId) {
+        // Assuming you have a method in ProductsService to get a Product by ID
         // and then pass that Products object to orderItemService.getOrderItemsByProduct
         // For now, let's assume ProductsService can return a Product by ID
         try {
@@ -120,10 +131,12 @@ public class OrderItemController {
             product.setId(productId); // Set the ID for the placeholder Product
 
             List<OrderItem> orderItems = orderItemService.getOrderItemsByProduct(product);
-            ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(200, "Successfully retrieved order items for product", orderItems);
+            ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(200,
+                    "Successfully retrieved order items for product", orderItems);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-             ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred while retrieving order items by product", null);
+            ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    "An error occurred while retrieving order items by product", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

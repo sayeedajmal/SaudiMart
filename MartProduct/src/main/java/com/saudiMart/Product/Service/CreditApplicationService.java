@@ -23,7 +23,7 @@ public class CreditApplicationService {
         return creditApplicationRepository.findAll();
     }
 
-    public CreditApplication getCreditApplicationById(Long id) throws ProductException {
+    public CreditApplication getCreditApplicationById(String id) throws ProductException {
         return creditApplicationRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Credit Application not found with id: " + id));
     }
@@ -36,7 +36,7 @@ public class CreditApplicationService {
         return creditApplicationRepository.save(creditApplication);
     }
 
-    public CreditApplication updateCreditApplication(Long id, CreditApplication creditApplicationDetails)
+    public CreditApplication updateCreditApplication(String id, CreditApplication creditApplicationDetails)
             throws ProductException {
         if (creditApplicationDetails == null) {
             throw new ProductException("Credit Application details cannot be null for update");
@@ -67,7 +67,7 @@ public class CreditApplicationService {
         throw new ProductException("Credit Application not found with id: " + id);
     }
 
-    public void deleteCreditApplication(Long id) throws ProductException {
+    public void deleteCreditApplication(String id) throws ProductException {
         if (!creditApplicationRepository.existsById(id)) {
             throw new ProductException("Credit Application not found with id: " + id);
         }

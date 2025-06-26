@@ -21,7 +21,7 @@ public class ContractService {
         return contractRepository.findAll();
     }
 
-    public Contract getContractById(Long id) throws ProductException {
+    public Contract getContractById(String id) throws ProductException {
         return contractRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Contract not found with id: " + id));
     }
@@ -34,7 +34,7 @@ public class ContractService {
         return contractRepository.save(contract);
     }
 
-    public Contract updateContract(Long id, Contract contractDetails) throws ProductException {
+    public Contract updateContract(String id, Contract contractDetails) throws ProductException {
         if (contractDetails == null) {
             throw new ProductException("Contract details cannot be null for update");
         }
@@ -71,7 +71,7 @@ public class ContractService {
         return contractRepository.save(existingContract);
     }
 
-    public void deleteContract(Long id) throws ProductException {
+    public void deleteContract(String id) throws ProductException {
         if (!contractRepository.existsById(id)) {
             throw new ProductException("Contract not found with id: " + id);
         }

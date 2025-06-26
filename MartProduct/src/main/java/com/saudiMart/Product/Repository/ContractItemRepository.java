@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ContractItemRepository extends JpaRepository<ContractItem, Long> {
+public interface ContractItemRepository extends JpaRepository<ContractItem, String> {
 
     List<ContractItem> findByContract(Contract contract);
 

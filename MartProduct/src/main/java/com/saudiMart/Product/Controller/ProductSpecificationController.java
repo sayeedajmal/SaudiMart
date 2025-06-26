@@ -37,7 +37,8 @@ public class ProductSpecificationController {
         }
 
         @GetMapping("/{id}")
-        public ResponseEntity<ResponseWrapper<ProductSpecification>> getProductSpecificationById(@PathVariable Long id)
+        public ResponseEntity<ResponseWrapper<ProductSpecification>> getProductSpecificationById(
+                        @PathVariable String id)
                         throws ProductException {
                 ProductSpecification productSpecification = productSpecificationService.getProductSpecificationById(id);
                 return ResponseEntity
@@ -56,7 +57,7 @@ public class ProductSpecificationController {
         }
 
         @PutMapping("/{id}")
-        public ResponseEntity<ResponseWrapper<ProductSpecification>> updateProductSpecification(@PathVariable Long id,
+        public ResponseEntity<ResponseWrapper<ProductSpecification>> updateProductSpecification(@PathVariable String id,
                         @RequestBody ProductSpecification productSpecificationDetails) throws ProductException {
                 ProductSpecification updatedProductSpecification = productSpecificationService
                                 .updateProductSpecification(id,
@@ -67,7 +68,7 @@ public class ProductSpecificationController {
         }
 
         @DeleteMapping("/{id}")
-        public ResponseEntity<ResponseWrapper<Void>> deleteProductSpecification(@PathVariable Long id)
+        public ResponseEntity<ResponseWrapper<Void>> deleteProductSpecification(@PathVariable String id)
                         throws ProductException {
                 productSpecificationService.deleteProductSpecification(id);
                 return ResponseEntity

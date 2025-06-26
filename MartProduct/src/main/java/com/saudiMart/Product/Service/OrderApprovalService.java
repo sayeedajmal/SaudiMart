@@ -23,7 +23,7 @@ public class OrderApprovalService {
         return orderApprovalRepository.findAll();
     }
 
-    public OrderApproval getOrderApprovalBy(Long id) throws ProductException {
+    public OrderApproval getOrderApprovalBy(String id) throws ProductException {
         return orderApprovalRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Order Approval not found with : " + id));
     }
@@ -35,7 +35,7 @@ public class OrderApprovalService {
         return orderApprovalRepository.save(orderApproval);
     }
 
-    public OrderApproval updateOrderApproval(Long id, OrderApproval orderApprovalDetails) throws ProductException {
+    public OrderApproval updateOrderApproval(String id, OrderApproval orderApprovalDetails) throws ProductException {
         if (orderApprovalDetails == null) {
             throw new ProductException("Order Approval details cannot be null for update");
         }
@@ -55,7 +55,7 @@ public class OrderApprovalService {
         throw new ProductException("Order Approval not found with : " + id);
     }
 
-    public void deleteOrderApproval(Long id) throws ProductException {
+    public void deleteOrderApproval(String id) throws ProductException {
         if (!orderApprovalRepository.existsById(id)) {
             throw new ProductException("Order Approval not found with : " + id);
         }

@@ -45,7 +45,7 @@ public class OrderApprovalController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<OrderApproval>> getOrderApprovalById(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<OrderApproval>> getOrderApprovalById(@PathVariable String id) {
         try {
             OrderApproval orderApproval = orderApprovalService.getOrderApprovalBy(id);
             return ResponseEntity
@@ -71,7 +71,7 @@ public class OrderApprovalController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<OrderApproval>> updateOrderApproval(@PathVariable Long id,
+    public ResponseEntity<ResponseWrapper<OrderApproval>> updateOrderApproval(@PathVariable String id,
             @RequestBody OrderApproval orderApprovalDetails) {
         try {
             OrderApproval updatedOrderApproval = orderApprovalService.updateOrderApproval(id, orderApprovalDetails);
@@ -84,7 +84,7 @@ public class OrderApprovalController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteOrderApproval(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<Void>> deleteOrderApproval(@PathVariable String id) {
         try {
             orderApprovalService.deleteOrderApproval(id);
             return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted order approval", null));
@@ -95,7 +95,8 @@ public class OrderApprovalController {
     }
 
     @GetMapping("/order/{orderId}")
-    public ResponseEntity<ResponseWrapper<List<OrderApproval>>> getOrderApprovalsByOrderId(@PathVariable Long orderId) {
+    public ResponseEntity<ResponseWrapper<List<OrderApproval>>> getOrderApprovalsByOrderId(
+            @PathVariable String orderId) {
         try {
             Order order = orderService.getOrderById(orderId); // Assuming OrderService has getOrderById
             List<OrderApproval> orderApprovals = orderApprovalService.getOrderApprovalsByOrder(order);
@@ -111,7 +112,7 @@ public class OrderApprovalController {
     public ResponseEntity<ResponseWrapper<List<OrderApproval>>> getOrderApprovalsByApproverId(
             @PathVariable String approverId) {
         try {
-            // Assuming Users has an ID of type Long and UserService has getUserById
+            // Assuming Users has an ID of type String and UserService has getUserById
             Users approver = userService.getUserById(approverId);
             List<OrderApproval> orderApprovals = orderApprovalService.getOrderApprovalsByApprover(approver);
             return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved order approvals by approver ID",

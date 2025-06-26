@@ -39,7 +39,7 @@ public class QuoteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Quote>> getQuoteById(@PathVariable Long id) throws ProductException {
+    public ResponseEntity<ResponseWrapper<Quote>> getQuoteById(@PathVariable String id) throws ProductException {
         Quote quote = quoteService.getQuoteById(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved quote", quote));
     }
@@ -52,14 +52,14 @@ public class QuoteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Quote>> updateQuote(@PathVariable Long id, @RequestBody Quote quoteDetails)
+    public ResponseEntity<ResponseWrapper<Quote>> updateQuote(@PathVariable String id, @RequestBody Quote quoteDetails)
             throws ProductException {
         Quote updatedQuote = quoteService.updateQuote(id, quoteDetails);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully updated quote", updatedQuote));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteQuote(@PathVariable Long id) throws ProductException {
+    public ResponseEntity<ResponseWrapper<Void>> deleteQuote(@PathVariable String id) throws ProductException {
         quoteService.deleteQuote(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted quote", null));
     }

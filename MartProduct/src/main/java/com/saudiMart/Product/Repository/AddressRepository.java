@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.saudiMart.Product.Model.Address;
 import com.saudiMart.Product.Model.Users;
 
-public interface AddressRepository extends JpaRepository<Address, Long> {
+public interface AddressRepository extends JpaRepository<Address, String> {
 
     List<Address> findByUser(Users user);
 

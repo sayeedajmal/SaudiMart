@@ -38,7 +38,7 @@ public class WarehouseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Warehouse>> getWarehouseById(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<Warehouse>> getWarehouseById(@PathVariable String id) {
         try {
             Warehouse warehouse = warehouseService.getWarehouseById(id);
             return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved warehouse", warehouse));
@@ -67,7 +67,7 @@ public class WarehouseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Warehouse>> updateWarehouse(@PathVariable Long id,
+    public ResponseEntity<ResponseWrapper<Warehouse>> updateWarehouse(@PathVariable String id,
             @RequestBody Warehouse warehouseDetails) {
         try {
             Warehouse updatedWarehouse = warehouseService.updateWarehouse(id, warehouseDetails);
@@ -82,7 +82,7 @@ public class WarehouseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteWarehouse(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<Void>> deleteWarehouse(@PathVariable String id) {
         try {
             warehouseService.deleteWarehouse(id);
             return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted warehouse", null));
@@ -95,15 +95,9 @@ public class WarehouseController {
         }
     }
 
-    @GetMapping("/seller/{userId}")
-    public ResponseEntity<ResponseWrapper<List<Warehouse>>> getWarehousesBySeller(@PathVariable Long userId) {
-        // Assuming you have a way to get a Users object from the userId,
-        // potentially from the authentication context or by fetching it.
-        // This is a placeholder and might need adjustment based on your User management.
-        Users seller = new Users();
-        seller.setId(String.valueOf(userId)); // Assuming User ID is String in Users model
-
-        List<Warehouse> warehouses = warehouseService.getWarehousesBySeller(seller);
+    @GetMapping("/seller")
+    public ResponseEntity<ResponseWrapper<List<Warehouse>>> getWarehousesBySeller(Users user) {
+        List<Warehouse> warehouses = warehouseService.getWarehousesBySeller(user);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved warehouses by seller", warehouses));
     }
 }

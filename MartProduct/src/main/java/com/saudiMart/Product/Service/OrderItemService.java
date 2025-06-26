@@ -22,7 +22,7 @@ public class OrderItemService {
         return orderItemRepository.findAll();
     }
 
-    public OrderItem getOrderItemBy(Long id) throws ProductException {
+    public OrderItem getOrderItemBy(String id) throws ProductException {
         return orderItemRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Order item not found with id: " + id));
     }
@@ -42,7 +42,7 @@ public class OrderItemService {
         return orderItemRepository.save(orderItem);
     }
 
-    public OrderItem updateOrderItem(Long id, OrderItem orderItemDetails) throws ProductException {
+    public OrderItem updateOrderItem(String id, OrderItem orderItemDetails) throws ProductException {
         if (orderItemDetails == null) {
             throw new ProductException("Order item details cannot be null for update");
         }
@@ -77,7 +77,7 @@ public class OrderItemService {
         throw new ProductException("Order item not found with id: " + id);
     }
 
-    public void deleteOrderItem(Long id) throws ProductException {
+    public void deleteOrderItem(String id) throws ProductException {
         if (!orderItemRepository.existsById(id)) {
             throw new ProductException("Order item not found with id: " + id);
         }

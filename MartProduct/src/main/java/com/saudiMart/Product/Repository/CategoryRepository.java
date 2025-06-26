@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.saudiMart.Product.Model.Category;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, Long> {
+public interface CategoryRepository extends JpaRepository<Category, String> {
 
     List<Category> findByIsActive(Boolean isActive);
 

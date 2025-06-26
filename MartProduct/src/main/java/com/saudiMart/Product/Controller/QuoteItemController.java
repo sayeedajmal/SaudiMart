@@ -33,7 +33,7 @@ public class QuoteItemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<QuoteItem>> getQuoteItemById(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<QuoteItem>> getQuoteItemById(@PathVariable String id) {
         try {
             QuoteItem quoteItem = quoteItemService.getQuoteItemById(id);
             return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved quote item.", quoteItem));
@@ -63,7 +63,7 @@ public class QuoteItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<QuoteItem>> updateQuoteItem(@PathVariable Long id,
+    public ResponseEntity<ResponseWrapper<QuoteItem>> updateQuoteItem(@PathVariable String id,
             @RequestBody QuoteItem quoteItemDetails) {
         try {
             QuoteItem updatedQuoteItem = quoteItemService.updateQuoteItem(id, quoteItemDetails);
@@ -78,7 +78,7 @@ public class QuoteItemController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteQuoteItem(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<Void>> deleteQuoteItem(@PathVariable String id) {
         try {
             quoteItemService.deleteQuoteItem(id);
             return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted quote item.", null));
@@ -92,7 +92,7 @@ public class QuoteItemController {
     }
 
     @GetMapping("/quote/{quoteId}")
-    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByQuoteId(@PathVariable Long quoteId)
+    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByQuoteId(@PathVariable String quoteId)
             throws ProductException {
         List<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByQuoteId(quoteId);
         return ResponseEntity
@@ -100,7 +100,7 @@ public class QuoteItemController {
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByProductId(@PathVariable Long productId)
+    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByProductId(@PathVariable String productId)
             throws ProductException {
         List<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByProductId(productId);
         return ResponseEntity
@@ -108,7 +108,7 @@ public class QuoteItemController {
     }
 
     @GetMapping("/variant/{variantId}")
-    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByVariantId(@PathVariable Long variantId)
+    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByVariantId(@PathVariable String variantId)
             throws ProductException {
         List<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByVariantId(variantId);
         return ResponseEntity

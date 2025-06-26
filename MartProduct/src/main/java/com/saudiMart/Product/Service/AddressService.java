@@ -21,7 +21,7 @@ public class AddressService {
         return addressRepository.findAll();
     }
 
-    public Address getAddressById(Long id) throws ProductException {
+    public Address getAddressById(String id) throws ProductException {
         return addressRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Address not found with id: " + id));
     }
@@ -37,7 +37,7 @@ public class AddressService {
         return addressRepository.save(address);
     }
 
-    public Address updateAddress(Long id, Address addressDetails) throws ProductException {
+    public Address updateAddress(String id, Address addressDetails) throws ProductException {
         if (addressDetails == null) {
             throw new ProductException("Address details cannot be null for update");
         }
@@ -68,7 +68,7 @@ public class AddressService {
         throw new ProductException("Address not found with id: " + id);
     }
 
-    public void deleteAddress(Long id) throws ProductException {
+    public void deleteAddress(String id) throws ProductException {
         if (!addressRepository.existsById(id)) {
             throw new ProductException("Address not found with id: " + id);
         }

@@ -10,7 +10,7 @@ import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
 
 @Repository
-public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long> {
+public interface ProductVariantRepository extends JpaRepository<ProductVariant, String> {
 
     List<ProductVariant> findByProduct(Products product);
 

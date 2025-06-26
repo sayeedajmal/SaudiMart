@@ -34,8 +34,8 @@ import lombok.Data;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @Column(name = "order_number", unique = true, length = 50)
     private String orderNumber;

@@ -21,7 +21,7 @@ public class PaymentService {
         return paymentRepository.findAll();
     }
 
-    public Payment getPaymentById(Long id) throws ProductException {
+    public Payment getPaymentById(String id) throws ProductException {
         return paymentRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Payment not found with id: " + id));
     }
@@ -41,7 +41,7 @@ public class PaymentService {
         return paymentRepository.save(payment);
     }
 
-    public Payment updatePayment(Long id, Payment paymentDetails) throws ProductException {
+    public Payment updatePayment(String id, Payment paymentDetails) throws ProductException {
         if (paymentDetails == null) {
             throw new ProductException("Payment details cannot be null for update");
         }
@@ -75,7 +75,7 @@ public class PaymentService {
         return paymentRepository.save(existingPayment);
     }
 
-    public void deletePayment(Long id) throws ProductException {
+    public void deletePayment(String id) throws ProductException {
         if (!paymentRepository.existsById(id)) {
             throw new ProductException("Payment not found with id: " + id);
         }

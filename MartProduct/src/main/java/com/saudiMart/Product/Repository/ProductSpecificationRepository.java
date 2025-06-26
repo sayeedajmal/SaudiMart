@@ -9,7 +9,7 @@ import com.saudiMart.Product.Model.ProductSpecification;
 import com.saudiMart.Product.Model.Products;
 
 @Repository
-public interface ProductSpecificationRepository extends JpaRepository<ProductSpecification, Long> {
+public interface ProductSpecificationRepository extends JpaRepository<ProductSpecification, String> {
 
     List<ProductSpecification> findByProduct(Products product);
 

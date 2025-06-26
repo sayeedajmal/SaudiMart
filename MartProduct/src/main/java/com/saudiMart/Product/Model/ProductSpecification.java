@@ -21,8 +21,8 @@ import lombok.Data;
 public class ProductSpecification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)

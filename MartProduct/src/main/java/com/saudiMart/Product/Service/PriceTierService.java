@@ -25,24 +25,24 @@ public class PriceTierService {
         return priceTierRepository.findAll();
     }
 
-    public PriceTier getPriceTierById(Long priceTierId) throws ProductException {
+    public PriceTier getPriceTierById(String priceTierId) throws ProductException {
         return priceTierRepository.findById(priceTierId)
                 .orElseThrow(() -> new ProductException("Price Tier not found with id: " + priceTierId));
     }
 
-    public List<PriceTier> getPriceTiersByVariantId(Long variantId) throws ProductException {
+    public List<PriceTier> getPriceTiersByVariantId(String variantId) throws ProductException {
         ProductVariant variant = productVariantRepository.findById(variantId)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
         return priceTierRepository.findByVariant(variant);
     }
 
-    public List<PriceTier> getActivePriceTiersByVariantId(Long variantId) throws ProductException {
+    public List<PriceTier> getActivePriceTiersByVariantId(String variantId) throws ProductException {
         ProductVariant variant = productVariantRepository.findById(variantId)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
         return priceTierRepository.findByVariantAndIsActiveTrue(variant);
     }
 
-    public List<PriceTier> getApplicablePriceTiers(Long variantId, Integer quantity) throws ProductException {
+    public List<PriceTier> getApplicablePriceTiers(String variantId, Integer quantity) throws ProductException {
         if (quantity == null || quantity <= 0) {
             throw new ProductException("Quantity must be positive");
         }
@@ -59,21 +59,22 @@ public class PriceTierService {
             throw new ProductException("Price Tier cannot be null");
         }
         // Ensure the associated variant exists
- ProductVariant variant = productVariantRepository.findById(priceTier.getVariant().getId())
- .orElseThrow(() -> new ProductException("Product Variant not found with id: " + priceTier.getVariant().getId()));
+        ProductVariant variant = productVariantRepository.findById(priceTier.getVariant().getId())
+                .orElseThrow(() -> new ProductException(
+                        "Product Variant not found with id: " + priceTier.getVariant().getId()));
         priceTier.setVariant(variant);
 
         return priceTierRepository.save(priceTier);
     }
 
-    public void deletePriceTier(Long priceTierId) throws ProductException {
+    public void deletePriceTier(String priceTierId) throws ProductException {
         if (!priceTierRepository.existsById(priceTierId)) {
             throw new ProductException("Price Tier not found with id: " + priceTierId);
         }
         priceTierRepository.deleteById(priceTierId);
     }
 
-    public PriceTier updatePriceTier(Long id, PriceTier priceTierDetails) throws ProductException {
+    public PriceTier updatePriceTier(String id, PriceTier priceTierDetails) throws ProductException {
         PriceTier existingPriceTier = getPriceTierById(id);
 
         if (priceTierDetails.getMinQuantity() != null) {
@@ -93,7 +94,8 @@ public class PriceTierService {
         }
 
         // Ensure the variant association is not changed during update
-        if (priceTierDetails.getVariant() != null && !existingPriceTier.getVariant().getId().equals(priceTierDetails.getVariant().getId())) {
+        if (priceTierDetails.getVariant() != null
+                && !existingPriceTier.getVariant().getId().equals(priceTierDetails.getVariant().getId())) {
             throw new ProductException("Cannot change the associated product variant for a price tier during update.");
         }
         return priceTierRepository.save(existingPriceTier);

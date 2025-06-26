@@ -32,7 +32,7 @@ public class CategoryService {
         }
     }
 
-    public Category getCategoryById(Long categoryId) throws ProductException {
+    public Category getCategoryById(String categoryId) throws ProductException {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ProductException("Category not found with id: " + categoryId));
     }
@@ -57,7 +57,7 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public Category updateCategory(Long categoryId, Category categoryDetails) throws ProductException {
+    public Category updateCategory(String categoryId, Category categoryDetails) throws ProductException {
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
         if (categoryDetails == null) {
             throw new ProductException("Category details cannot be null for update.");
@@ -78,7 +78,7 @@ public class CategoryService {
         throw new ProductException("Category not found with id: " + categoryId);
     }
 
-    public void deleteCategory(Long categoryId) throws ProductException {
+    public void deleteCategory(String categoryId) throws ProductException {
         if (!categoryRepository.existsById(categoryId)) {
             throw new ProductException("Category not found with id: " + categoryId);
         }

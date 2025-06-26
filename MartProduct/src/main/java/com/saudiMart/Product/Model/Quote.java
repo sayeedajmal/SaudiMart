@@ -32,8 +32,8 @@ import lombok.Data;
 public class Quote {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @Column(name = "quote_number", length = 50, unique = true)
     private String quoteNumber;

@@ -11,10 +11,10 @@ import com.saudiMart.Product.Model.Category;
 import com.saudiMart.Product.Model.Products;
 
 @Repository
-public interface ProductsRepository extends JpaRepository<Products, Long> {
+public interface ProductsRepository extends JpaRepository<Products, String> {
 
     @Query("SELECT p FROM Products p WHERE p.seller.id = :sellerId")
-    List<Products> findBySellerId(@Param("sellerId") Long sellerId);
+    List<Products> findBySellerId(@Param("sellerId") String sellerId);
 
     List<Products> findByCategory(Category category);
 

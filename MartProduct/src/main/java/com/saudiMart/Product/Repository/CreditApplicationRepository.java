@@ -11,7 +11,7 @@ import com.saudiMart.Product.Model.CreditApplication.CreditApplicationStatus;
 import com.saudiMart.Product.Model.Users;
 
 @Repository
-public interface CreditApplicationRepository extends JpaRepository<CreditApplication, Long> {
+public interface CreditApplicationRepository extends JpaRepository<CreditApplication, String> {
 
     List<CreditApplication> findByBuyer(Users buyer);
 
@@ -23,8 +23,8 @@ public interface CreditApplicationRepository extends JpaRepository<CreditApplica
 
     List<CreditApplication> findByBuyerAndSeller(Users buyer, Users seller);
 
-    Optional<CreditApplication> findByIdAndSeller(Long id, Users seller);
+    Optional<CreditApplication> findByIdAndSeller(String id, Users seller);
 
-    Optional<CreditApplication> findByIdAndBuyer(Long id, Users buyer);
+    Optional<CreditApplication> findByIdAndBuyer(String id, Users buyer);
 
 }

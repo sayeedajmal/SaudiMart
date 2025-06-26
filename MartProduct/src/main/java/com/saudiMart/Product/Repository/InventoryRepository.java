@@ -11,7 +11,7 @@ import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Model.Warehouse;
 
 @Repository
-public interface InventoryRepository extends JpaRepository<Inventory, Long> {
+public interface InventoryRepository extends JpaRepository<Inventory, String> {
 
     List<Inventory> findByProduct(Products product);
 

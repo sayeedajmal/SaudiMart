@@ -35,7 +35,7 @@ public class PaymentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Payment>> getPaymentById(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<Payment>> getPaymentById(@PathVariable String id) {
         try {
             Payment payment = paymentService.getPaymentById(id);
             return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved payment", payment));
@@ -55,7 +55,7 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(new ResponseWrapper<>(201, "Successfully created payment", createdPayment));
         } catch (ProductException e) {
-             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseWrapper<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -64,7 +64,8 @@ public class PaymentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Payment>> updatePayment(@PathVariable Long id, @RequestBody Payment paymentDetails) {
+    public ResponseEntity<ResponseWrapper<Payment>> updatePayment(@PathVariable String id,
+            @RequestBody Payment paymentDetails) {
         try {
             Payment updatedPayment = paymentService.updatePayment(id, paymentDetails);
             return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully updated payment", updatedPayment));
@@ -78,7 +79,7 @@ public class PaymentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deletePayment(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<Void>> deletePayment(@PathVariable String id) {
         try {
             paymentService.deletePayment(id);
             return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted payment", null));
@@ -92,27 +93,29 @@ public class PaymentController {
     }
 
     @GetMapping("/order/{orderId}")
-    public ResponseEntity<ResponseWrapper<List<Payment>>> getPaymentsByOrderId(@PathVariable Long orderId) {
-         try {
+    public ResponseEntity<ResponseWrapper<List<Payment>>> getPaymentsByOrderId(@PathVariable String orderId) {
+        try {
             // Assuming your PaymentService has a method to fetch an Order by ID
             // and then get payments by that Order. If not, you may need to add it
-            // or adjust the service call. For now, assuming a direct call to a repository method.
+            // or adjust the service call. For now, assuming a direct call to a repository
+            // method.
             Order order = new Order(); // You would need to fetch the Order object first
             order.setId(orderId); // This is a placeholder; fetch the actual Order
             List<Payment> payments = paymentService.getPaymentsByOrder(order); // Modify service if needed
-            return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved payments by order ID", payments));
-         } catch (Exception e) {
+            return ResponseEntity
+                    .ok(new ResponseWrapper<>(200, "Successfully retrieved payments by order ID", payments));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
         }
     }
 
-     @GetMapping("/status/{status}")
+    @GetMapping("/status/{status}")
     public ResponseEntity<ResponseWrapper<List<Payment>>> getPaymentsByStatus(@PathVariable PaymentStatus status) {
-         try {
+        try {
             List<Payment> payments = paymentService.getPaymentsByPaymentStatus(status);
             return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved payments by status", payments));
-         } catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
         }

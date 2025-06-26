@@ -37,7 +37,7 @@ public class ContractItemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<ContractItem>> getContractItemById(@PathVariable Long id)
+    public ResponseEntity<ResponseWrapper<ContractItem>> getContractItemById(@PathVariable String id)
             throws ProductException {
         ContractItem contractItem = contractItemService.getContractItemById(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved contract item", contractItem));
@@ -52,14 +52,14 @@ public class ContractItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<ContractItem>> updateContractItem(@PathVariable Long id,
+    public ResponseEntity<ResponseWrapper<ContractItem>> updateContractItem(@PathVariable String id,
             @RequestBody ContractItem contractItemDetails) throws ProductException {
         ContractItem updatedContractItem = contractItemService.updateContractItem(id, contractItemDetails);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully updated contract item", updatedContractItem));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteContractItem(@PathVariable Long id) throws ProductException {
+    public ResponseEntity<ResponseWrapper<Void>> deleteContractItem(@PathVariable String id) throws ProductException {
         contractItemService.deleteContractItem(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted contract item", null));
     }

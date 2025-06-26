@@ -37,7 +37,7 @@ public class ProductsController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Products>> getProductById(@PathVariable Long id) throws ProductException {
+    public ResponseEntity<ResponseWrapper<Products>> getProductById(@PathVariable String id) throws ProductException {
         Products product = productsService.getProductById(id);
 
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved product", product));
@@ -53,7 +53,7 @@ public class ProductsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Products>> updateProduct(@PathVariable Long id,
+    public ResponseEntity<ResponseWrapper<Products>> updateProduct(@PathVariable String id,
             @RequestBody Products productDetails) throws ProductException {
         Products updatedProduct = productsService.updateProduct(id, productDetails);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -62,7 +62,7 @@ public class ProductsController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteProduct(@PathVariable Long id) throws ProductException {
+    public ResponseEntity<ResponseWrapper<Void>> deleteProduct(@PathVariable String id) throws ProductException {
         productsService.deleteProduct(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted product", null));
     }

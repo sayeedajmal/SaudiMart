@@ -22,7 +22,7 @@ public class QuoteService {
         return quoteRepository.findAll();
     }
 
-    public Quote getQuoteById(Long id) throws ProductException {
+    public Quote getQuoteById(String id) throws ProductException {
         return quoteRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Quote not found with id: " + id));
     }
@@ -35,7 +35,7 @@ public class QuoteService {
         return quoteRepository.save(quote);
     }
 
-    public Quote updateQuote(Long id, Quote quoteDetails) throws ProductException {
+    public Quote updateQuote(String id, Quote quoteDetails) throws ProductException {
         if (quoteDetails == null) {
             throw new ProductException("Quote details cannot be null for update");
         }
@@ -69,7 +69,7 @@ public class QuoteService {
         throw new ProductException("Quote not found with id: " + id);
     }
 
-    public void deleteQuote(Long id) throws ProductException {
+    public void deleteQuote(String id) throws ProductException {
         if (!quoteRepository.existsById(id)) {
             throw new ProductException("Quote not found with id: " + id);
         }

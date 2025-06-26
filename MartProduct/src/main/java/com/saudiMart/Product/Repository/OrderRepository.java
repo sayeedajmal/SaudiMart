@@ -12,7 +12,7 @@ import com.saudiMart.Product.Model.Order.OrderStatus;
 import com.saudiMart.Product.Model.Users;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, String> {
 
     List<Order> findByStatus(OrderStatus status);
 

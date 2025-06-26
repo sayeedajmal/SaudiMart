@@ -39,7 +39,7 @@ public class AddressController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Address>> getAddressById(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<Address>> getAddressById(@PathVariable String id) {
         try {
             Address address = addressService.getAddressById(id);
             return ResponseEntity
@@ -70,7 +70,7 @@ public class AddressController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Address>> updateAddress(@PathVariable Long id,
+    public ResponseEntity<ResponseWrapper<Address>> updateAddress(@PathVariable String id,
             @RequestBody Address addressDetails) {
         try {
             Address updatedAddress = addressService.updateAddress(id, addressDetails);
@@ -86,7 +86,7 @@ public class AddressController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteAddress(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<Void>> deleteAddress(@PathVariable String id) {
         try {
             addressService.deleteAddress(id);
             return ResponseEntity

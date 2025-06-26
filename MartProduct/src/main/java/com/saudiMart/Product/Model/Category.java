@@ -22,8 +22,8 @@ import lombok.Data;
 public class Category {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @NotBlank(message = "Category name is mandatory")
     @Size(max = 100, message = "Category name cannot exceed 100 characters")

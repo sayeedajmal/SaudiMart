@@ -23,8 +23,8 @@ import lombok.Data;
 public class OrderApproval {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)

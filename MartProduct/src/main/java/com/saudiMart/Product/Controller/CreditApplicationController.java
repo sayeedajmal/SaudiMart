@@ -40,7 +40,7 @@ public class CreditApplicationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<CreditApplication>> getCreditApplicationById(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<CreditApplication>> getCreditApplicationById(@PathVariable String id) {
         try {
             CreditApplication creditApplication = creditApplicationService.getCreditApplicationById(id);
             return ResponseEntity
@@ -70,7 +70,7 @@ public class CreditApplicationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<CreditApplication>> updateCreditApplication(@PathVariable Long id,
+    public ResponseEntity<ResponseWrapper<CreditApplication>> updateCreditApplication(@PathVariable String id,
             @RequestBody CreditApplication creditApplicationDetails) {
         try {
             CreditApplication updatedCreditApplication = creditApplicationService.updateCreditApplication(id,
@@ -86,7 +86,7 @@ public class CreditApplicationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteCreditApplication(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapper<Void>> deleteCreditApplication(@PathVariable String id) {
         try {
             creditApplicationService.deleteCreditApplication(id);
             return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted credit application", null));

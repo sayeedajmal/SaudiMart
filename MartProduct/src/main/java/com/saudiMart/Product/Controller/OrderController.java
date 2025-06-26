@@ -41,7 +41,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Order>> getOrderById(@PathVariable Long id) throws ProductException {
+    public ResponseEntity<ResponseWrapper<Order>> getOrderById(@PathVariable String id) throws ProductException {
         Order order = orderService.getOrderById(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved order", order));
     }
@@ -54,14 +54,14 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Order>> updateOrder(@PathVariable Long id, @RequestBody Order orderDetails)
+    public ResponseEntity<ResponseWrapper<Order>> updateOrder(@PathVariable String id, @RequestBody Order orderDetails)
             throws ProductException {
         Order updatedOrder = orderService.updateOrder(id, orderDetails);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully updated order", updatedOrder));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper<Void>> deleteOrder(@PathVariable Long id) throws ProductException {
+    public ResponseEntity<ResponseWrapper<Void>> deleteOrder(@PathVariable String id) throws ProductException {
         orderService.deleteOrder(id);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted order", null));
     }

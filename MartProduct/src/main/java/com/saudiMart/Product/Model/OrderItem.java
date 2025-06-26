@@ -21,15 +21,15 @@ import lombok.Data;
 
 @Entity
 @Table(name = "order_items", indexes = {
-    @Index(name = "idx_order_items_order_id", columnList = "order_id"),
-    @Index(name = "idx_order_items_product_id", columnList = "product_id")
+        @Index(name = "idx_order_items_order_id", columnList = "order_id"),
+        @Index(name = "idx_order_items_product_id", columnList = "product_id")
 })
 @Data
 public class OrderItem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)

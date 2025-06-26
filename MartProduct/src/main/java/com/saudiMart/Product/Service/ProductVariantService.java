@@ -30,12 +30,12 @@ public class ProductVariantService {
         return productVariantRepository.findAll();
     }
 
-    public ProductVariant getProductVariantById(Long id) throws ProductException {
+    public ProductVariant getProductVariantById(String id) throws ProductException {
         return productVariantRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + id));
     }
 
-    public List<ProductVariant> getProductVariantsByProductId(Long productId) throws ProductException {
+    public List<ProductVariant> getProductVariantsByProductId(String productId) throws ProductException {
         Products product = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
         return productVariantRepository.findByProduct(product);
@@ -45,7 +45,7 @@ public class ProductVariantService {
         return productVariantRepository.findBySku(sku).filter(ProductVariant::getAvailable);
     }
 
-    public List<ProductVariant> getAvailableProductVariantsByProductId(Long productId) throws ProductException {
+    public List<ProductVariant> getAvailableProductVariantsByProductId(String productId) throws ProductException {
         Products product = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
         return productVariantRepository.findByProductAndAvailableTrue(product);
@@ -62,7 +62,8 @@ public class ProductVariantService {
         return productVariantRepository.save(productVariant);
     }
 
-    public ProductVariant updateProductVariant(Long id, ProductVariant productVariantDetails) throws ProductException {
+    public ProductVariant updateProductVariant(String id, ProductVariant productVariantDetails)
+            throws ProductException {
         if (productVariantDetails == null) {
             throw new ProductException("Product Variant details cannot be null for update");
         }
@@ -90,7 +91,7 @@ public class ProductVariantService {
         throw new ProductException("Product Variant not found with id: " + id);
     }
 
-    public void deleteProductVariant(Long id) throws ProductException {
+    public void deleteProductVariant(String id) throws ProductException {
         if (!productVariantRepository.existsById(id)) {
             throw new ProductException("Product Variant not found with id: " + id);
         }
@@ -98,7 +99,7 @@ public class ProductVariantService {
     }
 
     // Price Tier methods
-    public PriceTier addPriceTierToVariant(Long variantId, PriceTier priceTier) throws ProductException {
+    public PriceTier addPriceTierToVariant(String variantId, PriceTier priceTier) throws ProductException {
         ProductVariant variant = getProductVariantById(variantId);
         if (priceTier == null) {
             throw new ProductException("Price Tier cannot be null");
@@ -107,7 +108,7 @@ public class ProductVariantService {
         return priceTierRepository.save(priceTier);
     }
 
-    public PriceTier updatePriceTier(Long tierId, PriceTier updatedTierDetails) throws ProductException {
+    public PriceTier updatePriceTier(String tierId, PriceTier updatedTierDetails) throws ProductException {
         Optional<PriceTier> tierOptional = priceTierRepository.findById(tierId);
         if (tierOptional.isPresent()) {
             PriceTier existingTier = tierOptional.get();
@@ -127,14 +128,14 @@ public class ProductVariantService {
         throw new ProductException("Price Tier not found with id: " + tierId);
     }
 
-    public void deletePriceTier(Long tierId) throws ProductException {
+    public void deletePriceTier(String tierId) throws ProductException {
         if (!priceTierRepository.existsById(tierId)) {
             throw new ProductException("Price Tier not found with id: " + tierId);
         }
         priceTierRepository.deleteById(tierId);
     }
 
-    public List<PriceTier> getPriceTiersByVariantId(Long variantId) throws ProductException {
+    public List<PriceTier> getPriceTiersByVariantId(String variantId) throws ProductException {
         ProductVariant variant = getProductVariantById(variantId);
         return priceTierRepository.findByVariant(variant);
     }

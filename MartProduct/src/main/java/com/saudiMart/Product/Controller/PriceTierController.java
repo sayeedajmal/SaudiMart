@@ -32,7 +32,7 @@ public class PriceTierController {
    }
 
    @GetMapping("/{id}")
-   public ResponseEntity<ResponseWrapper<PriceTier>> getPriceTierById(@PathVariable Long id) throws ProductException {
+   public ResponseEntity<ResponseWrapper<PriceTier>> getPriceTierById(@PathVariable String id) throws ProductException {
       PriceTier priceTier = priceTierService.getPriceTierById(id);
       return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved price tier", priceTier));
    }
@@ -45,14 +45,14 @@ public class PriceTierController {
    }
 
    @PutMapping("/{id}")
-   public ResponseEntity<ResponseWrapper<PriceTier>> updatePriceTier(@PathVariable Long id,
+   public ResponseEntity<ResponseWrapper<PriceTier>> updatePriceTier(@PathVariable String id,
          @RequestBody PriceTier priceTierDetails) throws ProductException {
       PriceTier updatedPriceTier = priceTierService.updatePriceTier(id, priceTierDetails);
       return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully updated price tier", updatedPriceTier));
    }
 
    @DeleteMapping("/{id}")
-   public ResponseEntity<ResponseWrapper<Void>> deletePriceTier(@PathVariable Long id) throws ProductException {
+   public ResponseEntity<ResponseWrapper<Void>> deletePriceTier(@PathVariable String id) throws ProductException {
       priceTierService.deletePriceTier(id);
       return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully deleted price tier", null));
    }

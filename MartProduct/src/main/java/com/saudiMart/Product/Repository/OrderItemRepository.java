@@ -10,7 +10,7 @@ import com.saudiMart.Product.Model.OrderItem;
 import com.saudiMart.Product.Model.Products;
 
 @Repository
-public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
+public interface OrderItemRepository extends JpaRepository<OrderItem, String> {
 
     List<OrderItem> findByOrder(Order order);
 

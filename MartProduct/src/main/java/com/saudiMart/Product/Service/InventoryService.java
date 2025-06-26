@@ -23,7 +23,7 @@ public class InventoryService {
         return inventoryRepository.findAll();
     }
 
-    public Inventory getInventoryById(Long id) throws ProductException {
+    public Inventory getInventoryById(String id) throws ProductException {
         return inventoryRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Inventory not found with id: " + id));
     }
@@ -49,7 +49,7 @@ public class InventoryService {
         return inventoryRepository.save(inventory);
     }
 
-    public Inventory updateInventory(Long id, Inventory inventoryDetails) throws ProductException {
+    public Inventory updateInventory(String id, Inventory inventoryDetails) throws ProductException {
         if (inventoryDetails == null) {
             throw new ProductException("Inventory details cannot be null for update");
         }
@@ -64,7 +64,8 @@ public class InventoryService {
                 existingInventory.setReservedQuantity(inventoryDetails.getReservedQuantity());
             }
 
-            // Assuming product, variant, and warehouse are not changed during update of inventory
+            // Assuming product, variant, and warehouse are not changed during update of
+            // inventory
             // You might need to add methods for updating these relationships if required
 
             return inventoryRepository.save(existingInventory);
@@ -72,7 +73,7 @@ public class InventoryService {
         throw new ProductException("Inventory not found with id: " + id);
     }
 
-    public void deleteInventory(Long id) throws ProductException {
+    public void deleteInventory(String id) throws ProductException {
         if (!inventoryRepository.existsById(id)) {
             throw new ProductException("Inventory not found with id: " + id);
         }

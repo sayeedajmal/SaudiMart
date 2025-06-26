@@ -21,7 +21,7 @@ public class WarehouseService {
         return warehouseRepository.findAll();
     }
 
-    public Warehouse getWarehouseById(Long id) throws ProductException {
+    public Warehouse getWarehouseById(String id) throws ProductException {
         return warehouseRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Warehouse not found with id: " + id));
     }
@@ -37,7 +37,7 @@ public class WarehouseService {
         return warehouseRepository.save(warehouse);
     }
 
-    public Warehouse updateWarehouse(Long id, Warehouse warehouseDetails) throws ProductException {
+    public Warehouse updateWarehouse(String id, Warehouse warehouseDetails) throws ProductException {
         if (warehouseDetails == null) {
             throw new ProductException("Warehouse details cannot be null for update");
         }
@@ -58,7 +58,7 @@ public class WarehouseService {
         throw new ProductException("Warehouse not found with id: " + id);
     }
 
-    public void deleteWarehouse(Long id) throws ProductException {
+    public void deleteWarehouse(String id) throws ProductException {
         if (!warehouseRepository.existsById(id)) {
             throw new ProductException("Warehouse not found with id: " + id);
         }

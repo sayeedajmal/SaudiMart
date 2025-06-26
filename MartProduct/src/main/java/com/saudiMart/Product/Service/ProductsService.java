@@ -46,7 +46,7 @@ public class ProductsService {
         return productsRepository.findAll();
     }
 
-    public Products getProductById(Long productId) throws ProductException {
+    public Products getProductById(String productId) throws ProductException {
         Products product = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product with ID " + productId + " not found"));
 
@@ -57,23 +57,23 @@ public class ProductsService {
         return product;
     }
 
-    public List<Products> getProductsBySellerId(Long sellerId) {
+    public List<Products> getProductsBySellerId(String sellerId) {
         return productsRepository.findBySellerId(sellerId);
     }
 
-    public List<Products> getAvailableProductsBySellerId(Long sellerId) {
+    public List<Products> getAvailableProductsBySellerId(String sellerId) {
         return productsRepository.findBySellerId(sellerId).stream()
                 .filter(Products::getAvailable)
                 .collect(Collectors.toList());
     }
 
-    public List<Products> getProductsByCategoryId(Long categoryId) throws ProductException {
+    public List<Products> getProductsByCategoryId(String categoryId) throws ProductException {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ProductException("Category not found with id: " + categoryId));
         return productsRepository.findByCategory(category);
     }
 
-    public List<Products> getAvailableProductsByCategoryId(Long categoryId) throws ProductException {
+    public List<Products> getAvailableProductsByCategoryId(String categoryId) throws ProductException {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ProductException("Category not found with id: " + categoryId));
         return productsRepository.findByCategory(category).stream()
@@ -103,7 +103,7 @@ public class ProductsService {
     }
 
     @Transactional
-    public Products updateProduct(Long productId, Products newProduct) throws ProductException {
+    public Products updateProduct(String productId, Products newProduct) throws ProductException {
         if (newProduct == null) {
             throw new ProductException("Product details cannot be null");
         }
@@ -127,7 +127,7 @@ public class ProductsService {
             oldProduct.setSku(newProduct.getSku());
         if (newProduct.getAvailable() != null)
             oldProduct.setAvailable(newProduct.getAvailable());
-            
+
         updateProductSpecifications(oldProduct, newProduct.getSpecifications());
         updateProductImages(oldProduct, newProduct.getImages());
         updateProductVariants(oldProduct, newProduct.getVariants());
@@ -167,7 +167,7 @@ public class ProductsService {
     private void updateProductSpecifications(Products oldProduct, List<ProductSpecification> incomingSpecs) {
         List<ProductSpecification> existingSpecs = productSpecificationRepository.findByProduct(oldProduct);
 
-        Map<Long, ProductSpecification> existingSpecsMap = existingSpecs.stream()
+        Map<String, ProductSpecification> existingSpecsMap = existingSpecs.stream()
                 .filter(spec -> spec.getId() != null)
                 .collect(Collectors.toMap(ProductSpecification::getId, spec -> spec));
 
@@ -197,11 +197,11 @@ public class ProductsService {
     private void updateProductVariants(Products product, List<ProductVariant> incomingVariants) {
         List<ProductVariant> existingVariants = productVariantRepository.findByProduct(product);
 
-        Map<Long, ProductVariant> existingVariantsMap = existingVariants.stream()
+        Map<String, ProductVariant> existingVariantsMap = existingVariants.stream()
                 .filter(variant -> variant.getId() != null)
                 .collect(Collectors.toMap(ProductVariant::getId, variant -> variant));
 
-        Map<Long, ProductVariant> incomingVariantsMap = new HashMap<>();
+        Map<String, ProductVariant> incomingVariantsMap = new HashMap<>();
         if (incomingVariants != null) {
             incomingVariants.stream()
                     .filter(variant -> variant.getId() != null)
@@ -235,7 +235,7 @@ public class ProductsService {
     }
 
     @Transactional
-    public void deleteProduct(Long productId) throws ProductException {
+    public void deleteProduct(String productId) throws ProductException {
         Products product = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product with ID " + productId + " not found"));
 
