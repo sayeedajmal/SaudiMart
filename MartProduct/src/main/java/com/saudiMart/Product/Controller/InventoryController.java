@@ -18,6 +18,7 @@ import com.saudiMart.Product.Model.Inventory;
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Model.ResponseWrapper;
+import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Model.Warehouse;
 import com.saudiMart.Product.Service.InventoryService;
 import com.saudiMart.Product.Service.ProductVariantService;
@@ -40,6 +41,9 @@ public class InventoryController {
 
     @Autowired
     private WarehouseService warehouseService; // Needed to get Warehouse object by ID
+
+ @Autowired
+    private UserService userService; // Needed to get User object by ID
 
     @GetMapping
     public ResponseEntity<ResponseWrapper<List<Inventory>>> getAllInventory() throws ProductException {
@@ -104,5 +108,28 @@ public class InventoryController {
         List<Inventory> inventory = inventoryService.getInventoryByWarehouse(warehouse);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved inventory entries for warehouse", inventory));
+    }
+
+    @GetMapping("/sellerinventory/{userId}")
+    public ResponseEntity<ResponseWrapper<List<Inventory>>> getInventoryForSeller(@PathVariable String userId) {
+        try {
+            // Fetch the user based on userId
+            Users user = userService.getUserById(userId);
+
+            // Find all warehouses for the seller
+            List<Warehouse> sellersWarehouses = warehouseService.getWarehousesBySeller(user);
+
+            // Retrieve inventory for each warehouse and combine
+            List<Inventory> sellerInventory = new ArrayList<>();
+            for (Warehouse warehouse : sellersWarehouses) {
+                List<Inventory> warehouseInventory = inventoryService.getInventoryByWarehouse(warehouse);
+                sellerInventory.addAll(warehouseInventory);
+            }
+            return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved inventory for seller", sellerInventory));
+        } catch (ProductException e) {
+ return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
+        }
     }
 }
