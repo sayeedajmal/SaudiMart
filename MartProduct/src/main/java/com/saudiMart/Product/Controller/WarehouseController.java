@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Model.Warehouse;
+import com.saudiMart.Product.Service.UserService;
 import com.saudiMart.Product.Service.WarehouseService;
 import com.saudiMart.Product.Utils.ProductException;
 
@@ -26,9 +28,12 @@ public class WarehouseController {
 
     private final WarehouseService warehouseService;
 
+    private final UserService userService;
+
     @Autowired
-    public WarehouseController(WarehouseService warehouseService) {
+    public WarehouseController(WarehouseService warehouseService, UserService userService) {
         this.warehouseService = warehouseService;
+        this.userService=userService;
     }
 
     @GetMapping
@@ -96,8 +101,11 @@ public class WarehouseController {
     }
 
     @GetMapping("/seller")
-    public ResponseEntity<ResponseWrapper<List<Warehouse>>> getWarehousesBySeller(Users user) {
+    public ResponseEntity<ResponseWrapper<List<Warehouse>>> getWarehousesBySeller(@RequestParam String sellerId) throws ProductException {
+        // Fetch the user based on sellerId and then call the service
+        Users user = userService.getUserById(sellerId); // Assuming you have a UserService
         List<Warehouse> warehouses = warehouseService.getWarehousesBySeller(user);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved warehouses by seller", warehouses));
     }
+
 }

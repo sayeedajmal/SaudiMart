@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.saudiMart.Product.Model.Address;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Service.AddressService;
+import com.saudiMart.Product.Service.UserService;
 import com.saudiMart.Product.Utils.ProductException;
 
 @RestController
@@ -25,10 +27,12 @@ import com.saudiMart.Product.Utils.ProductException;
 public class AddressController {
 
     private final AddressService addressService;
+    private final UserService userService;
 
     @Autowired
-    public AddressController(AddressService addressService) {
+    public AddressController(AddressService addressService, UserService userService) {
         this.addressService = addressService;
+        this.userService=userService;
     }
 
     @GetMapping
@@ -100,10 +104,11 @@ public class AddressController {
         }
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<ResponseWrapper<List<Address>>> getAddressesByUserId(Users user) throws ProductException {
+    @GetMapping("/user")
+    public ResponseEntity<ResponseWrapper<List<Address>>> getAddressesByUserId(@RequestParam String userId) throws ProductException {
         try {
-            List<Address> addresses = addressService.getAddressesByUser(user);
+            Users userById = userService.getUserById(userId);
+            List<Address> addresses = addressService.getAddressesByUser(userById);
             return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(),
                     "Successfully retrieved addresses for user", addresses));
         } catch (Exception e) {
