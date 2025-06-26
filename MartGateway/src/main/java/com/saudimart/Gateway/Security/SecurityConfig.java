@@ -26,18 +26,16 @@ public class SecurityConfig {
                         JwtAuthenticationFilter jwtAuthenticationFilter) {
 
                 return http
-                                .cors(c -> c.configurationSource(corsConfigurationSource()))
-                                .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                                .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
-                                .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
-                                .authorizeExchange(ex -> ex
-                                                .pathMatchers("/authen/**", "/actuator/**", "/users/**").permitAll()
-                                                .pathMatchers(HttpMethod.GET, "/products/**", "/categories/**")
-                                                .permitAll()
-                                                .pathMatchers(HttpMethod.OPTIONS, "/products/**", "/categories/**")
-                                                .permitAll()
-                                                .anyExchange().authenticated())
-                                .build();
+                        .cors(c -> c.configurationSource(corsConfigurationSource()))
+                        .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                        .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+                        .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+                        .authorizeExchange(ex -> ex
+                        .pathMatchers(HttpMethod.OPTIONS, "/categories/**", "/pricetiers/**", "/productimages/**", "/productspecifications/**", "/productvariants/**", "/products/**").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/categories/**", "/pricetiers/**", "/productimages/**", "/productspecifications/**", "/productvariants/**", "/products/**").permitAll()
+                        .pathMatchers("/authen/**", "/actuator/**", "/users/**").permitAll()
+                        .anyExchange().authenticated())
+                        .build();
         }
 
         @Bean

@@ -37,9 +37,8 @@ public class JwtAuthenticationFilter implements WebFilter {
         String path = request.getPath().value();
         HttpMethod method = request.getMethod();
 
-        if (path.matches("^/(authen|actuator|users)(/.*)?$") ||
-                (HttpMethod.GET.equals(method) && path.matches("^/(products|categories)(/.*)?$")) ||
-                (HttpMethod.OPTIONS.equals(method) && path.matches("^/(products|categories)(/.*)?$"))) {
+        if (path.matches("^/(authen|actuator|users)(/.*)?$") || (HttpMethod.GET.equals(method) || HttpMethod.OPTIONS.equals(method)) &&
+                path.matches("^/(categories|pricetiers|productimages|productspecifications|productvariants|products)(/.*)?$")) {
                 System.out.println("ITS FROM THE GATEWAY OPENEND POINT HERES THE PATH: "+path);
             return chain.filter(exchange);
         }
