@@ -15,14 +15,14 @@ import com.saudiMart.Product.Model.Category;
 import com.saudiMart.Product.Model.ProductImage;
 import com.saudiMart.Product.Model.ProductSpecification;
 import com.saudiMart.Product.Model.ProductVariant;
-import com.saudiMart.Product.Model.Warehouse;
 import com.saudiMart.Product.Model.Products;
+import com.saudiMart.Product.Model.Warehouse;
 import com.saudiMart.Product.Repository.CategoryRepository;
 import com.saudiMart.Product.Repository.ProductImageRepository;
-import com.saudiMart.Product.Repository.WarehouseRepository;
 import com.saudiMart.Product.Repository.ProductSpecificationRepository;
 import com.saudiMart.Product.Repository.ProductVariantRepository;
 import com.saudiMart.Product.Repository.ProductsRepository;
+import com.saudiMart.Product.Repository.WarehouseRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
 @Service
@@ -148,10 +148,6 @@ public class ProductsService {
     public void updateWareHouses(Products oldProduct, List<Warehouse> warehouses) {
         List<Warehouse> existingWarehouses = warehouseRepo.findByProduct(oldProduct);
 
-        Map<String, Warehouse> existingWarehousesMap = existingWarehouses.stream()
-                .filter(warehouse -> warehouse.getId() != null)
-                .collect(Collectors.toMap(Warehouse::getId, warehouse -> warehouse));
-
         Map<String, Warehouse> incomingWarehousesMap = new HashMap<>();
         if (warehouses != null) {
             warehouses.stream()
@@ -164,12 +160,12 @@ public class ProductsService {
 
         if (warehouses != null) {
             for (Warehouse incomingWarehouse : warehouses) {
-                incomingWarehouse.setProduct(oldProduct); // Set the product on the incoming warehouse
+                incomingWarehouse.setProduct(oldProduct); 
                 warehousesToSave.add(incomingWarehouse);
             }
         }
 
-        // Identify warehouses to delete (existing warehouses not in the incoming list)
+        
         for (Warehouse existingWarehouse : existingWarehouses) {
             if (existingWarehouse.getId() != null && !incomingWarehousesMap.containsKey(existingWarehouse.getId())) {
                 warehousesToDelete.add(existingWarehouse);
@@ -270,7 +266,7 @@ public class ProductsService {
             }
         }
 
-        // Identify variants to delete (existing variants not in the incoming list)
+        
         for (ProductVariant existingVariant : existingVariants) {
             if (existingVariant.getId() != null && !incomingVariantsMap.containsKey(existingVariant.getId())) {
                 variantsToDelete.add(existingVariant);

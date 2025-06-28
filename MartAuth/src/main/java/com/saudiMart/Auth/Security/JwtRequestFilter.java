@@ -57,7 +57,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        if (request.getRequestURI().startsWith("/auth/")) {
+        if (request.getRequestURI().matches("^/(authen|actuator)(/.*)?$")) {
+            System.out.println("ITS FROM THE AUTH OPENEND POINT HERES THE PATH: " + request.getRequestURI());
             chain.doFilter(request, response);
             return;
         }
