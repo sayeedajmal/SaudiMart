@@ -34,6 +34,7 @@ public class WarehouseService {
         if (warehouse == null) {
             throw new ProductException("Warehouse details cannot be null");
         }
+        System.out.println("warehouse:: " + warehouse);
         return warehouseRepository.save(warehouse);
     }
 

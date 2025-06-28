@@ -16,13 +16,11 @@ import com.saudiMart.Product.Model.ProductImage;
 import com.saudiMart.Product.Model.ProductSpecification;
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
-import com.saudiMart.Product.Model.Warehouse;
 import com.saudiMart.Product.Repository.CategoryRepository;
 import com.saudiMart.Product.Repository.ProductImageRepository;
 import com.saudiMart.Product.Repository.ProductSpecificationRepository;
 import com.saudiMart.Product.Repository.ProductVariantRepository;
 import com.saudiMart.Product.Repository.ProductsRepository;
-import com.saudiMart.Product.Repository.WarehouseRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
 @Service
@@ -33,9 +31,6 @@ public class ProductsService {
 
     @Autowired
     private ProductImageRepository productImageRepository;
-
-    @Autowired
-    private WarehouseRepository warehouseRepo;
 
     @Autowired
     private ProductSpecificationRepository productSpecificationRepository;
@@ -104,10 +99,6 @@ public class ProductsService {
             product.getVariants().forEach(variant -> variant.setProduct(product));
         }
 
-        if(product.getWarehouses() != null) {
-            product.getWarehouses().forEach(warehouse -> warehouse.setProduct(product));
-        }
-
         return productsRepository.save(product);
     }
 
@@ -140,39 +131,8 @@ public class ProductsService {
         updateProductSpecifications(oldProduct, newProduct.getSpecifications());
         updateProductImages(oldProduct, newProduct.getImages());
         updateProductVariants(oldProduct, newProduct.getVariants());
-        updateWareHouses(oldProduct, newProduct.getWarehouses());
 
         return productsRepository.save(oldProduct);
-    }
-
-    public void updateWareHouses(Products oldProduct, List<Warehouse> warehouses) {
-        List<Warehouse> existingWarehouses = warehouseRepo.findByProduct(oldProduct);
-
-        Map<String, Warehouse> incomingWarehousesMap = new HashMap<>();
-        if (warehouses != null) {
-            warehouses.stream()
-                    .filter(warehouse -> warehouse.getId() != null)
-                    .forEach(warehouse -> incomingWarehousesMap.put(warehouse.getId(), warehouse));
-        }
-
-        List<Warehouse> warehousesToSave = new ArrayList<>();
-        List<Warehouse> warehousesToDelete = new ArrayList<>();
-
-        if (warehouses != null) {
-            for (Warehouse incomingWarehouse : warehouses) {
-                incomingWarehouse.setProduct(oldProduct); 
-                warehousesToSave.add(incomingWarehouse);
-            }
-        }
-
-        
-        for (Warehouse existingWarehouse : existingWarehouses) {
-            if (existingWarehouse.getId() != null && !incomingWarehousesMap.containsKey(existingWarehouse.getId())) {
-                warehousesToDelete.add(existingWarehouse);
-            }
-        }
-        warehouseRepo.deleteAll(warehousesToDelete);
-        warehouseRepo.saveAll(warehousesToSave);
     }
 
     private void updateProductImages(Products oldProduct, List<ProductImage> newImages) {
@@ -266,7 +226,6 @@ public class ProductsService {
             }
         }
 
-        
         for (ProductVariant existingVariant : existingVariants) {
             if (existingVariant.getId() != null && !incomingVariantsMap.containsKey(existingVariant.getId())) {
                 variantsToDelete.add(existingVariant);
