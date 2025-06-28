@@ -15,6 +15,7 @@ import com.saudiMart.Product.Model.Category;
 import com.saudiMart.Product.Model.ProductImage;
 import com.saudiMart.Product.Model.ProductSpecification;
 import com.saudiMart.Product.Model.ProductVariant;
+import com.saudiMart.Product.Model.Warehouse;
 import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Repository.CategoryRepository;
 import com.saudiMart.Product.Repository.ProductImageRepository;
@@ -145,9 +146,37 @@ public class ProductsService {
     }
 
     public void updateWareHouses(Products oldProduct, List<Warehouse> warehouses) {
-        
+        List<Warehouse> existingWarehouses = warehouseRepo.findByProduct(oldProduct);
 
-        warehouseRepo.saveAll(exisitingWarehouse);
+        Map<String, Warehouse> existingWarehousesMap = existingWarehouses.stream()
+                .filter(warehouse -> warehouse.getId() != null)
+                .collect(Collectors.toMap(Warehouse::getId, warehouse -> warehouse));
+
+        Map<String, Warehouse> incomingWarehousesMap = new HashMap<>();
+        if (warehouses != null) {
+            warehouses.stream()
+                    .filter(warehouse -> warehouse.getId() != null)
+                    .forEach(warehouse -> incomingWarehousesMap.put(warehouse.getId(), warehouse));
+        }
+
+        List<Warehouse> warehousesToSave = new ArrayList<>();
+        List<Warehouse> warehousesToDelete = new ArrayList<>();
+
+        if (warehouses != null) {
+            for (Warehouse incomingWarehouse : warehouses) {
+                incomingWarehouse.setProduct(oldProduct); // Set the product on the incoming warehouse
+                warehousesToSave.add(incomingWarehouse);
+            }
+        }
+
+        // Identify warehouses to delete (existing warehouses not in the incoming list)
+        for (Warehouse existingWarehouse : existingWarehouses) {
+            if (existingWarehouse.getId() != null && !incomingWarehousesMap.containsKey(existingWarehouse.getId())) {
+                warehousesToDelete.add(existingWarehouse);
+            }
+        }
+        warehouseRepo.deleteAll(warehousesToDelete);
+        warehouseRepo.saveAll(warehousesToSave);
     }
 
     private void updateProductImages(Products oldProduct, List<ProductImage> newImages) {
