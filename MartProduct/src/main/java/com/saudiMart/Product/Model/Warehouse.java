@@ -33,6 +33,11 @@ public class Warehouse {
     private Users seller;
 
     @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Products product;
+
+    @NotNull
     @Size(max = 100)
     @Column(name = "name", nullable = false)
     private String name;

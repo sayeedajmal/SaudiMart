@@ -47,11 +47,23 @@ public class ProductsController {
     @PostMapping
     public ResponseEntity<ResponseWrapper<Products>> createProduct(@RequestBody Products product)
             throws ProductException {
+                System.out.println("PROUDCT CATEOGORY::: "+product.getCategory().toString());
         Products createdProduct = productsService.createProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseWrapper<>(200, "Successfully created product", createdProduct));
     }
+    
+    @GetMapping("/seller/{sellerId}")
+    public ResponseEntity<ResponseWrapper<List<Products>>> getProductsBySellerId(@PathVariable String sellerId) {
+        List<Products> products = productsService.getProductsBySellerId(sellerId);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved products for seller", products));
+    }
 
+    @GetMapping("/seller/{sellerId}/available")
+    public ResponseEntity<ResponseWrapper<List<Products>>> getAvailableProductsBySellerId(@PathVariable String sellerId) {
+        List<Products> products = productsService.getAvailableProductsBySellerId(sellerId);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved available products for seller", products));
+    }
     @PutMapping("/{id}")
     public ResponseEntity<ResponseWrapper<Products>> updateProduct(@PathVariable String id,
             @RequestBody Products productDetails) throws ProductException {

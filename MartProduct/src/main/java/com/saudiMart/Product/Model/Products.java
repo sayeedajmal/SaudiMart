@@ -75,6 +75,10 @@ public class Products {
     @Column(name = "minimum_order_quantity")
     private Integer minimumOrderQuantity = 1;
 
+    @OneToMany(mappedBy="product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("warehouses")
+    private List<Warehouse> warehouses;
+    
     @Column(name = "weight", precision = 10, scale = 2)
     private BigDecimal weight;
 

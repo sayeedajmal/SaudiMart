@@ -1,5 +1,6 @@
 package com.saudiMart.Product.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import com.saudiMart.Product.Model.Warehouse;
 import com.saudiMart.Product.Service.InventoryService;
 import com.saudiMart.Product.Service.ProductVariantService;
 import com.saudiMart.Product.Service.ProductsService;
+import com.saudiMart.Product.Service.UserService;
 import com.saudiMart.Product.Service.WarehouseService;
 import com.saudiMart.Product.Utils.ProductException;
 
@@ -34,16 +36,16 @@ public class InventoryController {
     private InventoryService inventoryService;
 
     @Autowired
-    private ProductsService productsService; // Needed to get Product object by ID
+    private ProductsService productsService;
 
     @Autowired
-    private ProductVariantService productVariantService; // Needed to get ProductVariant object by ID
+    private ProductVariantService productVariantService;
 
     @Autowired
-    private WarehouseService warehouseService; // Needed to get Warehouse object by ID
+    private WarehouseService warehouseService;
 
- @Autowired
-    private UserService userService; // Needed to get User object by ID
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public ResponseEntity<ResponseWrapper<List<Inventory>>> getAllInventory() throws ProductException {
@@ -82,8 +84,8 @@ public class InventoryController {
     @GetMapping("/product/{productId}")
     public ResponseEntity<ResponseWrapper<List<Inventory>>> getInventoryByProductId(@PathVariable String productId)
             throws ProductException {
-        Products product = productsService.getProductById(productId); // Assuming a method in ProductsService to get
-                                                                      // Product by ID
+        Products product = productsService.getProductById(productId);
+
         List<Inventory> inventory = inventoryService.getInventoryByProduct(product);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved inventory entries for product", inventory));
@@ -92,9 +94,8 @@ public class InventoryController {
     @GetMapping("/variant/{variantId}")
     public ResponseEntity<ResponseWrapper<List<Inventory>>> getInventoryByVariantId(@PathVariable String variantId)
             throws ProductException {
-        ProductVariant variant = productVariantService.getProductVariantById(variantId); // Assuming a method in
-                                                                                         // ProductVariantService to get
-                                                                                         // ProductVariant by ID
+        ProductVariant variant = productVariantService.getProductVariantById(variantId);
+
         List<Inventory> inventory = inventoryService.getInventoryByVariant(variant);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved inventory entries for variant", inventory));
@@ -103,8 +104,8 @@ public class InventoryController {
     @GetMapping("/warehouse/{warehouseId}")
     public ResponseEntity<ResponseWrapper<List<Inventory>>> getInventoryByWarehouseId(@PathVariable String warehouseId)
             throws ProductException {
-        Warehouse warehouse = warehouseService.getWarehouseById(warehouseId); // Assuming a method in WarehouseService
-                                                                              // to get Warehouse by ID
+        Warehouse warehouse = warehouseService.getWarehouseById(warehouseId);
+
         List<Inventory> inventory = inventoryService.getInventoryByWarehouse(warehouse);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved inventory entries for warehouse", inventory));
@@ -113,23 +114,23 @@ public class InventoryController {
     @GetMapping("/sellerinventory/{userId}")
     public ResponseEntity<ResponseWrapper<List<Inventory>>> getInventoryForSeller(@PathVariable String userId) {
         try {
-            // Fetch the user based on userId
+
             Users user = userService.getUserById(userId);
 
-            // Find all warehouses for the seller
             List<Warehouse> sellersWarehouses = warehouseService.getWarehousesBySeller(user);
 
-            // Retrieve inventory for each warehouse and combine
             List<Inventory> sellerInventory = new ArrayList<>();
             for (Warehouse warehouse : sellersWarehouses) {
                 List<Inventory> warehouseInventory = inventoryService.getInventoryByWarehouse(warehouse);
                 sellerInventory.addAll(warehouseInventory);
             }
-            return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved inventory for seller", sellerInventory));
+            return ResponseEntity
+                    .ok(new ResponseWrapper<>(200, "Successfully retrieved inventory for seller", sellerInventory));
         } catch (ProductException e) {
- return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
         }
     }
 }
