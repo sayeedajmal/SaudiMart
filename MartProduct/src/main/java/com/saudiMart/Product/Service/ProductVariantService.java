@@ -1,11 +1,9 @@
 package com.saudiMart.Product.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,9 +115,8 @@ public class ProductVariantService {
 
             // Use helper methods to update associated collections
             updateVariantImages(productVariant, productVariantDetails.getImages());
-            updateVariantSpecifications(productVariant, productVariantDetails.getSpecifications());
-            updateProductSpecifications(productVariant, productVariant.getSpecifications());
-            
+            updateVariantSpecifications(productVariant, productVariant.getSpecifications());
+
             return productVariantRepository.save(productVariant);
         }
         throw new ProductException("Product Variant not found with id: " + id);
@@ -156,17 +153,12 @@ public class ProductVariantService {
         productSpecificationRepository.saveAll(specsToSave);
     }
 
-    // Helper method to update ProductImage collection for a ProductVariant
-    private void updateVariantImages(ProductVariant variant, List<ProductImage> incomingImages) {
+    private void updateVariantImages(ProductVariant variant, List<ProductImage> newImages) {
         List<ProductImage> existingImages = productImageRepository.findByVariant(variant);
 
-        Map<String, ProductImage> existingImagesMap = existingImages.stream()
-                .filter(image -> image.getId() != null)
-                .collect(Collectors.toMap(ProductImage::getId, image -> image));
-
         if (newImages != null) {
-            for (ProductImage incomingImage : incomingImages) {
-                Optional<ProductImage> existingImageOpt = Optional.ofNullable(existingImagesMap.get(incomingImage.getId()));
+            for (ProductImage incomingImage : newImages) {
+                Optional<ProductImage> existingImageOpt = existingImages.stream()
                         .filter(image -> image.getId() != null && image.getId().equals(incomingImage.getId()))
                         .findFirst();
 
@@ -180,21 +172,14 @@ public class ProductVariantService {
                         existingImage.setDisplayOrder(incomingImage.getDisplayOrder());
                     if (incomingImage.getIsPrimary() != null)
                         existingImage.setIsPrimary(incomingImage.getIsPrimary());
-                } else if (incomingImage.getId() == null){ // Treat as new if no ID
-                    incomingImage.setVariant(oldProduct);
+                } else {
+                    incomingImage.setVariant(variant);
                     existingImages.add(incomingImage);
                 }
             }
         }
 
         productImageRepository.saveAll(existingImages);
-
-        Set<String> incomingImageIds = incomingImages != null ? incomingImages.stream()
-                .filter(image -> image.getId() != null)
-                .map(ProductImage::getId)
-                .collect(Collectors.toSet()) : new HashSet<>();
-
-        existingImages.stream().filter(image -> !incomingImageIds.contains(image.getId())).forEach(productImageRepository::delete);
     }
 
     public void deleteProductVariant(String id) throws ProductException {

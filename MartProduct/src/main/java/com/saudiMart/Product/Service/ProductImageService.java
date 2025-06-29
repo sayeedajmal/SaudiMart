@@ -8,10 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.ProductImage;
 import com.saudiMart.Product.Model.ProductVariant;
-import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Repository.ProductImageRepository;
 import com.saudiMart.Product.Repository.ProductVariantRepository;
-import com.saudiMart.Product.Repository.ProductsRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
 @Service
@@ -21,12 +19,9 @@ public class ProductImageService {
     private ProductImageRepository productImageRepository;
 
     @Autowired
-    private ProductsRepository productsRepository;
-
-    @Autowired
     private ProductVariantRepository productVariantRepository;
 
-    public List<ProductImage> getAllProductImages() {
+    public List<ProductImage> getAllVarientImages() {
         return productImageRepository.findAll();
     }
 
@@ -35,22 +30,16 @@ public class ProductImageService {
                 .orElseThrow(() -> new ProductException("Product image not found with id: " + productImageId));
     }
 
-    public List<ProductImage> getProductImagesByProductId(String productId) throws ProductException {
-        Products product = productsRepository.findById(productId)
-                .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
-        return productImageRepository.findByProduct(product);
+    public List<ProductImage> getProductImagesByVarientId(String varientId) throws ProductException {
+        ProductVariant variant = productVariantRepository.findById(varientId)
+                .orElseThrow(() -> new ProductException("Product not found with id: " + varientId));
+        return productImageRepository.findByVariant(variant);
     }
 
     public List<ProductImage> getProductImagesByVariantId(String variantId) throws ProductException {
         ProductVariant variant = productVariantRepository.findById(variantId)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
         return productImageRepository.findByVariant(variant);
-    }
-
-    public Optional<ProductImage> getPrimaryProductImageByProductId(String productId) throws ProductException {
-        Products product = productsRepository.findById(productId)
-                .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
-        return productImageRepository.findByProductAndIsPrimaryTrue(product).stream().findFirst();
     }
 
     public ProductImage createProductImage(ProductImage productImage) throws ProductException {

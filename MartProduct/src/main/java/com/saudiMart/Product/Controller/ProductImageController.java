@@ -26,8 +26,8 @@ public class ProductImageController {
     private ProductImageService productImageService;
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<ProductImage>>> getAllProductImages() throws ProductException {
-        List<ProductImage> productImages = productImageService.getAllProductImages();
+    public ResponseEntity<ResponseWrapper<List<ProductImage>>> getAllVarientImages() throws ProductException {
+        List<ProductImage> productImages = productImageService.getAllVarientImages();
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved all product images.", productImages));
     }

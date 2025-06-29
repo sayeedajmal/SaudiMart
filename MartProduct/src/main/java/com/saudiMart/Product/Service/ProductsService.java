@@ -15,7 +15,6 @@ import com.saudiMart.Product.Model.ProductSpecification;
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Repository.CategoryRepository;
-import com.saudiMart.Product.Repository.ProductImageRepository;
 import com.saudiMart.Product.Repository.ProductSpecificationRepository;
 import com.saudiMart.Product.Repository.ProductVariantRepository;
 import com.saudiMart.Product.Repository.ProductsRepository;
@@ -26,9 +25,6 @@ public class ProductsService {
 
     @Autowired
     private ProductsRepository productsRepository;
-
-    @Autowired
-    private ProductImageRepository productImageRepository;
 
     @Autowired
     private ProductSpecificationRepository productSpecificationRepository;
@@ -48,7 +44,7 @@ public class ProductsService {
         Products product = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product with ID " + productId + " not found"));
 
-        //product.setImages(productImageRepository.findByProduct(product));
+        // product.setImages(productImageRepository.findByProduct(product));
         product.setSpecifications(productSpecificationRepository.findByProduct(product));
         product.setVariants(productVariantRepository.findByProduct(product));
 
@@ -123,7 +119,6 @@ public class ProductsService {
             oldProduct.setAvailable(newProduct.getAvailable());
 
         updateProductSpecifications(oldProduct, newProduct.getSpecifications());
-        //updateProductImages(oldProduct, newProduct.getImages());
         updateProductVariants(oldProduct, newProduct.getVariants());
 
         return productsRepository.save(oldProduct);
@@ -200,13 +195,9 @@ public class ProductsService {
 
     @Transactional
     public void deleteProduct(String productId) throws ProductException {
-        Products product = productsRepository.findById(productId)
-                .orElseThrow(() -> new ProductException("Product with ID " + productId + " not found"));
-
-        productImageRepository.deleteByProduct(product);
-        productSpecificationRepository.deleteByProduct(product);
-        productVariantRepository.deleteByProduct(product);
-
-        productsRepository.delete(product);
+       if(productsRepository.findById(productId).isEmpty()){
+           throw new ProductException("Product not found");
+       }
+        productsRepository.deleteById(productId);
     }
 }
