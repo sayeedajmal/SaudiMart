@@ -43,10 +43,6 @@ public class ProductVariant {
     private Products product;
 
     @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference("variant-specifications")
-    private List<ProductSpecification> specifications;
-
-    @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("product-images")
     private List<ProductImage> images;
 

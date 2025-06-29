@@ -9,9 +9,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -29,12 +30,6 @@ public class ProductSpecification {
     @JoinColumn(name = "product_id", nullable = false)
     @JsonBackReference("product-specifications")
     private Products product;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "variant_id")
-    @JsonBackReference("variant-specifications")
-    private ProductVariant variant;
 
     @NotNull
     @Size(max = 100)

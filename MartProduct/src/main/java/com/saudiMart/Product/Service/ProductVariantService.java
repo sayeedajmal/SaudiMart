@@ -81,10 +81,6 @@ public class ProductVariantService {
             productVariant.getImages().forEach(image -> image.setVariant(savedVariant));
         }
 
-        if (productVariant.getSpecifications() != null) {
-            productVariant.getSpecifications().forEach(spec -> spec.setVariant(savedVariant));
-        }
-
         return productVariantRepository.save(savedVariant);
     }
 
@@ -115,43 +111,11 @@ public class ProductVariantService {
 
             // Use helper methods to update associated collections
             updateVariantImages(productVariant, productVariantDetails.getImages());
-            updateVariantSpecifications(productVariant, productVariant.getSpecifications());
 
             return productVariantRepository.save(productVariant);
         }
         throw new ProductException("Product Variant not found with id: " + id);
-    }
-
-    // Helper method to update ProductSpecification collection for a ProductVariant
-    private void updateVariantSpecifications(ProductVariant variant, List<ProductSpecification> incomingSpecs) {
-        List<ProductSpecification> existingSpecs = productSpecificationRepository.findByVariant(variant);
-
-        Map<String, ProductSpecification> existingSpecsMap = existingSpecs.stream()
-                .filter(spec -> spec.getId() != null)
-                .collect(Collectors.toMap(ProductSpecification::getId, spec -> spec));
-
-        List<ProductSpecification> specsToSave = new ArrayList<>();
-
-        if (incomingSpecs != null) {
-            for (ProductSpecification incomingSpec : incomingSpecs) {
-                if (incomingSpec.getId() != null) {
-                    ProductSpecification existingSpec = existingSpecsMap.get(incomingSpec.getId());
-                    if (existingSpec != null) {
-                        existingSpec.setSpecName(incomingSpec.getSpecName());
-                        existingSpec.setSpecValue(incomingSpec.getSpecValue());
-                        existingSpec.setUnit(incomingSpec.getUnit());
-                        existingSpec.setDisplayOrder(incomingSpec.getDisplayOrder());
-                        specsToSave.add(existingSpec);
-                    }
-                } else {
-                    incomingSpec.setVariant(variant);
-                    specsToSave.add(incomingSpec);
-                }
-            }
-        }
-
-        productSpecificationRepository.saveAll(specsToSave);
-    }
+ }
 
     private void updateVariantImages(ProductVariant variant, List<ProductImage> newImages) {
         List<ProductImage> existingImages = productImageRepository.findByVariant(variant);
