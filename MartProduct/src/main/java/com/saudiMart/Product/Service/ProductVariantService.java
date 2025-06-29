@@ -115,45 +115,9 @@ public class ProductVariantService {
             if (productVariantDetails.getAvailable() != null)
                 productVariant.setAvailable(productVariantDetails.getAvailable());
 
-            // Handle Product Images Update
-            List<ProductImage> existingImages = productVariant.getImages();
-            List<ProductImage> updatedImages = productVariantDetails.getImages();
-
-            if (existingImages != null && updatedImages != null) {
-                Set<String> updatedImageIds = new HashSet<>();
-                for (ProductImage updatedImage : updatedImages) {
-                    if (updatedImage.getId() != null) {
-                        updatedImageIds.add(updatedImage.getId());
-                        // Update existing image
-                        for (ProductImage existingImage : existingImages) {
-                            if (existingImage.getId().equals(updatedImage.getId())) {
-                                existingImage.setImageUrl(updatedImage.getImageUrl());
-                                existingImage.setAltText(updatedImage.getAltText());
-                                existingImage.setDisplayOrder(updatedImage.getDisplayOrder());
-                                existingImage.setIsPrimary(updatedImage.getIsPrimary());
-                                break;
-                            }
-                        }
-                    } else {
-                        // Add new image
-                        updatedImage.setVariant(productVariant);
-                        existingImages.add(updatedImage);
-                    }
-                }
-                // Remove images not in the updated list
-                existingImages.removeIf(existingImage -> !updatedImageIds.contains(existingImage.getId()));
-            } else if (existingImages != null && updatedImages == null) {
-                existingImages.clear(); // Remove all existing images if no updated images are provided
-            } else if (existingImages == null && updatedImages != null) {
-                productVariant.setImages(updatedImages);
-                for (ProductImage newImage : updatedImages) {
-                    newImage.setVariant(productVariant);
-                }
-            }
-            updateProductImages(productVariant, updatedImages);
-            if (productVariantDetails.getSpecifications() != null) {
-                productVariant.setSpecifications(productVariantDetails.getSpecifications());
-            }
+            // Use helper methods to update associated collections
+            updateVariantImages(productVariant, productVariantDetails.getImages());
+            updateVariantSpecifications(productVariant, productVariantDetails.getSpecifications());
             updateProductSpecifications(productVariant, productVariant.getSpecifications());
             
             return productVariantRepository.save(productVariant);
@@ -161,8 +125,9 @@ public class ProductVariantService {
         throw new ProductException("Product Variant not found with id: " + id);
     }
 
-    private void updateProductSpecifications(ProductVariant oldProduct, List<ProductSpecification> incomingSpecs) {
-        List<ProductSpecification> existingSpecs = productSpecificationRepository.findByVariant(oldProduct);
+    // Helper method to update ProductSpecification collection for a ProductVariant
+    private void updateVariantSpecifications(ProductVariant variant, List<ProductSpecification> incomingSpecs) {
+        List<ProductSpecification> existingSpecs = productSpecificationRepository.findByVariant(variant);
 
         Map<String, ProductSpecification> existingSpecsMap = existingSpecs.stream()
                 .filter(spec -> spec.getId() != null)
@@ -182,7 +147,7 @@ public class ProductVariantService {
                         specsToSave.add(existingSpec);
                     }
                 } else {
-                    incomingSpec.setVariant(oldProduct);
+                    incomingSpec.setVariant(variant);
                     specsToSave.add(incomingSpec);
                 }
             }
@@ -191,12 +156,17 @@ public class ProductVariantService {
         productSpecificationRepository.saveAll(specsToSave);
     }
 
-    private void updateProductImages(ProductVariant oldProduct, List<ProductImage> newImages) {
-        List<ProductImage> existingImages = productImageRepository.findByVariant(oldProduct);
+    // Helper method to update ProductImage collection for a ProductVariant
+    private void updateVariantImages(ProductVariant variant, List<ProductImage> incomingImages) {
+        List<ProductImage> existingImages = productImageRepository.findByVariant(variant);
+
+        Map<String, ProductImage> existingImagesMap = existingImages.stream()
+                .filter(image -> image.getId() != null)
+                .collect(Collectors.toMap(ProductImage::getId, image -> image));
 
         if (newImages != null) {
-            for (ProductImage incomingImage : newImages) {
-                Optional<ProductImage> existingImageOpt = existingImages.stream()
+            for (ProductImage incomingImage : incomingImages) {
+                Optional<ProductImage> existingImageOpt = Optional.ofNullable(existingImagesMap.get(incomingImage.getId()));
                         .filter(image -> image.getId() != null && image.getId().equals(incomingImage.getId()))
                         .findFirst();
 
@@ -210,7 +180,7 @@ public class ProductVariantService {
                         existingImage.setDisplayOrder(incomingImage.getDisplayOrder());
                     if (incomingImage.getIsPrimary() != null)
                         existingImage.setIsPrimary(incomingImage.getIsPrimary());
-                } else {
+                } else if (incomingImage.getId() == null){ // Treat as new if no ID
                     incomingImage.setVariant(oldProduct);
                     existingImages.add(incomingImage);
                 }
@@ -218,6 +188,13 @@ public class ProductVariantService {
         }
 
         productImageRepository.saveAll(existingImages);
+
+        Set<String> incomingImageIds = incomingImages != null ? incomingImages.stream()
+                .filter(image -> image.getId() != null)
+                .map(ProductImage::getId)
+                .collect(Collectors.toSet()) : new HashSet<>();
+
+        existingImages.stream().filter(image -> !incomingImageIds.contains(image.getId())).forEach(productImageRepository::delete);
     }
 
     public void deleteProductVariant(String id) throws ProductException {
