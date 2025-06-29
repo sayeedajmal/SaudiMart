@@ -57,10 +57,6 @@ public class Products {
     private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference("product-images")
-    private List<ProductImage> images;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("product-specifications")
     private List<ProductSpecification> specifications;
 

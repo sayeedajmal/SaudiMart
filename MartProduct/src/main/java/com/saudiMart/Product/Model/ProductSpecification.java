@@ -30,6 +30,12 @@ public class ProductSpecification {
     @JsonBackReference("product-specifications")
     private Products product;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "variant_id")
+    @JsonBackReference("variant-specifications")
+    private ProductVariant variant;
+
     @NotNull
     @Size(max = 100)
     @Column(name = "spec_name", nullable = false, length = 100)

@@ -20,6 +20,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -40,6 +41,14 @@ public class ProductVariant {
     @JoinColumn(name = "product_id", nullable = false)
     @JsonBackReference("product-variants")
     private Products product;
+
+    @OneToMany(mappedBy = "variant", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("variant-specifications")
+    private List<ProductSpecification> specifications;
+
+ @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("product-images")
+    private List<ProductImage> images;
 
     @NotNull
     @Size(max = 50)

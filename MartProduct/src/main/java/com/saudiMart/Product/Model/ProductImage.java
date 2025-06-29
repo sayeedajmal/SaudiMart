@@ -29,14 +29,9 @@ public class ProductImage {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    @JsonBackReference("product-images")
-    private Products product;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "variant_id")
+    @JsonBackReference("product-images")
     private ProductVariant variant;
 
     @NotNull

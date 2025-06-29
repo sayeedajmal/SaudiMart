@@ -6,9 +6,15 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+import com.saudiMart.Product.Model.ProductImage;
 import com.saudiMart.Product.Model.PriceTier;
+import com.saudiMart.Product.Model.ProductSpecification;
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
+import com.saudiMart.Product.Repository.ProductImageRepository;
+import com.saudiMart.Product.Repository.ProductSpecificationRepository;
 import com.saudiMart.Product.Repository.PriceTierRepository;
 import com.saudiMart.Product.Repository.ProductVariantRepository;
 import com.saudiMart.Product.Repository.ProductsRepository;
@@ -25,6 +31,12 @@ public class ProductVariantService {
 
     @Autowired
     private PriceTierRepository priceTierRepository;
+
+    @Autowired
+    private ProductImageRepository productImageRepository;
+
+    @Autowired
+    private ProductSpecificationRepository productSpecificationRepository;
 
     public List<ProductVariant> getAllProductVariants() {
         return productVariantRepository.findAll();
@@ -59,7 +71,24 @@ public class ProductVariantService {
         if (existingVariant.isPresent()) {
             throw new ProductException("Product Variant with SKU " + productVariant.getSku() + " already exists.");
         }
-        return productVariantRepository.save(productVariant);
+
+        // Save the product variant first to get an ID
+        ProductVariant savedVariant = productVariantRepository.save(productVariant);
+
+        // Handle Product Images
+        if (productVariant.getImages() != null) {
+            for (ProductImage image : productVariant.getImages()) {
+                image.setVariant(savedVariant);
+            }
+        }
+
+        // Handle Product Specifications
+        if (productVariant.getSpecifications() != null) {
+            for (ProductSpecification specification : productVariant.getSpecifications()) {
+                specification.setVariant(savedVariant);
+            }
+        }
+ return productVariantRepository.save(savedVariant);
     }
 
     public ProductVariant updateProductVariant(String id, ProductVariant productVariantDetails)
@@ -86,7 +115,51 @@ public class ProductVariantService {
                 productVariant.setBasePrice(productVariantDetails.getBasePrice());
             if (productVariantDetails.getAvailable() != null)
                 productVariant.setAvailable(productVariantDetails.getAvailable());
-            return productVariantRepository.save(productVariant);
+
+            // Handle Product Images Update
+            List<ProductImage> existingImages = productVariant.getImages();
+            List<ProductImage> updatedImages = productVariantDetails.getImages();
+
+            if (existingImages != null && updatedImages != null) {
+                Set<String> updatedImageIds = new HashSet<>();
+                for (ProductImage updatedImage : updatedImages) {
+                    if (updatedImage.getId() != null) {
+                        updatedImageIds.add(updatedImage.getId());
+                        // Update existing image
+                        for (ProductImage existingImage : existingImages) {
+                            if (existingImage.getId().equals(updatedImage.getId())) {
+                                existingImage.setImageUrl(updatedImage.getImageUrl());
+                                existingImage.setAltText(updatedImage.getAltText());
+                                existingImage.setDisplayOrder(updatedImage.getDisplayOrder());
+                                existingImage.setIsPrimary(updatedImage.getIsPrimary());
+                                break;
+                            }
+                        }
+                    } else {
+                        // Add new image
+                        updatedImage.setVariant(productVariant);
+                        existingImages.add(updatedImage);
+                    }
+                }
+                // Remove images not in the updated list
+                existingImages.removeIf(existingImage -> !updatedImageIds.contains(existingImage.getId()));
+            } else if (existingImages != null && updatedImages == null) {
+                existingImages.clear(); // Remove all existing images if no updated images are provided
+            } else if (existingImages == null && updatedImages != null) {
+                // Add all updated images if no existing images
+                productVariant.setImages(updatedImages);
+                for (ProductImage newImage : updatedImages) {
+                    newImage.setVariant(productVariant);
+                }
+            }
+
+            // Handle Product Specifications Update (similar logic to images)
+            // (You would implement similar logic here to handle specifications)
+            // For now, just setting the new list if provided, more robust logic is needed
+            if (productVariantDetails.getSpecifications() != null) {
+ productVariant.setSpecifications(productVariantDetails.getSpecifications());
+            }
+ return productVariantRepository.save(productVariant);
         }
         throw new ProductException("Product Variant not found with id: " + id);
     }
