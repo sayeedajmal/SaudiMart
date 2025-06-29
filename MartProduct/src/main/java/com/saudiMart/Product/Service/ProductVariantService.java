@@ -1,22 +1,17 @@
 package com.saudiMart.Product.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.PriceTier;
 import com.saudiMart.Product.Model.ProductImage;
-import com.saudiMart.Product.Model.ProductSpecification;
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Repository.PriceTierRepository;
 import com.saudiMart.Product.Repository.ProductImageRepository;
-import com.saudiMart.Product.Repository.ProductSpecificationRepository;
 import com.saudiMart.Product.Repository.ProductVariantRepository;
 import com.saudiMart.Product.Repository.ProductsRepository;
 import com.saudiMart.Product.Utils.ProductException;
@@ -35,9 +30,6 @@ public class ProductVariantService {
 
     @Autowired
     private ProductImageRepository productImageRepository;
-
-    @Autowired
-    private ProductSpecificationRepository productSpecificationRepository;
 
     public List<ProductVariant> getAllProductVariants() {
         return productVariantRepository.findAll();
@@ -115,7 +107,7 @@ public class ProductVariantService {
             return productVariantRepository.save(productVariant);
         }
         throw new ProductException("Product Variant not found with id: " + id);
- }
+    }
 
     private void updateVariantImages(ProductVariant variant, List<ProductImage> newImages) {
         List<ProductImage> existingImages = productImageRepository.findByVariant(variant);
