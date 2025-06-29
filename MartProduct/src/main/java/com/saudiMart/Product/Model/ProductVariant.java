@@ -4,15 +4,17 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -20,7 +22,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -42,11 +43,11 @@ public class ProductVariant {
     @JsonBackReference("product-variants")
     private Products product;
 
-    @OneToMany(mappedBy = "variant", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("variant-specifications")
     private List<ProductSpecification> specifications;
 
- @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("product-images")
     private List<ProductImage> images;
 
@@ -58,7 +59,7 @@ public class ProductVariant {
     @Column(name = "variant_name")
     private String variantName;
 
-    @OneToMany(mappedBy = "variant", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("variant-priceTiers")
     private List<PriceTier> priceTiers;
 

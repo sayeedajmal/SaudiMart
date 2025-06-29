@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.saudiMart.Product.Model.ProductSpecification;
+import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
 
 @Repository
@@ -18,4 +19,6 @@ public interface ProductSpecificationRepository extends JpaRepository<ProductSpe
     List<ProductSpecification> findBySpecNameContainingIgnoreCase(String keyword);
 
     void deleteByProduct(Products product);
+
+    List<ProductSpecification> findByVariant(ProductVariant oldProduct);
 }

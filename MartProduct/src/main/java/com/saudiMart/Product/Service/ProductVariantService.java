@@ -1,21 +1,24 @@
 package com.saudiMart.Product.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Set;
-import com.saudiMart.Product.Model.ProductImage;
 import com.saudiMart.Product.Model.PriceTier;
+import com.saudiMart.Product.Model.ProductImage;
 import com.saudiMart.Product.Model.ProductSpecification;
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
+import com.saudiMart.Product.Repository.PriceTierRepository;
 import com.saudiMart.Product.Repository.ProductImageRepository;
 import com.saudiMart.Product.Repository.ProductSpecificationRepository;
-import com.saudiMart.Product.Repository.PriceTierRepository;
 import com.saudiMart.Product.Repository.ProductVariantRepository;
 import com.saudiMart.Product.Repository.ProductsRepository;
 import com.saudiMart.Product.Utils.ProductException;
@@ -77,18 +80,14 @@ public class ProductVariantService {
 
         // Handle Product Images
         if (productVariant.getImages() != null) {
-            for (ProductImage image : productVariant.getImages()) {
-                image.setVariant(savedVariant);
-            }
+            productVariant.getImages().forEach(image -> image.setVariant(savedVariant));
         }
 
-        // Handle Product Specifications
         if (productVariant.getSpecifications() != null) {
-            for (ProductSpecification specification : productVariant.getSpecifications()) {
-                specification.setVariant(savedVariant);
-            }
+            productVariant.getSpecifications().forEach(spec -> spec.setVariant(savedVariant));
         }
- return productVariantRepository.save(savedVariant);
+
+        return productVariantRepository.save(savedVariant);
     }
 
     public ProductVariant updateProductVariant(String id, ProductVariant productVariantDetails)
@@ -146,22 +145,79 @@ public class ProductVariantService {
             } else if (existingImages != null && updatedImages == null) {
                 existingImages.clear(); // Remove all existing images if no updated images are provided
             } else if (existingImages == null && updatedImages != null) {
-                // Add all updated images if no existing images
                 productVariant.setImages(updatedImages);
                 for (ProductImage newImage : updatedImages) {
                     newImage.setVariant(productVariant);
                 }
             }
-
-            // Handle Product Specifications Update (similar logic to images)
-            // (You would implement similar logic here to handle specifications)
-            // For now, just setting the new list if provided, more robust logic is needed
+            updateProductImages(productVariant, updatedImages);
             if (productVariantDetails.getSpecifications() != null) {
- productVariant.setSpecifications(productVariantDetails.getSpecifications());
+                productVariant.setSpecifications(productVariantDetails.getSpecifications());
             }
- return productVariantRepository.save(productVariant);
+            updateProductSpecifications(productVariant, productVariant.getSpecifications());
+            
+            return productVariantRepository.save(productVariant);
         }
         throw new ProductException("Product Variant not found with id: " + id);
+    }
+
+    private void updateProductSpecifications(ProductVariant oldProduct, List<ProductSpecification> incomingSpecs) {
+        List<ProductSpecification> existingSpecs = productSpecificationRepository.findByVariant(oldProduct);
+
+        Map<String, ProductSpecification> existingSpecsMap = existingSpecs.stream()
+                .filter(spec -> spec.getId() != null)
+                .collect(Collectors.toMap(ProductSpecification::getId, spec -> spec));
+
+        List<ProductSpecification> specsToSave = new ArrayList<>();
+
+        if (incomingSpecs != null) {
+            for (ProductSpecification incomingSpec : incomingSpecs) {
+                if (incomingSpec.getId() != null) {
+                    ProductSpecification existingSpec = existingSpecsMap.get(incomingSpec.getId());
+                    if (existingSpec != null) {
+                        existingSpec.setSpecName(incomingSpec.getSpecName());
+                        existingSpec.setSpecValue(incomingSpec.getSpecValue());
+                        existingSpec.setUnit(incomingSpec.getUnit());
+                        existingSpec.setDisplayOrder(incomingSpec.getDisplayOrder());
+                        specsToSave.add(existingSpec);
+                    }
+                } else {
+                    incomingSpec.setVariant(oldProduct);
+                    specsToSave.add(incomingSpec);
+                }
+            }
+        }
+
+        productSpecificationRepository.saveAll(specsToSave);
+    }
+
+    private void updateProductImages(ProductVariant oldProduct, List<ProductImage> newImages) {
+        List<ProductImage> existingImages = productImageRepository.findByVariant(oldProduct);
+
+        if (newImages != null) {
+            for (ProductImage incomingImage : newImages) {
+                Optional<ProductImage> existingImageOpt = existingImages.stream()
+                        .filter(image -> image.getId() != null && image.getId().equals(incomingImage.getId()))
+                        .findFirst();
+
+                if (existingImageOpt.isPresent()) {
+                    ProductImage existingImage = existingImageOpt.get();
+                    if (incomingImage.getImageUrl() != null)
+                        existingImage.setImageUrl(incomingImage.getImageUrl());
+                    if (incomingImage.getAltText() != null)
+                        existingImage.setAltText(incomingImage.getAltText());
+                    if (incomingImage.getDisplayOrder() != null)
+                        existingImage.setDisplayOrder(incomingImage.getDisplayOrder());
+                    if (incomingImage.getIsPrimary() != null)
+                        existingImage.setIsPrimary(incomingImage.getIsPrimary());
+                } else {
+                    incomingImage.setVariant(oldProduct);
+                    existingImages.add(incomingImage);
+                }
+            }
+        }
+
+        productImageRepository.saveAll(existingImages);
     }
 
     public void deleteProductVariant(String id) throws ProductException {
