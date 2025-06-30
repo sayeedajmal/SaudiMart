@@ -77,29 +77,16 @@ public class ProductsService {
         return productsRepository.findByCategory(category, pageable);
     }
 
-    public Page<Products> searchProducts(String name, String categoryId, String sku, Boolean available, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) throws ProductException {
+    public Page<Products> searchProducts(String keywords, String categoryId, String sellerId, Boolean available, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) throws ProductException {
+        Category category = null;
         if (categoryId != null) {
-            Category category = categoryRepository.findById(categoryId)
+            category = categoryRepository.findById(categoryId)
                     .orElseThrow(() -> new ProductException("Category not found with id: " + categoryId));
-            if (name != null) {
-                return productsRepository.findByNameContainingIgnoreCaseAndCategory(name, category, pageable);
-            } else {
-                return productsRepository.findByCategory(category, pageable);
-            }
-        } else if (name != null) {
-            return productsRepository.findByNameContainingIgnoreCase(name, pageable);
-        } else if (sku != null) {
-            return productsRepository.findBySku(sku, pageable);
-        } else if (available != null) {
-            return productsRepository.findByAvailable(available, pageable);
-        } else if (minPrice != null && maxPrice != null) {
-            return productsRepository.findByBasePriceBetween(minPrice, maxPrice, pageable);
-        } else if (minPrice != null) {
-             return productsRepository.findByBasePriceGreaterThanEqual(minPrice, pageable);
-        } else if (maxPrice != null) {
-             return productsRepository.findByBasePriceLessThanEqual(maxPrice, pageable);
         }
-        return productsRepository.findAll(pageable);
+
+        return productsRepository.searchProducts(
+                keywords, category, sellerId, available, minPrice, maxPrice, pageable
+        );
     }
 
     @Transactional

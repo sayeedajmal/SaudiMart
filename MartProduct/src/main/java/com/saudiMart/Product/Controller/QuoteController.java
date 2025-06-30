@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,9 +40,14 @@ public class QuoteController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<Quote>>> getAllQuotes() {
-        List<Quote> quotes = quoteService.getAllQuotes();
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all quotes", quotes));
+ public ResponseEntity<ResponseWrapper<Page<Quote>>> getAllQuotes(
+ @RequestParam(required = false) QuoteStatus status,
+ @RequestParam(required = false) String buyerId,
+ @RequestParam(required = false) String sellerId,
+ @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+ Page<Quote> quotes = quoteService.searchQuotes(status, buyerId, sellerId, pageable);
+ return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved quotes", quotes));
+
     }
 
     @GetMapping("/{id}")
@@ -69,22 +77,24 @@ public class QuoteController {
     }
 
     @GetMapping("/buyer/{userId}")
- public ResponseEntity<ResponseWrapper<List<Quote>>> getQuotesByBuyer(@PathVariable String userId) throws ProductException {
+ public ResponseEntity<ResponseWrapper<Page<Quote>>> getQuotesByBuyer(@PathVariable String userId, @PageableDefault(size = 10) Pageable pageable) throws ProductException {
  Users buyer = userService.getUserById(userId);
- List<Quote> quotes = quoteService.getQuotesByBuyer(buyer);
+ Page<Quote> quotes = quoteService.getQuotesByBuyer(buyer, pageable);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved quotes by buyer", quotes));
     }
 
     @GetMapping("/seller/{userId}")
- public ResponseEntity<ResponseWrapper<List<Quote>>> getQuotesBySeller(@PathVariable String userId) throws ProductException {
+ public ResponseEntity<ResponseWrapper<Page<Quote>>> getQuotesBySeller(@PathVariable String userId, @PageableDefault(size = 10) Pageable pageable) throws ProductException {
  Users users = userService.getUserById(userId);
-        List<Quote> quotes = quoteService.getQuotesBySeller(users);
+ Page<Quote> quotes = quoteService.getQuotesBySeller(users, pageable);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved quotes by seller", quotes));
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<ResponseWrapper<List<Quote>>> getQuotesByStatus(@PathVariable QuoteStatus status) {
-        List<Quote> quotes = quoteService.getQuotesByStatus(status);
+    public ResponseEntity<ResponseWrapper<Page<Quote>>> getQuotesByStatus(
+            @PathVariable QuoteStatus status,
+ @PageableDefault(size = 10) Pageable pageable) {
+ Page<Quote> quotes = quoteService.getQuotesByStatus(status, pageable);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved quotes by status", quotes));
     }
 }

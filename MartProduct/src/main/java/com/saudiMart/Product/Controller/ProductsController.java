@@ -76,13 +76,15 @@ public class ProductsController {
  @GetMapping("/search")
  public ResponseEntity<ResponseWrapper<Page<Products>>> searchProducts(
  @RequestParam(required = false) String name,
+ @RequestParam(required = false) String keywords, // Added keywords for name/description search
  @RequestParam(required = false) String categoryId,
+ @RequestParam(required = false) String sellerId, // Added sellerId search
  @RequestParam(required = false) String sku,
  @RequestParam(required = false) Boolean available,
- @RequestParam(required = false) BigDecimal minPrice,
  @RequestParam(required = false) BigDecimal maxPrice,
  @PageableDefault(size = 10) Pageable pageable) throws ProductException {
- Page<Products> products = productsService.searchProducts(name, categoryId, sku, available, minPrice, maxPrice, pageable);
+ @RequestParam(required = false) BigDecimal minPrice,
+ Page<Products> products = productsService.searchProducts(keywords, categoryId, sellerId, available, minPrice, maxPrice, pageable); // Updated service call
  return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved products based on search criteria", products));
  }
 

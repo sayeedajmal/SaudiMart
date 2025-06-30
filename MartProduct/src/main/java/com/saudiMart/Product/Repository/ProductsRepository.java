@@ -30,4 +30,15 @@ public interface ProductsRepository extends JpaRepository<Products, String> {
     Page<Products> findByAvailable(Boolean available, Pageable pageable);
 
     Page<Products> findByBasePriceBetween(BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
+
+    @Query("SELECT p FROM Products p WHERE " +
+           "(:keyword is null or lower(p.name) like lower(concat('%', :keyword, '%')) or lower(p.description) like lower(concat('%', :keyword, '%'))) and " +
+           "(:category is null or p.category = :category) and " +
+           "(:sellerId is null or p.seller.id = :sellerId) and " +
+           "(:available is null or p.available = :available) and " +
+           "(:minPrice is null or p.basePrice >= :minPrice) and " +
+           "(:maxPrice is null or p.basePrice <= :maxPrice)")
+    Page<Products> searchProducts(@Param("keyword") String keyword, @Param("category") Category category,
+                                  @Param("sellerId") String sellerId, @Param("available") Boolean available,
+                                  @Param("minPrice") BigDecimal minPrice, @Param("maxPrice") BigDecimal maxPrice, Pageable pageable);
 }

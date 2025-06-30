@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.saudiMart.Product.Model.ProductVariant;
@@ -26,10 +30,14 @@ public class ProductVariantController {
     @Autowired
     private ProductVariantService productVariantService;
 
-    @GetMapping
-    public ResponseEntity<ResponseWrapper<List<ProductVariant>>> getAllProductVariants() throws ProductException {
-        List<ProductVariant> productVariants = productVariantService.getAllProductVariants();
-        ResponseWrapper<List<ProductVariant>> response = new ResponseWrapper<>(200,
+   @GetMapping
+    public ResponseEntity<ResponseWrapper<Page<ProductVariant>>> getAllProductVariants(
+ @RequestParam(required = false) String productId,
+ @RequestParam(required = false) String sku,
+ @RequestParam(required = false) Boolean available,
+ @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+ Page<ProductVariant> productVariants = productVariantService.searchProductVariants(productId, sku, available, pageable);
+ ResponseWrapper<Page<ProductVariant>> response = new ResponseWrapper<>(200,
                 "Successfully retrieved all product variants", productVariants);
         return ResponseEntity.ok(response);
     }

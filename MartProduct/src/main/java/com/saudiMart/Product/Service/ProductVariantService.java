@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.saudiMart.Product.Model.PriceTier;
 import com.saudiMart.Product.Model.ProductImage;
 import com.saudiMart.Product.Model.ProductVariant;
@@ -31,19 +33,19 @@ public class ProductVariantService {
     @Autowired
     private ProductImageRepository productImageRepository;
 
-    public List<ProductVariant> getAllProductVariants() {
-        return productVariantRepository.findAll();
+    public Page<ProductVariant> getAllProductVariants(Pageable pageable) {
+ return productVariantRepository.findAll(pageable);
     }
 
     public ProductVariant getProductVariantById(String id) throws ProductException {
         return productVariantRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + id));
     }
-
-    public List<ProductVariant> getProductVariantsByProductId(String productId) throws ProductException {
+ 
+    public Page<ProductVariant> getProductVariantsByProductId(String productId, Pageable pageable) throws ProductException {
         Products product = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
-        return productVariantRepository.findByProduct(product);
+ return productVariantRepository.findByProduct(product, pageable);
     }
 
     public Optional<ProductVariant> getAvailableProductVariantBySku(String sku) {
@@ -51,10 +53,18 @@ public class ProductVariantService {
     }
 
     public List<ProductVariant> getAvailableProductVariantsByProductId(String productId) throws ProductException {
-        Products product = productsRepository.findById(productId)
+        Products product = productsRepository.findById(productId) // This method still returns a List, keeping for compatibility if needed elsewhere.
                 .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
         return productVariantRepository.findByProductAndAvailableTrue(product);
     }
+    
+ public Page<ProductVariant> searchProductVariants(String productId, String sku, Boolean available, Pageable pageable) throws ProductException {
+ Products product = null;
+ if (productId != null) {
+ product = productsRepository.findById(productId).orElseThrow(() -> new ProductException("Product not found with id: " + productId));
+ }
+ return productVariantRepository.searchProductVariants(product, sku, available, pageable);
+ }
 
     public ProductVariant createProductVariant(ProductVariant productVariant) throws ProductException {
         if (productVariant == null) {
@@ -182,8 +192,8 @@ public class ProductVariantService {
         priceTierRepository.deleteById(tierId);
     }
 
-    public List<PriceTier> getPriceTiersByVariantId(String variantId) throws ProductException {
-        ProductVariant variant = getProductVariantById(variantId);
-        return priceTierRepository.findByVariant(variant);
-    }
+ public Page<PriceTier> getPriceTiersByVariantId(String variantId, Pageable pageable) throws ProductException {
+ ProductVariant variant = getProductVariantById(variantId);
+ return priceTierRepository.findByVariant(variant, pageable);
+ }
 }

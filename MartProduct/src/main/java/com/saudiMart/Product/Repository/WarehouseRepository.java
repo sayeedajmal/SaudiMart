@@ -1,14 +1,20 @@
 package com.saudiMart.Product.Repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Model.Warehouse;
 
 public interface WarehouseRepository extends JpaRepository<Warehouse, String> {
 
-    List<Warehouse> findBySeller(Users user);
+    Page<Warehouse> findBySeller(Users user, Pageable pageable);
 
+    Page<Warehouse> findAll(Pageable pageable);
+
+    @Query("SELECT w FROM Warehouse w WHERE LOWER(w.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(w.location) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    Page<Warehouse> findByNameContainingIgnoreCaseOrLocationContainingIgnoreCase(@Param("keyword") String keyword, Pageable pageable);
 }

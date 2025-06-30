@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.saudiMart.Product.Model.QuoteItem;
 import com.saudiMart.Product.Repository.QuoteItemRepository;
@@ -16,26 +18,26 @@ public class QuoteItemService {
     @Autowired
     private QuoteItemRepository quoteItemRepository;
 
-    public List<QuoteItem> getAllQuoteItems() {
-        return quoteItemRepository.findAll();
+    public Page<QuoteItem> getAllQuoteItems(Pageable pageable) {
+        return quoteItemRepository.findAll(pageable);
     }
 
     public QuoteItem getQuoteItemById(String id) throws ProductException {
         return quoteItemRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Quote Item not found with id: " + id));
     }
-
-    public List<QuoteItem> getQuoteItemsByQuoteId(String quoteId) {
-        return quoteItemRepository.findByQuoteId(quoteId);
+    
+    public Page<QuoteItem> searchQuoteItems(String quoteId, String productId, String variantId, Pageable pageable) {
+        if (quoteId != null) {
+            return quoteItemRepository.findByQuoteId(quoteId, pageable);
+        } else if (productId != null) {
+            return quoteItemRepository.findByProductId(productId, pageable);
+        } else if (variantId != null) {
+            return quoteItemRepository.findByVariantId(variantId, pageable);
+        }
+        return quoteItemRepository.findAll(pageable);
     }
 
-    public List<QuoteItem> getQuoteItemsByProductId(String productId) {
-        return quoteItemRepository.findByProductId(productId);
-    }
-
-    public List<QuoteItem> getQuoteItemsByVariantId(String variantId) {
-        return quoteItemRepository.findByVariantId(variantId);
-    }
 
     public QuoteItem createQuoteItem(QuoteItem quoteItem) throws ProductException {
         if (quoteItem == null) {
