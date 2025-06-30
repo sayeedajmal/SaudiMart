@@ -6,9 +6,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.saudiMart.Product.Model.Order;
 import com.saudiMart.Product.Model.Order.OrderStatus;
+import com.saudiMart.Product.Repository.UserRepository;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Repository.OrderRepository;
 import com.saudiMart.Product.Utils.ProductException;
@@ -19,8 +22,11 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+ @Autowired
+ private UserRepository userRepository;
+
+ public Page<Order> getAllOrders(Pageable pageable) {
+ return orderRepository.findAll(pageable);
     }
 
     public Order getOrderById(String id) throws ProductException {
@@ -29,19 +35,19 @@ public class OrderService {
     }
 
     public List<Order> getOrdersByBuyer(Users user) {
-        return orderRepository.findByBuyer(user);
+ return orderRepository.findByBuyer(user, Pageable.unpaged()).getContent(); // Assuming you might still need a non-paginated version or adjust this logic
     }
 
     public List<Order> getOrdersBySeller(Users user) {
-        return orderRepository.findBySeller(user);
+ return orderRepository.findBySeller(user, Pageable.unpaged()).getContent(); // Assuming you might still need a non-paginated version or adjust this logic
     }
 
     public List<Order> getOrdersByStatus(OrderStatus status) {
-        return orderRepository.findByStatus(status);
+ return orderRepository.findByStatus(status, Pageable.unpaged()).getContent(); // Assuming you might still need a non-paginated version or adjust this logic
     }
 
     public List<Order> getOrdersByCreationDateBetween(LocalDateTime startDate, LocalDateTime endDate) {
-        return orderRepository.findByCreatedAtBetween(startDate, endDate);
+ return orderRepository.findByCreatedAtBetween(startDate, endDate, Pageable.unpaged()).getContent(); // Assuming you might still need a non-paginated version or adjust this logic
     }
 
     public Order createOrder(Order order) throws ProductException {

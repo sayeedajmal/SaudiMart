@@ -2,6 +2,8 @@ package com.saudiMart.Product.Controller;
 
 import java.util.List;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 
-import com.saudiMart.Product.Model.Contract;
 import com.saudiMart.Product.Model.ContractItem;
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
@@ -30,8 +36,9 @@ public class ContractItemController {
     private ContractItemService contractItemService;
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<ContractItem>>> getAllContractItems() throws ProductException {
-        List<ContractItem> contractItems = contractItemService.getAllContractItems();
+    public ResponseEntity<ResponseWrapper<Page<ContractItem>>> getAllContractItems(
+            @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+        Page<ContractItem> contractItems = contractItemService.getAllContractItems(pageable);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved all contract items", contractItems));
     }
@@ -65,26 +72,54 @@ public class ContractItemController {
     }
 
     @GetMapping("/contract/{contractId}")
-    public ResponseEntity<ResponseWrapper<List<ContractItem>>> getContractItemsByContract(
-            Contract contract) throws ProductException {
-        List<ContractItem> contractItems = contractItemService.getContractItemsByContract(contract);
+    public ResponseEntity<ResponseWrapper<Page<ContractItem>>> getContractItemsByContract(
+            @PathVariable String contractId,
+ @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+ Contract contract = new Contract(); // You'll need to fetch the Contract object by ID
+ contract.setId(contractId); // Placeholder
+        Page<ContractItem> contractItems = contractItemService.getContractItemsByContract(contract, pageable);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved contract items by contract ID", contractItems));
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<ResponseWrapper<List<ContractItem>>> getContractItemsByProduct(
-            Products product) throws ProductException {
-        List<ContractItem> contractItems = contractItemService.getContractItemsByProduct(product);
+    public ResponseEntity<ResponseWrapper<Page<ContractItem>>> getContractItemsByProduct(
+            @PathVariable String productId,
+ @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+ Products product = new Products(); // You'll need to fetch the Products object by ID
+ product.setId(productId); // Placeholder
+        Page<ContractItem> contractItems = contractItemService.getContractItemsByProduct(product, pageable);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved contract items by product ID", contractItems));
     }
 
     @GetMapping("/variant/{variantId}")
-    public ResponseEntity<ResponseWrapper<List<ContractItem>>> getContractItemsByVariant(
-            ProductVariant variant) throws ProductException {
-        List<ContractItem> contractItems = contractItemService.getContractItemsByVariant(variant);
+    public ResponseEntity<ResponseWrapper<Page<ContractItem>>> getContractItemsByVariant(
+            @PathVariable String variantId,
+ @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+ ProductVariant variant = new ProductVariant(); // You'll need to fetch the ProductVariant object by ID
+ variant.setId(variantId); // Placeholder
+        Page<ContractItem> contractItems = contractItemService.getContractItemsByVariant(variant, pageable);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved contract items by variant ID", contractItems));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseWrapper<Page<ContractItem>>> searchContractItems(
+            @RequestParam(required = false) String contractId,
+            @RequestParam(required = false) String productId,
+            @RequestParam(required = false) String variantId,
+            @RequestParam(required = false) BigDecimal minNegotiatedPrice,
+            @RequestParam(required = false) BigDecimal maxNegotiatedPrice,
+            @RequestParam(required = false) Integer minCommitmentQuantity,
+            @RequestParam(required = false) Integer maxQuantity,
+            @RequestParam(required = false) BigDecimal minDiscountPercent,
+            @RequestParam(required = false) BigDecimal maxDiscountPercent,
+            @RequestParam(required = false) Boolean isActive,
+            @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+        Page<ContractItem> contractItems = contractItemService.searchContractItems(
+                contractId, productId, variantId, minNegotiatedPrice, maxNegotiatedPrice,
+                minCommitmentQuantity, maxQuantity, minDiscountPercent, maxDiscountPercent, isActive, pageable);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved contract items based on search criteria", contractItems));
     }
 }

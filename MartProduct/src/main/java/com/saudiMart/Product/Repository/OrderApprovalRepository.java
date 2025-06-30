@@ -2,6 +2,8 @@ package com.saudiMart.Product.Repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,10 +15,10 @@ import com.saudiMart.Product.Model.Users;
 @Repository
 public interface OrderApprovalRepository extends JpaRepository<OrderApproval, String> {
 
-    List<OrderApproval> findByOrder(Order order);
+    Page<OrderApproval> findByOrder(Order order, Pageable pageable);
 
-    List<OrderApproval> findByApprover(Users approver);
+    Page<OrderApproval> findByApprover(Users approver, Pageable pageable);
 
-    List<OrderApproval> findByStatus(OrderApprovalStatus status);
+    Page<OrderApproval> findByStatus(OrderApprovalStatus status, Pageable pageable);
 
 }

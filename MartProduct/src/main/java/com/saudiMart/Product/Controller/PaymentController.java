@@ -1,8 +1,14 @@
 package com.saudiMart.Product.Controller;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.saudiMart.Product.Model.Order;
@@ -29,9 +36,9 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<Payment>>> getAllPayments() {
-        List<Payment> payments = paymentService.getAllPayments();
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all payments", payments));
+ public ResponseEntity<ResponseWrapper<Page<Payment>>> getAllPayments(@PageableDefault(size = 10) Pageable pageable) {
+ Page<Payment> payments = paymentService.getAllPayments(pageable);
+ return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all payments", payments));
     }
 
     @GetMapping("/{id}")
@@ -93,15 +100,13 @@ public class PaymentController {
     }
 
     @GetMapping("/order/{orderId}")
-    public ResponseEntity<ResponseWrapper<List<Payment>>> getPaymentsByOrderId(@PathVariable String orderId) {
+ public ResponseEntity<ResponseWrapper<Page<Payment>>> getPaymentsByOrderId(@PathVariable String orderId, @PageableDefault(size = 10) Pageable pageable) {
         try {
             // Assuming your PaymentService has a method to fetch an Order by ID
             // and then get payments by that Order. If not, you may need to add it
             // or adjust the service call. For now, assuming a direct call to a repository
             // method.
-            Order order = new Order(); // You would need to fetch the Order object first
-            order.setId(orderId); // This is a placeholder; fetch the actual Order
-            List<Payment> payments = paymentService.getPaymentsByOrder(order); // Modify service if needed
+ Page<Payment> payments = paymentService.getPaymentsByOrder(orderId, pageable); // Modify service if needed
             return ResponseEntity
                     .ok(new ResponseWrapper<>(200, "Successfully retrieved payments by order ID", payments));
         } catch (Exception e) {
@@ -109,15 +114,49 @@ public class PaymentController {
                     .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
         }
     }
-
     @GetMapping("/status/{status}")
-    public ResponseEntity<ResponseWrapper<List<Payment>>> getPaymentsByStatus(@PathVariable PaymentStatus status) {
+ public ResponseEntity<ResponseWrapper<Page<Payment>>> getPaymentsByStatus(@PathVariable PaymentStatus status, @PageableDefault(size = 10) Pageable pageable) {
         try {
-            List<Payment> payments = paymentService.getPaymentsByPaymentStatus(status);
+ Page<Payment> payments = paymentService.getPaymentsByPaymentStatus(status, pageable);
             return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved payments by status", payments));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
         }
     }
+
+ @GetMapping("/search")
+ public ResponseEntity<ResponseWrapper<Page<Payment>>> searchPayments(
+ @RequestParam(required = false) String orderId,
+ @RequestParam(required = false) String paymentReference,
+ @RequestParam(required = false) BigDecimal minAmount,
+ @RequestParam(required = false) BigDecimal maxAmount,
+ @RequestParam(required = false) Payment.PaymentType paymentType,
+ @RequestParam(required = false) String transactionId,
+ @RequestParam(required = false) Payment.PaymentStatus paymentStatus,
+ @RequestParam(required = false) LocalDateTime minPaymentDate,
+ @RequestParam(required = false) LocalDateTime maxPaymentDate,
+ @RequestParam(required = false) LocalDate minDueDate,
+ @RequestParam(required = false) LocalDate maxDueDate,
+ @RequestParam(required = false) LocalDateTime minCreatedAt,
+ @RequestParam(required = false) LocalDateTime maxCreatedAt,
+ @RequestParam(required = false) LocalDateTime minUpdatedAt,
+ @RequestParam(required = false) LocalDateTime maxUpdatedAt,
+ @PageableDefault(size = 10) Pageable pageable) {
+ try {
+ Page<Payment> payments = paymentService.searchPayments(
+ orderId, paymentReference, minAmount, maxAmount, paymentType,
+ transactionId, paymentStatus, minPaymentDate, maxPaymentDate,
+ minDueDate, maxDueDate, minCreatedAt, maxCreatedAt, minUpdatedAt, maxUpdatedAt,
+ pageable);
+ return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved payments based on search criteria",
+ payments));
+ } catch (ProductException e) {
+ return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+ .body(new ResponseWrapper<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null));
+ } catch (Exception e) {
+ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+ .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred during search", null));
+ }
+ }
 }

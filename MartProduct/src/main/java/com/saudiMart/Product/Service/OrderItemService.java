@@ -1,14 +1,24 @@
 package com.saudiMart.Product.Service;
 
+package com.saudiMart.Product.Service;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.Order;
 import com.saudiMart.Product.Model.OrderItem;
 import com.saudiMart.Product.Model.Products;
+import com.saudiMart.Product.Repository.OrderRepository;
+import com.saudiMart.Product.Repository.ProductsRepository;
+import com.saudiMart.Product.Repository.ProductVariantRepository;
+import com.saudiMart.Product.Repository.WarehouseRepository;
+import com.saudiMart.Product.Model.OrderItem.OrderItemStatus;
 import com.saudiMart.Product.Repository.OrderItemRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
@@ -18,8 +28,20 @@ public class OrderItemService {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
-    public List<OrderItem> getAllOrderItems() {
-        return orderItemRepository.findAll();
+ @Autowired
+ private OrderRepository orderRepository;
+
+ @Autowired
+ private ProductsRepository productsRepository;
+
+    @Autowired
+    private ProductVariantRepository productVariantRepository;
+
+    @Autowired
+    private WarehouseRepository warehouseRepository;
+
+    public Page<OrderItem> getAllOrderItems(Pageable pageable) {
+ return orderItemRepository.findAll(pageable);
     }
 
     public OrderItem getOrderItemBy(String id) throws ProductException {
@@ -27,12 +49,16 @@ public class OrderItemService {
                 .orElseThrow(() -> new ProductException("Order item not found with id: " + id));
     }
 
-    public List<OrderItem> getOrderItemsByOrder(Order order) {
-        return orderItemRepository.findByOrder(order);
+ public Page<OrderItem> getOrderItemsByOrder(String orderId, Pageable pageable) throws ProductException {
+        Order order = orderRepository.findById(orderId)
+ .orElseThrow(() -> new ProductException("Order not found with id: " + orderId));
+ return orderItemRepository.findByOrder(order, pageable);
     }
 
-    public List<OrderItem> getOrderItemsByProduct(Products product) {
-        return orderItemRepository.findByProduct(product);
+ public Page<OrderItem> getOrderItemsByProduct(String productId, Pageable pageable) throws ProductException {
+ Products product = productsRepository.findById(productId)
+ .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
+ return orderItemRepository.findByProduct(product, pageable);
     }
 
     public OrderItem createOrderItem(OrderItem orderItem) throws ProductException {
@@ -82,5 +108,91 @@ public class OrderItemService {
             throw new ProductException("Order item not found with id: " + id);
         }
         orderItemRepository.deleteById(id);
+    }
+
+    public Page<OrderItem> searchOrderItems(
+            String orderId,
+            String productId,
+            String variantId,
+            Integer minQuantity,
+            Integer maxQuantity,
+            BigDecimal minPricePerUnit,
+            BigDecimal maxPricePerUnit,
+            BigDecimal minDiscountPercent,
+            BigDecimal maxDiscountPercent,
+            BigDecimal minTaxPercent,
+            BigDecimal maxTaxPercent,
+            BigDecimal minTotalPrice,
+            BigDecimal maxTotalPrice,
+            String shipFromWarehouseId,
+            OrderItemStatus status,
+            Pageable pageable) throws ProductException {
+
+        Specification<OrderItem> spec = Specification.where(null);
+
+        if (orderId != null) {
+            Order order = orderRepository.findById(orderId)
+                    .orElseThrow(() -> new ProductException("Order not found with id: " + orderId));
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("order"), order));
+        }
+
+        if (productId != null) {
+            Products product = productsRepository.findById(productId)
+                    .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("product"), product));
+        }
+
+        if (variantId != null) {
+            com.saudiMart.Product.Model.ProductVariant variant = productVariantRepository.findById(variantId)
+                    .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("variant"), variant));
+        }
+
+        if (minQuantity != null) {
+            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("quantity"), minQuantity));
+        }
+        if (maxQuantity != null) {
+            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("quantity"), maxQuantity));
+        }
+
+        if (minPricePerUnit != null) {
+            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("pricePerUnit"), minPricePerUnit));
+        }
+        if (maxPricePerUnit != null) {
+            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("pricePerUnit"), maxPricePerUnit));
+        }
+
+        if (minDiscountPercent != null) {
+            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("discountPercent"), minDiscountPercent));
+        }
+        if (maxDiscountPercent != null) {
+            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("discountPercent"), maxDiscountPercent));
+        }
+
+        if (minTaxPercent != null) {
+            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("taxPercent"), minTaxPercent));
+        }
+        if (maxTaxPercent != null) {
+            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("taxPercent"), maxTaxPercent));
+        }
+
+        if (minTotalPrice != null) {
+            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("totalPrice"), minTotalPrice));
+        }
+        if (maxTotalPrice != null) {
+            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("totalPrice"), maxTotalPrice));
+        }
+
+        if (shipFromWarehouseId != null) {
+            com.saudiMart.Product.Model.Warehouse warehouse = warehouseRepository.findById(shipFromWarehouseId)
+                    .orElseThrow(() -> new ProductException("Warehouse not found with id: " + shipFromWarehouseId));
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("shipFromWarehouse"), warehouse));
+        }
+
+        if (status != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), status));
+        }
+
+        return orderItemRepository.findAll(spec, pageable);
     }
 }

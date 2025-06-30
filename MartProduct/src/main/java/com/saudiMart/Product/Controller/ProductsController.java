@@ -2,17 +2,22 @@ package com.saudiMart.Product.Controller;
 
 import java.util.List;
 
+import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.web.PageableDefault;
 
 import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Model.ResponseWrapper;
@@ -31,8 +36,8 @@ public class ProductsController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<Products>>> getAllProducts() {
-        List<Products> products = productsService.getAllProducts();
+    public ResponseEntity<ResponseWrapper<Page<Products>>> getAllProducts(@PageableDefault(size = 10) Pageable pageable) {
+        Page<Products> products = productsService.getAllProducts(pageable);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all products", products));
     }
 
@@ -47,23 +52,47 @@ public class ProductsController {
     @PostMapping
     public ResponseEntity<ResponseWrapper<Products>> createProduct(@RequestBody Products product)
             throws ProductException {
-                System.out.println("PROUDCT CATEOGORY::: "+product.getCategory().toString());
+        System.out.println("PROUDCT CATEOGORY::: " + product.getCategory().toString());
         Products createdProduct = productsService.createProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseWrapper<>(200, "Successfully created product", createdProduct));
     }
-    
+
     @GetMapping("/seller/{sellerId}")
-    public ResponseEntity<ResponseWrapper<List<Products>>> getProductsBySellerId(@PathVariable String sellerId) {
-        List<Products> products = productsService.getProductsBySellerId(sellerId);
+    public ResponseEntity<ResponseWrapper<Page<Products>>> getProductsBySellerId(@PathVariable String sellerId, @PageableDefault(size = 10) Pageable pageable) {
+        Page<Products> products = productsService.getProductsBySellerId(sellerId, pageable);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved products for seller", products));
     }
 
     @GetMapping("/seller/{sellerId}/available")
-    public ResponseEntity<ResponseWrapper<List<Products>>> getAvailableProductsBySellerId(@PathVariable String sellerId) {
-        List<Products> products = productsService.getAvailableProductsBySellerId(sellerId);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved available products for seller", products));
+    public ResponseEntity<ResponseWrapper<Page<Products>>> getAvailableProductsBySellerId(
+            @PathVariable String sellerId,
+            @PageableDefault(size = 10) Pageable pageable) {
+        Page<Products> products = productsService.getAvailableProductsBySellerId(sellerId, pageable);
+        return ResponseEntity
+                .ok(new ResponseWrapper<>(200, "Successfully retrieved available products for seller", products));
     }
+
+ @GetMapping("/search")
+ public ResponseEntity<ResponseWrapper<Page<Products>>> searchProducts(
+ @RequestParam(required = false) String name,
+ @RequestParam(required = false) String categoryId,
+ @RequestParam(required = false) String sku,
+ @RequestParam(required = false) Boolean available,
+ @RequestParam(required = false) BigDecimal minPrice,
+ @RequestParam(required = false) BigDecimal maxPrice,
+ @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+ Page<Products> products = productsService.searchProducts(name, categoryId, sku, available, minPrice, maxPrice, pageable);
+ return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved products based on search criteria", products));
+ }
+
+ @GetMapping("/category/{categoryId}")
+ public ResponseEntity<ResponseWrapper<Page<Products>>> getProductsByCategoryId(
+ @PathVariable String categoryId, @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+ Page<Products> products = productsService.getProductsByCategoryId(categoryId, pageable);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved products by category", products)); // Return List for now
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ResponseWrapper<Products>> updateProduct(@PathVariable String id,
             @RequestBody Products productDetails) throws ProductException {

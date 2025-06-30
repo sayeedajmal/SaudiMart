@@ -2,6 +2,8 @@ package com.saudiMart.Product.Repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,10 +14,10 @@ import com.saudiMart.Product.Model.Products;
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, String> {
 
-    List<OrderItem> findByOrder(Order order);
+    Page<OrderItem> findByOrder(Order order, Pageable pageable);
 
-    List<OrderItem> findByProduct(Products product);
+    Page<OrderItem> findByProduct(Products product, Pageable pageable);
 
-    List<OrderItem> findByOrderAndProduct(Order order, Products product);
+    Page<OrderItem> findByOrderAndProduct(Order order, Products product, Pageable pageable);
 
 }

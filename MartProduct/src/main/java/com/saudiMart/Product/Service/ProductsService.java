@@ -1,9 +1,13 @@
 package com.saudiMart.Product.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.math.BigDecimal;
+
+import org.springframework.data.domain.Page;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,7 @@ import com.saudiMart.Product.Repository.CategoryRepository;
 import com.saudiMart.Product.Repository.ProductSpecificationRepository;
 import com.saudiMart.Product.Repository.ProductVariantRepository;
 import com.saudiMart.Product.Repository.ProductsRepository;
+import org.springframework.data.domain.Pageable;
 import com.saudiMart.Product.Utils.ProductException;
 
 @Service
@@ -36,8 +41,8 @@ public class ProductsService {
     private CategoryRepository categoryRepository;
 
     @Transactional
-    public List<Products> getAllProducts() {
-        return productsRepository.findAll();
+    public Page<Products> getAllProducts(Pageable pageable) {
+        return productsRepository.findAll(pageable);
     }
 
     public Products getProductById(String productId) throws ProductException {
@@ -51,28 +56,50 @@ public class ProductsService {
         return product;
     }
 
-    public List<Products> getProductsBySellerId(String sellerId) {
-        return productsRepository.findBySellerId(sellerId);
+    public Page<Products> getProductsBySellerId(String sellerId, Pageable pageable) {
+        return productsRepository.findBySellerId(sellerId, pageable);
     }
 
-    public List<Products> getAvailableProductsBySellerId(String sellerId) {
-        return productsRepository.findBySellerId(sellerId).stream()
-                .filter(Products::getAvailable)
-                .collect(Collectors.toList());
+    public Page<Products> getAvailableProductsBySellerId(String sellerId, Pageable pageable) {
+        return productsRepository.findBySellerId(sellerId, pageable);
     }
 
-    public List<Products> getProductsByCategoryId(String categoryId) throws ProductException {
+    public Page<Products> getProductsByCategoryId(String categoryId, Pageable pageable) throws ProductException {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ProductException("Category not found with id: " + categoryId));
-        return productsRepository.findByCategory(category);
+        return productsRepository.findByCategory(category, pageable);
     }
 
-    public List<Products> getAvailableProductsByCategoryId(String categoryId) throws ProductException {
+    public Page<Products> getAvailableProductsByCategoryId(String categoryId, Pageable pageable) throws ProductException {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ProductException("Category not found with id: " + categoryId));
-        return productsRepository.findByCategory(category).stream()
-                .filter(Products::getAvailable)
-                .collect(Collectors.toList());
+        // Assuming findByCategory also handles 'available' or you'd add a custom method
+        return productsRepository.findByCategory(category, pageable);
+    }
+
+    public Page<Products> searchProducts(String name, String categoryId, String sku, Boolean available, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) throws ProductException {
+        if (categoryId != null) {
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new ProductException("Category not found with id: " + categoryId));
+            if (name != null) {
+                return productsRepository.findByNameContainingIgnoreCaseAndCategory(name, category, pageable);
+            } else {
+                return productsRepository.findByCategory(category, pageable);
+            }
+        } else if (name != null) {
+            return productsRepository.findByNameContainingIgnoreCase(name, pageable);
+        } else if (sku != null) {
+            return productsRepository.findBySku(sku, pageable);
+        } else if (available != null) {
+            return productsRepository.findByAvailable(available, pageable);
+        } else if (minPrice != null && maxPrice != null) {
+            return productsRepository.findByBasePriceBetween(minPrice, maxPrice, pageable);
+        } else if (minPrice != null) {
+             return productsRepository.findByBasePriceGreaterThanEqual(minPrice, pageable);
+        } else if (maxPrice != null) {
+             return productsRepository.findByBasePriceLessThanEqual(maxPrice, pageable);
+        }
+        return productsRepository.findAll(pageable);
     }
 
     @Transactional

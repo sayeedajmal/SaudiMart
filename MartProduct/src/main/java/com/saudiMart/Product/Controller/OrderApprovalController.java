@@ -3,6 +3,8 @@ package com.saudiMart.Product.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.saudiMart.Product.Model.Order;
@@ -38,8 +42,9 @@ public class OrderApprovalController {
     private UserService userService; // Assuming a UserService exists to get User objects
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<OrderApproval>>> getAllOrderApprovals() {
-        List<OrderApproval> orderApprovals = orderApprovalService.getAllOrderApprovals();
+    public ResponseEntity<ResponseWrapper<Page<OrderApproval>>> getAllOrderApprovals(@PageableDefault(size = 10) Pageable pageable) {
+        Page<OrderApproval> orderApprovals = orderApprovalService.getAllOrderApprovals(pageable);
+
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved all order approvals", orderApprovals));
     }
@@ -95,11 +100,12 @@ public class OrderApprovalController {
     }
 
     @GetMapping("/order/{orderId}")
-    public ResponseEntity<ResponseWrapper<List<OrderApproval>>> getOrderApprovalsByOrderId(
-            @PathVariable String orderId) {
+    public ResponseEntity<ResponseWrapper<Page<OrderApproval>>> getOrderApprovalsByOrderId(
+ @PathVariable String orderId,
+ @PageableDefault(size = 10) Pageable pageable) {
         try {
             Order order = orderService.getOrderById(orderId); // Assuming OrderService has getOrderById
-            List<OrderApproval> orderApprovals = orderApprovalService.getOrderApprovalsByOrder(order);
+            Page<OrderApproval> orderApprovals = orderApprovalService.getOrderApprovalsByOrder(order, pageable);
             return ResponseEntity.ok(
                     new ResponseWrapper<>(200, "Successfully retrieved order approvals by order ID", orderApprovals));
         } catch (ProductException e) {
@@ -109,12 +115,13 @@ public class OrderApprovalController {
     }
 
     @GetMapping("/approver/{approverId}")
-    public ResponseEntity<ResponseWrapper<List<OrderApproval>>> getOrderApprovalsByApproverId(
-            @PathVariable String approverId) {
+    public ResponseEntity<ResponseWrapper<Page<OrderApproval>>> getOrderApprovalsByApproverId(
+ @PathVariable String approverId,
+ @PageableDefault(size = 10) Pageable pageable) {
         try {
             // Assuming Users has an ID of type String and UserService has getUserById
             Users approver = userService.getUserById(approverId);
-            List<OrderApproval> orderApprovals = orderApprovalService.getOrderApprovalsByApprover(approver);
+            Page<OrderApproval> orderApprovals = orderApprovalService.getOrderApprovalsByApprover(approver, pageable);
             return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved order approvals by approver ID",
                     orderApprovals));
         } catch (ProductException e) {
@@ -124,10 +131,31 @@ public class OrderApprovalController {
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<ResponseWrapper<List<OrderApproval>>> getOrderApprovalsByStatus(
-            @PathVariable OrderApprovalStatus status) {
-        List<OrderApproval> orderApprovals = orderApprovalService.getOrderApprovalsByStatus(status);
+    public ResponseEntity<ResponseWrapper<Page<OrderApproval>>> getOrderApprovalsByStatus(
+ @PathVariable OrderApprovalStatus status,
+ @PageableDefault(size = 10) Pageable pageable) {
+        Page<OrderApproval> orderApprovals = orderApprovalService.getOrderApprovalsByStatus(status, pageable);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved order approvals by status", orderApprovals));
+    }
+
+ @GetMapping("/search")
+ public ResponseEntity<ResponseWrapper<Page<OrderApproval>>> searchOrderApprovals(
+ @RequestParam(required = false) String orderId,
+ @RequestParam(required = false) String approverId,
+ @RequestParam(required = false) Integer approvalLevel,
+ @RequestParam(required = false) OrderApprovalStatus status,
+ @RequestParam(required = false) java.time.LocalDateTime minApprovalDate,
+ @RequestParam(required = false) java.time.LocalDateTime maxApprovalDate,
+ @RequestParam(required = false) java.time.LocalDateTime minCreatedAt,
+ @RequestParam(required = false) java.time.LocalDateTime maxCreatedAt,
+ @PageableDefault(size = 10) Pageable pageable) {
+        Page<OrderApproval> orderApprovals = orderApprovalService.searchOrderApprovals(
+ orderId,
+ approverId,
+ approvalLevel,
+ status,
+ minApprovalDate, maxApprovalDate, minCreatedAt, maxCreatedAt, pageable);
+ return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved order approvals based on search criteria", orderApprovals));
     }
 }
