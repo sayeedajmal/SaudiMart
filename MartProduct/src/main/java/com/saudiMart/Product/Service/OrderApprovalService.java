@@ -1,23 +1,20 @@
 package com.saudiMart.Product.Service;
 
-import java.util.List;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.saudiMart.Product.Repository.OrderRepository;
-import com.saudiMart.Product.Repository.UserRepository;
 import com.saudiMart.Product.Model.Order;
 import com.saudiMart.Product.Model.OrderApproval;
 import com.saudiMart.Product.Model.OrderApproval.OrderApprovalStatus;
 import com.saudiMart.Product.Model.Users;
-import com.saudiMart.Product.Utils.ResourceNotFoundException;
-
 import com.saudiMart.Product.Repository.OrderApprovalRepository;
+import com.saudiMart.Product.Repository.OrderRepository;
+import com.saudiMart.Product.Repository.UserRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
 @Service
@@ -25,15 +22,15 @@ public class OrderApprovalService {
 
     @Autowired
     private OrderApprovalRepository orderApprovalRepository;
-    
- @Autowired
+
+    @Autowired
     private OrderRepository orderRepository;
-    
- @Autowired
+
+    @Autowired
     private UserRepository userRepository;
 
- public Page<OrderApproval> getAllOrderApprovals(Pageable pageable) {
- return orderApprovalRepository.findAll(pageable);
+    public Page<OrderApproval> getAllOrderApprovals(Pageable pageable) {
+        return orderApprovalRepository.findAll(pageable);
     }
 
     public OrderApproval getOrderApprovalBy(String id) throws ProductException {
@@ -75,15 +72,12 @@ public class OrderApprovalService {
         orderApprovalRepository.deleteById(id);
     }
 
-    public Page<OrderApproval> getOrderApprovalsByOrder(String orderId, Pageable pageable) throws ProductException {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+    public Page<OrderApproval> getOrderApprovalsByOrder(Order order, Pageable pageable) throws ProductException {
         return orderApprovalRepository.findByOrder(order, pageable);
     }
 
-    public Page<OrderApproval> getOrderApprovalsByApprover(String approverId, Pageable pageable) throws ProductException {
- Users approver = userRepository.findById(approverId)
- .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + approverId));
+    public Page<OrderApproval> getOrderApprovalsByApprover(Users approver, Pageable pageable)
+            throws ProductException {
         return orderApprovalRepository.findByApprover(approver, pageable);
     }
 
@@ -105,18 +99,14 @@ public class OrderApprovalService {
         Order order = null;
         if (orderId != null) {
             order = orderRepository.findById(orderId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+                    .orElseThrow(() -> new ProductException("Order not found with id: " + orderId));
         }
 
         Users approver = null;
         if (approverId != null) {
             approver = userRepository.findById(approverId)
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + approverId));
+                    .orElseThrow(() -> new ProductException("User not found with id: " + approverId));
         }
-
-        // This is a simplified search implementation. For more complex queries with multiple
-        // criteria, you would typically use a Specification or QueryDSL.
-        // For now, we'll rely on a new repository method that can handle multiple optional parameters.
 
         return orderApprovalRepository.searchOrderApprovals(
                 order,

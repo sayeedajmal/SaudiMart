@@ -13,8 +13,13 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, String> {
 
     Page<Warehouse> findBySeller(Users user, Pageable pageable);
 
+    @SuppressWarnings("null")
     Page<Warehouse> findAll(Pageable pageable);
 
     @Query("SELECT w FROM Warehouse w WHERE LOWER(w.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(w.location) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    Page<Warehouse> findByNameContainingIgnoreCaseOrLocationContainingIgnoreCase(@Param("keyword") String keyword, Pageable pageable);
+    Page<Warehouse> findByNameContainingIgnoreCaseOrLocationContainingIgnoreCase(@Param("keyword") String keyword,
+            Pageable pageable);
+
+    Page<Warehouse> findByNameContainingIgnoreCaseOrLocationContainingIgnoreCaseOrSeller(String name, String location,
+            Users seller, Pageable pageable);
 }

@@ -1,11 +1,10 @@
 package com.saudiMart.Product.Controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.saudiMart.Product.Model.ResponseWrapper;
@@ -36,16 +34,17 @@ public class WarehouseController {
     @Autowired
     public WarehouseController(WarehouseService warehouseService, UserService userService) {
         this.warehouseService = warehouseService;
-        this.userService=userService;
+        this.userService = userService;
     }
 
- @GetMapping
+    @GetMapping
     public ResponseEntity<ResponseWrapper<Page<Warehouse>>> searchWarehouses(
- @RequestParam(required = false) String name,
- @RequestParam(required = false) String location,
- @RequestParam(required = false) String sellerId,
- @PageableDefault(size = 10) Pageable pageable) throws ProductException {
-        Page<Warehouse> warehouses = warehouseService.searchWarehouses(name, location, sellerId, pageable);
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String sellerId,
+            @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+        Users seller = userService.getUserById(sellerId);
+        Page<Warehouse> warehouses = warehouseService.searchWarehouses(name, location, seller, pageable);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all warehouses", warehouses));
     }
 
@@ -108,8 +107,9 @@ public class WarehouseController {
     }
 
     @GetMapping("/seller")
-    public ResponseEntity<ResponseWrapper<Page<Warehouse>>> getWarehousesBySeller(@RequestParam String sellerId, @PageableDefault(size = 10) Pageable pageable) throws ProductException {
- Users user = userService.getUserById(sellerId);
+    public ResponseEntity<ResponseWrapper<Page<Warehouse>>> getWarehousesBySeller(@RequestParam String sellerId,
+            @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+        Users user = userService.getUserById(sellerId);
         Page<Warehouse> warehouses = warehouseService.getWarehousesBySeller(user, pageable);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved warehouses by seller", warehouses));
     }

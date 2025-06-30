@@ -1,25 +1,23 @@
 package com.saudiMart.Product.Service;
 
-package com.saudiMart.Product.Service;
-
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import org.springframework.beans.factory.annotation.Autowired;import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.Order;
 import com.saudiMart.Product.Model.OrderItem;
-import com.saudiMart.Product.Model.Products;
-import com.saudiMart.Product.Repository.OrderRepository;
-import com.saudiMart.Product.Repository.ProductsRepository;
-import com.saudiMart.Product.Repository.ProductVariantRepository;
-import com.saudiMart.Product.Repository.WarehouseRepository;
 import com.saudiMart.Product.Model.OrderItem.OrderItemStatus;
+import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Repository.OrderItemRepository;
+import com.saudiMart.Product.Repository.OrderRepository;
+import com.saudiMart.Product.Repository.ProductVariantRepository;
+import com.saudiMart.Product.Repository.ProductsRepository;
+import com.saudiMart.Product.Repository.WarehouseRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
 @Service
@@ -28,11 +26,11 @@ public class OrderItemService {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
- @Autowired
- private OrderRepository orderRepository;
+    @Autowired
+    private OrderRepository orderRepository;
 
- @Autowired
- private ProductsRepository productsRepository;
+    @Autowired
+    private ProductsRepository productsRepository;
 
     @Autowired
     private ProductVariantRepository productVariantRepository;
@@ -41,7 +39,7 @@ public class OrderItemService {
     private WarehouseRepository warehouseRepository;
 
     public Page<OrderItem> getAllOrderItems(Pageable pageable) {
- return orderItemRepository.findAll(pageable);
+        return orderItemRepository.findAll(pageable);
     }
 
     public OrderItem getOrderItemBy(String id) throws ProductException {
@@ -49,16 +47,16 @@ public class OrderItemService {
                 .orElseThrow(() -> new ProductException("Order item not found with id: " + id));
     }
 
- public Page<OrderItem> getOrderItemsByOrder(String orderId, Pageable pageable) throws ProductException {
+    public Page<OrderItem> getOrderItemsByOrder(String orderId, Pageable pageable) throws ProductException {
         Order order = orderRepository.findById(orderId)
- .orElseThrow(() -> new ProductException("Order not found with id: " + orderId));
- return orderItemRepository.findByOrder(order, pageable);
+                .orElseThrow(() -> new ProductException("Order not found with id: " + orderId));
+        return orderItemRepository.findByOrder(order, pageable);
     }
 
- public Page<OrderItem> getOrderItemsByProduct(String productId, Pageable pageable) throws ProductException {
- Products product = productsRepository.findById(productId)
- .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
- return orderItemRepository.findByProduct(product, pageable);
+    public Page<OrderItem> getOrderItemsByProduct(String productId, Pageable pageable) throws ProductException {
+        Products product = productsRepository.findById(productId)
+                .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
+        return orderItemRepository.findByProduct(product, pageable);
     }
 
     public OrderItem createOrderItem(OrderItem orderItem) throws ProductException {
@@ -163,7 +161,8 @@ public class OrderItemService {
         }
 
         if (minDiscountPercent != null) {
-            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("discountPercent"), minDiscountPercent));
+            spec = spec
+                    .and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("discountPercent"), minDiscountPercent));
         }
         if (maxDiscountPercent != null) {
             spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("discountPercent"), maxDiscountPercent));

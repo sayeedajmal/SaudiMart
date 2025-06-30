@@ -1,28 +1,29 @@
 package com.saudiMart.Product.Controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.saudiMart.Product.Model.ProductVariant;
+import com.saudiMart.Product.Model.Products;
+import com.saudiMart.Product.Model.Quote;
 import com.saudiMart.Product.Model.QuoteItem;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Service.QuoteItemService;
 import com.saudiMart.Product.Utils.ProductException;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 @RestController
 @RequestMapping("/quoteitems")
 public class QuoteItemController {
@@ -35,9 +36,10 @@ public class QuoteItemController {
             @RequestParam(required = false) String quoteId,
             @RequestParam(required = false) String productId,
             @RequestParam(required = false) String variantId,
- @PageableDefault(size = 10) Pageable pageable) throws ProductException {
- Page<QuoteItem> quoteItems = quoteItemService.searchQuoteItems(quoteId, productId, variantId, pageable);
- return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved quote items based on criteria.", quoteItems));
+            @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+        Page<QuoteItem> quoteItems = quoteItemService.searchQuoteItems(quoteId, productId, variantId, pageable);
+        return ResponseEntity
+                .ok(new ResponseWrapper<>(200, "Successfully retrieved quote items based on criteria.", quoteItems));
     }
 
     @GetMapping("/{id}")
@@ -100,25 +102,28 @@ public class QuoteItemController {
     }
 
     @GetMapping("/quote/{quoteId}")
-    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByQuoteId(@PathVariable String quoteId)
+    public ResponseEntity<ResponseWrapper<Page<QuoteItem>>> getQuoteItemsByQuoteId(@RequestBody Quote quote,
+            @PageableDefault(size = 10) Pageable pageable)
             throws ProductException {
-        List<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByQuoteId(quoteId);
+        Page<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByQuote(quote, pageable);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved quote items by quote ID.", quoteItems));
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByProductId(@PathVariable String productId)
+    public ResponseEntity<ResponseWrapper<Page<QuoteItem>>> getQuoteItemsByProductId(@RequestBody Products product,
+            @PageableDefault(size = 10) Pageable pageable)
             throws ProductException {
-        List<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByProductId(productId);
+        Page<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByProduct(product, pageable);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved quote items by product ID.", quoteItems));
     }
 
     @GetMapping("/variant/{variantId}")
-    public ResponseEntity<ResponseWrapper<List<QuoteItem>>> getQuoteItemsByVariantId(@PathVariable String variantId)
+    public ResponseEntity<ResponseWrapper<Page<QuoteItem>>> getQuoteItemsByVariant(@RequestBody ProductVariant variant,
+            @PageableDefault(size = 10) Pageable pageable)
             throws ProductException {
-        List<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByVariantId(variantId);
+        Page<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByVariant(variant, pageable);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved quote items by variant ID.", quoteItems));
     }

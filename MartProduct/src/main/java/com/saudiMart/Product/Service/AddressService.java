@@ -1,17 +1,16 @@
 package com.saudiMart.Product.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.Address;
+import com.saudiMart.Product.Model.Address.AddressType;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Repository.AddressRepository;
-import com.saudiMart.Product.Model.Address.AddressType;
 import com.saudiMart.Product.Utils.ProductException;
 
 @Service
@@ -21,7 +20,7 @@ public class AddressService {
     private AddressRepository addressRepository;
 
     public Page<Address> getAllAddresses(Pageable pageable) {
- return addressRepository.findAll(pageable);
+        return addressRepository.findAll(pageable);
     }
 
     public Address getAddressById(String id) throws ProductException {
@@ -29,7 +28,8 @@ public class AddressService {
                 .orElseThrow(() -> new ProductException("Address not found with id: " + id));
     }
 
- public Page<Address> searchAddresses(AddressType addressType, String companyName, String city, String state, String postalCode, String country, Pageable pageable) {
+    public Page<Address> searchAddresses(AddressType addressType, String companyName, String city, String state,
+            String postalCode, String country, Pageable pageable) {
         if (addressType != null) {
             return addressRepository.findByAddressType(addressType, pageable);
         } else if (companyName != null && !companyName.isEmpty()) {
@@ -43,13 +43,13 @@ public class AddressService {
         } else if (country != null && !country.isEmpty()) {
             return addressRepository.findByCountryContainingIgnoreCase(country, pageable);
         }
-        // If no specific search criteria are provided, return all addresses with pagination
+        // If no specific search criteria are provided, return all addresses with
+        // pagination
         return addressRepository.findAll(pageable);
     }
 
-
- public Page<Address> getAddressesByUser(Users user, Pageable pageable) {
- return addressRepository.findByUser(user, pageable);
+    public Page<Address> getAddressesByUser(Users user, Pageable pageable) {
+        return addressRepository.findByUser(user, pageable);
     }
 
     public Address createAddress(Address address) throws ProductException {

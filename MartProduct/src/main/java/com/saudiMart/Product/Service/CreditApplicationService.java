@@ -1,32 +1,27 @@
 package com.saudiMart.Product.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.CreditApplication;
 import com.saudiMart.Product.Model.CreditApplication.CreditApplicationStatus;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Repository.CreditApplicationRepository;
-import com.saudiMart.Product.Repository.UserRepository;
 import com.saudiMart.Product.Utils.ProductException;
-import com.saudiMart.Product.Utils.ResourceNotFoundException;
 
 @Service
 public class CreditApplicationService {
 
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private CreditApplicationRepository creditApplicationRepository;
 
     public Page<CreditApplication> getAllCreditApplications(Pageable pageable) {
- return creditApplicationRepository.findAll(pageable);
+        return creditApplicationRepository.findAll(pageable);
     }
 
     public CreditApplication getCreditApplicationById(String id) throws ProductException {
@@ -80,15 +75,13 @@ public class CreditApplicationService {
         creditApplicationRepository.deleteById(id);
     }
 
-    public Page<CreditApplication> getCreditApplicationsByBuyer(String userId, Pageable pageable) throws ProductException {
-        Users user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+    public Page<CreditApplication> getCreditApplicationsByBuyer(Users user, Pageable pageable)
+            throws ProductException {
         return creditApplicationRepository.findByBuyer(user, pageable);
     }
 
-    public Page<CreditApplication> getCreditApplicationsBySeller(String userId, Pageable pageable) throws ProductException {
-        Users user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+    public Page<CreditApplication> getCreditApplicationsBySeller(Users user, Pageable pageable)
+            throws ProductException {
         return creditApplicationRepository.findBySeller(user, pageable);
     }
 
@@ -96,11 +89,9 @@ public class CreditApplicationService {
         return creditApplicationRepository.findByStatus(status, pageable);
     }
 
-    public Page<CreditApplication> getCreditApplicationsByReviewer(String userId, Pageable pageable) throws ProductException {
-        Users user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+    public Page<CreditApplication> getCreditApplicationsByReviewer(Users user, Pageable pageable)
+            throws ProductException {
         return creditApplicationRepository.findByReviewer(user, pageable);
     }
-
 
 }

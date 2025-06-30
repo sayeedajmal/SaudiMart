@@ -1,5 +1,6 @@
 package com.saudiMart.Product.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,8 +24,8 @@ public class PriceTierService {
     @Autowired
     private ProductVariantRepository productVariantRepository;
 
- public Page<PriceTier> getAllPriceTiers(Pageable pageable) {
- return priceTierRepository.findAll(pageable);
+    public Page<PriceTier> getAllPriceTiers(Pageable pageable) {
+        return priceTierRepository.findAll(pageable);
     }
 
     public PriceTier getPriceTierById(String priceTierId) throws ProductException {
@@ -32,16 +33,16 @@ public class PriceTierService {
                 .orElseThrow(() -> new ProductException("Price Tier not found with id: " + priceTierId));
     }
 
- public Page<PriceTier> getPriceTiersByVariantId(String variantId, Pageable pageable) throws ProductException {
+    public Page<PriceTier> getPriceTiersByVariantId(String variantId, Pageable pageable) throws ProductException {
         ProductVariant variant = productVariantRepository.findById(variantId)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
- return priceTierRepository.findByVariant(variant, pageable);
+        return priceTierRepository.findByVariant(variant, pageable);
     }
 
- public Page<PriceTier> getActivePriceTiersByVariantId(String variantId, Pageable pageable) throws ProductException {
+    public Page<PriceTier> getActivePriceTiersByVariantId(String variantId, Pageable pageable) throws ProductException {
         ProductVariant variant = productVariantRepository.findById(variantId)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
- return priceTierRepository.findByVariantAndIsActiveTrue(variant, pageable);
+        return priceTierRepository.findByVariantAndIsActiveTrue(variant, pageable);
     }
 
     public List<PriceTier> getApplicablePriceTiers(String variantId, Integer quantity) throws ProductException {
@@ -50,7 +51,12 @@ public class PriceTierService {
         }
         ProductVariant variant = productVariantRepository.findById(variantId)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
- return priceTierRepository.findByVariantAndIsActiveTrue(variant, Pageable.unpaged()).stream() // Applicable tiers should not be paginated in this specific method
+        return priceTierRepository.findByVariantAndIsActiveTrue(variant, Pageable.unpaged()).stream() // Applicable
+                                                                                                      // tiers should
+                                                                                                      // not be
+                                                                                                      // paginated in
+                                                                                                      // this specific
+                                                                                                      // method
                 .filter(tier -> quantity >= tier.getMinQuantity()
                         && (tier.getMaxQuantity() == null || quantity <= tier.getMaxQuantity()))
                 .collect(Collectors.toList());
@@ -103,27 +109,27 @@ public class PriceTierService {
         return priceTierRepository.save(existingPriceTier);
     }
 
- public Page<PriceTier> searchPriceTiers(
+    public Page<PriceTier> searchPriceTiers(
             String variantId,
- Integer minQuantity,
- Integer maxQuantity,
- BigDecimal minPricePerUnit,
- BigDecimal maxPricePerUnit,
- Boolean isActive,
- Pageable pageable) throws ProductException {
- ProductVariant variant = null;
- if (variantId != null) {
- variant = productVariantRepository.findById(variantId)
- .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
- }
+            Integer minQuantity,
+            Integer maxQuantity,
+            BigDecimal minPricePerUnit,
+            BigDecimal maxPricePerUnit,
+            Boolean isActive,
+            Pageable pageable) throws ProductException {
+        ProductVariant variant = null;
+        if (variantId != null) {
+            variant = productVariantRepository.findById(variantId)
+                    .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
+        }
 
- return priceTierRepository.searchPriceTiers(
- variant,
- minQuantity,
- maxQuantity,
- minPricePerUnit,
- maxPricePerUnit,
- isActive,
- pageable);
- }
+        return priceTierRepository.searchPriceTiers(
+                variant,
+                minQuantity,
+                maxQuantity,
+                minPricePerUnit,
+                maxPricePerUnit,
+                isActive,
+                pageable);
+    }
 }

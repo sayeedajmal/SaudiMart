@@ -1,6 +1,5 @@
 package com.saudiMart.Product.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +52,7 @@ public class WarehouseService {
             if (warehouseDetails.getIsActive() != null) {
                 warehouse.setIsActive(warehouseDetails.getIsActive());
             }
-            // Note: Relationships (seller and address) should ideally be updated
-            // through dedicated methods or carefully handled to avoid issues.
-            // For simplicity, this example only updates name and isActive.
+
             return warehouseRepository.save(warehouse);
         }
         throw new ProductException("Warehouse not found with id: " + id);
@@ -69,6 +66,7 @@ public class WarehouseService {
     }
 
     public Page<Warehouse> searchWarehouses(String name, String location, Users seller, Pageable pageable) {
-        return warehouseRepository.findByNameContainingIgnoreCaseOrLocationContainingIgnoreCaseOrSeller(name, location, seller, pageable);
+        return warehouseRepository.findByNameContainingIgnoreCaseOrLocationContainingIgnoreCaseOrSeller(name, location,
+                seller, pageable);
     }
 }

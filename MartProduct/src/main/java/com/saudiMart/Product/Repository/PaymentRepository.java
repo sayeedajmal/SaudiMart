@@ -1,9 +1,8 @@
 package com.saudiMart.Product.Repository;
 
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +16,6 @@ public interface PaymentRepository extends JpaRepository<Payment, String> {
     Page<Payment> findByOrder(Order order, Pageable pageable);
 
     Page<Payment> findByPaymentStatus(PaymentStatus paymentStatus, Pageable pageable);
+
+    Page<Payment> findAll(Specification<Payment> spec, Pageable pageable);
 }

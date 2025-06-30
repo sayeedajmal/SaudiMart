@@ -24,16 +24,15 @@ public class ProductImageService {
     private ProductVariantRepository productVariantRepository;
 
     public Page<ProductImage> getAllVarientImages(Pageable pageable) {
- return productImageRepository.findAll(pageable);
+        return productImageRepository.findAll(pageable);
     }
 
     public ProductImage getProductImageById(String productImageId) throws ProductException {
         return productImageRepository.findById(productImageId)
                 .orElseThrow(() -> new ProductException("Product image not found with id: " + productImageId));
     }
-    
 
-    public List<ProductImage> getProductImagesByVariantId(String variantId) throws ProductException {
+    public Page<ProductImage> getProductImagesByVariantId(String variantId, Pageable pageable) throws ProductException {
         ProductVariant variant = productVariantRepository.findById(variantId)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
         return productImageRepository.findByVariant(variant);
@@ -74,10 +73,12 @@ public class ProductImageService {
         productImageRepository.deleteById(productImageId);
     }
 
-    public Page<ProductImage> searchProductImagesByVariantId(String variantId, Pageable pageable) throws ProductException {
+    @SuppressWarnings("unchecked")
+    public List<ProductImage> searchProductImagesByVariantId(String variantId)
+            throws ProductException {
         ProductVariant variant = productVariantRepository.findById(variantId)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
- return productImageRepository.findByVariant(variant, pageable);
+        return (List<ProductImage>) productImageRepository.findByVariant(variant);
     }
 
 }

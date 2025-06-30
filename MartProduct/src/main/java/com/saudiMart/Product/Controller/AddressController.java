@@ -1,15 +1,13 @@
 package com.saudiMart.Product.Controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.saudiMart.Product.Model.Address.AddressType;
 import com.saudiMart.Product.Model.Address;
+import com.saudiMart.Product.Model.Address.AddressType;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Service.AddressService;
@@ -36,7 +34,7 @@ public class AddressController {
     @Autowired
     public AddressController(AddressService addressService, UserService userService) {
         this.addressService = addressService;
-        this.userService=userService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -116,7 +114,7 @@ public class AddressController {
             Users userById = userService.getUserById(userId);
             Page<Address> addresses = addressService.getAddressesByUser(userById, pageable);
             return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(),
- "Successfully retrieved addresses for user", addresses));
+                    "Successfully retrieved addresses for user", addresses));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
@@ -144,7 +142,8 @@ public class AddressController {
             return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Addresses found", addresses));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred during search", null));
+                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                            "An error occurred during search", null));
         }
     }
 }

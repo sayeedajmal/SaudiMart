@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.ProductSpecification;
 import com.saudiMart.Product.Model.Products;
@@ -24,7 +24,7 @@ public class ProductSpecificationService {
     private ProductsRepository productsRepository;
 
     public Page<ProductSpecification> getAllProductSpecifications(Pageable pageable) {
- return productSpecificationRepository.findAll(pageable);
+        return productSpecificationRepository.findAll(pageable);
     }
 
     public ProductSpecification getProductSpecificationById(String id) throws ProductException {
@@ -32,10 +32,11 @@ public class ProductSpecificationService {
                 .orElseThrow(() -> new ProductException("Product specification not found with id: " + id));
     }
 
- public Page<ProductSpecification> getProductSpecificationsByProductId(String productId, Pageable pageable) throws ProductException {
+    public List<ProductSpecification> getProductSpecificationsByProductId(String productId)
+            throws ProductException {
         Products product = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
- return productSpecificationRepository.findByProduct(product, pageable);
+        return productSpecificationRepository.findByProduct(product);
     }
 
     public ProductSpecification createProductSpecification(ProductSpecification productSpecification)
@@ -74,11 +75,13 @@ public class ProductSpecificationService {
         productSpecificationRepository.deleteById(id);
     }
 
- public Page<ProductSpecification> searchProductSpecifications(String productId, String specName, Pageable pageable) throws ProductException {
- Products product = null;
- if (productId != null) {
- product = productsRepository.findById(productId).orElseThrow(() -> new ProductException("Product not found with id: " + productId));
- }
- return productSpecificationRepository.findByProductAndSpecNameContainingIgnoreCase(product, specName, pageable);
- }
+    public Page<ProductSpecification> searchProductSpecifications(String productId, String specName, Pageable pageable)
+            throws ProductException {
+        Products product = null;
+        if (productId != null) {
+            product = productsRepository.findById(productId)
+                    .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
+        }
+        return productSpecificationRepository.findByProductAndSpecNameContainingIgnoreCase(product, specName, pageable);
+    }
 }

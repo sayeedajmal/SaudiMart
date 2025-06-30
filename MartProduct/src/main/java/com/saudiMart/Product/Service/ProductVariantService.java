@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.saudiMart.Product.Model.PriceTier;
 import com.saudiMart.Product.Model.ProductImage;
 import com.saudiMart.Product.Model.ProductVariant;
@@ -34,18 +34,19 @@ public class ProductVariantService {
     private ProductImageRepository productImageRepository;
 
     public Page<ProductVariant> getAllProductVariants(Pageable pageable) {
- return productVariantRepository.findAll(pageable);
+        return productVariantRepository.findAll(pageable);
     }
 
     public ProductVariant getProductVariantById(String id) throws ProductException {
         return productVariantRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + id));
     }
- 
-    public Page<ProductVariant> getProductVariantsByProductId(String productId, Pageable pageable) throws ProductException {
+
+    public Page<ProductVariant> getProductVariantsByProductId(String productId, Pageable pageable)
+            throws ProductException {
         Products product = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
- return productVariantRepository.findByProduct(product, pageable);
+        return productVariantRepository.findByProduct(product, pageable);
     }
 
     public Optional<ProductVariant> getAvailableProductVariantBySku(String sku) {
@@ -53,18 +54,20 @@ public class ProductVariantService {
     }
 
     public List<ProductVariant> getAvailableProductVariantsByProductId(String productId) throws ProductException {
-        Products product = productsRepository.findById(productId) // This method still returns a List, keeping for compatibility if needed elsewhere.
+        Products product = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
         return productVariantRepository.findByProductAndAvailableTrue(product);
     }
-    
- public Page<ProductVariant> searchProductVariants(String productId, String sku, Boolean available, Pageable pageable) throws ProductException {
- Products product = null;
- if (productId != null) {
- product = productsRepository.findById(productId).orElseThrow(() -> new ProductException("Product not found with id: " + productId));
- }
- return productVariantRepository.searchProductVariants(product, sku, available, pageable);
- }
+
+    public Page<ProductVariant> searchProductVariants(String productId, String sku, Boolean available,
+            Pageable pageable) throws ProductException {
+        Products product = null;
+        if (productId != null) {
+            product = productsRepository.findById(productId)
+                    .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
+        }
+        return productVariantRepository.searchProductVariants(product, sku, available, pageable);
+    }
 
     public ProductVariant createProductVariant(ProductVariant productVariant) throws ProductException {
         if (productVariant == null) {
@@ -75,10 +78,8 @@ public class ProductVariantService {
             throw new ProductException("Product Variant with SKU " + productVariant.getSku() + " already exists.");
         }
 
-        // Save the product variant first to get an ID
         ProductVariant savedVariant = productVariantRepository.save(productVariant);
 
-        // Handle Product Images
         if (productVariant.getImages() != null) {
             productVariant.getImages().forEach(image -> image.setVariant(savedVariant));
         }
@@ -105,13 +106,12 @@ public class ProductVariantService {
             }
             if (productVariantDetails.getVariantName() != null)
                 productVariant.setVariantName(productVariantDetails.getVariantName());
-            // additionalPrice removed as per schema change
+
             if (productVariantDetails.getBasePrice() != null)
                 productVariant.setBasePrice(productVariantDetails.getBasePrice());
             if (productVariantDetails.getAvailable() != null)
                 productVariant.setAvailable(productVariantDetails.getAvailable());
 
-            // Use helper methods to update associated collections
             updateVariantImages(productVariant, productVariantDetails.getImages());
 
             return productVariantRepository.save(productVariant);
@@ -120,7 +120,8 @@ public class ProductVariantService {
     }
 
     private void updateVariantImages(ProductVariant variant, List<ProductImage> newImages) {
-        List<ProductImage> existingImages = productImageRepository.findByVariant(variant);
+        @SuppressWarnings("unchecked")
+        List<ProductImage> existingImages = (List<ProductImage>) productImageRepository.findByVariant(variant);
 
         if (newImages != null) {
             for (ProductImage incomingImage : newImages) {
@@ -155,7 +156,6 @@ public class ProductVariantService {
         productVariantRepository.deleteById(id);
     }
 
-    // Price Tier methods
     public PriceTier addPriceTierToVariant(String variantId, PriceTier priceTier) throws ProductException {
         ProductVariant variant = getProductVariantById(variantId);
         if (priceTier == null) {
@@ -192,8 +192,8 @@ public class ProductVariantService {
         priceTierRepository.deleteById(tierId);
     }
 
- public Page<PriceTier> getPriceTiersByVariantId(String variantId, Pageable pageable) throws ProductException {
- ProductVariant variant = getProductVariantById(variantId);
- return priceTierRepository.findByVariant(variant, pageable);
- }
+    public Page<PriceTier> getPriceTiersByVariantId(String variantId, Pageable pageable) throws ProductException {
+        ProductVariant variant = getProductVariantById(variantId);
+        return priceTierRepository.findByVariant(variant, pageable);
+    }
 }
