@@ -57,9 +57,13 @@ public class ProductsService {
         return productsRepository.findBySellerId(sellerId, pageable);
     }
 
-    public Page<Products> getProductsByCategoryId(String categoryId, Pageable pageable) throws ProductException {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ProductException("Category not found with id: " + categoryId));
+    public Page<Products> getProductsByCategory(Category category, Pageable pageable) throws ProductException {
+        return productsRepository.findByCategory(category, pageable);
+    }
+
+    public Page<Products> getProductByCategoryName(String categoryName, Pageable pageable) throws ProductException {
+        Category category = categoryRepository.findByName(categoryName)
+                .orElseThrow(() -> new ProductException("Category not found with name: " + categoryName));
         return productsRepository.findByCategory(category, pageable);
     }
 

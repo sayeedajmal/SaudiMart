@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.saudiMart.Product.Model.Inventory;
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
-import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Model.Warehouse;
 import com.saudiMart.Product.Repository.InventoryRepository;
 import com.saudiMart.Product.Repository.ProductVariantRepository;
@@ -125,7 +124,7 @@ public class InventoryService {
         return inventoryRepository.findAll(pageable);
     }
 
-    public Page<Inventory> getInventoryForSeller(Users user, Pageable pageable) {
-        return inventoryRepository.findBySeller(user, pageable);
+    public Page<Inventory> getInventoryByWarehouse(Warehouse warehouse, Pageable pageable) {
+        return inventoryRepository.findByWarehouse(warehouse, pageable);
     }
 }

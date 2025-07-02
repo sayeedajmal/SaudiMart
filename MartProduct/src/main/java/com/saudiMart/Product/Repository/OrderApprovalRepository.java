@@ -1,7 +1,5 @@
 package com.saudiMart.Product.Repository;
 
-import java.time.LocalDateTime;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,8 +19,8 @@ public interface OrderApprovalRepository extends JpaRepository<OrderApproval, St
 
     Page<OrderApproval> findByStatus(OrderApprovalStatus status, Pageable pageable);
 
-    Page<OrderApproval> searchOrderApprovals(Order order, Users approver, Integer approvalLevel,
-            OrderApprovalStatus status, LocalDateTime minApprovalDate, LocalDateTime maxApprovalDate,
-            LocalDateTime minCreatedAt, LocalDateTime maxCreatedAt, Pageable pageable);
+    // Page<OrderApproval> searchOrderApprovals(Order order, Users approver, Integer approvalLevel,
+    //         OrderApprovalStatus status, LocalDateTime minApprovalDate, LocalDateTime maxApprovalDate,
+    //         LocalDateTime minCreatedAt, LocalDateTime maxCreatedAt, Pageable pageable);
 
 }

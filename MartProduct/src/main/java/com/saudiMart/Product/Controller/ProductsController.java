@@ -74,29 +74,28 @@ public class ProductsController {
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved available products for seller", products));
     }
 
- @GetMapping("/search")
- public ResponseEntity<ResponseWrapper<Page<Products>>> searchProducts(
- @RequestParam(required = false) String name,
- @RequestParam(required = false) String keywords, 
- @RequestParam(required = false) String categoryId,
- @RequestParam(required = false) String sellerId, 
- @RequestParam(required = false) String sku,
- @RequestParam(required = false) Boolean available,
- @RequestParam(required = false) BigDecimal maxPrice,
- @RequestParam(required = false) BigDecimal minPrice,
- @PageableDefault(size = 10) Pageable pageable) throws ProductException {
- Page<Products> products = productsService.searchProducts(keywords, categoryId, sellerId, available, minPrice, maxPrice, pageable); 
- return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved products based on search criteria", products));
- }
+    @GetMapping("/search")
+    public ResponseEntity<ResponseWrapper<Page<Products>>> searchProducts(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String keywords,
+            @RequestParam(required = false) String categoryId,
+            @RequestParam(required = false) String sellerId,
+            @RequestParam(required = false) String sku,
+            @RequestParam(required = false) Boolean available,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+        Page<Products> products = productsService.searchProducts(keywords, categoryId, sellerId, available, minPrice,
+                maxPrice, pageable);
+        return ResponseEntity
+                .ok(new ResponseWrapper<>(200, "Successfully retrieved products based on search criteria", products));
+    }
 
-    @GetMapping("/category/{categoryId}")
-    public ResponseEntity<ResponseWrapper<Page<Products>>> getProductsByCategoryId(
-            @PathVariable String categoryId, @PageableDefault(size = 10) Pageable pageable) throws ProductException {
-        Page<Products> products = productsService.getProductsByCategoryId(categoryId, pageable);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved products by category", products)); 
-                                                                                                                       
-                                                                                                                       
-                                                                                                                       
+    @GetMapping("/category/{categoryName}")
+    public ResponseEntity<ResponseWrapper<Page<Products>>> getProductsByCategoryName(
+            @PathVariable String categoryName, @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+        Page<Products> products = productsService.getProductByCategoryName(categoryName, pageable);
+        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved products by category", products));
     }
 
     @PutMapping("/{id}")

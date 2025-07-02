@@ -1,7 +1,11 @@
 package com.saudiMart.Product.Controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -19,8 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.saudiMart.Product.Model.Inventory;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Model.Users;
+import com.saudiMart.Product.Model.Warehouse;
 import com.saudiMart.Product.Service.InventoryService;
 import com.saudiMart.Product.Service.UserService;
+import com.saudiMart.Product.Service.WarehouseService;
 import com.saudiMart.Product.Utils.ProductException;
 
 @RestController
@@ -29,6 +35,9 @@ public class InventoryController {
 
     @Autowired
     private InventoryService inventoryService;
+
+    @Autowired
+    private WarehouseService warehouseService;
 
     @Autowired
     private UserService userService;
@@ -95,20 +104,20 @@ public class InventoryController {
     }
 
     @GetMapping("/sellerinventory/{userId}")
-    public ResponseEntity<ResponseWrapper<Page<Inventory>>> getInventoryForSeller(@PathVariable String userId,
-            @PageableDefault(size = 10) Pageable pageable) {
-        try {
-            Users user = userService.getUserById(userId);
+    public ResponseEntity<ResponseWrapper<List<Inventory>>> getInventoryForSeller(@PathVariable String userId,
+            Pageable pageable) throws ProductException {
 
-            Page<Inventory> sellerInventory = inventoryService.getInventoryForSeller(user, pageable);
-            return ResponseEntity
-                    .ok(new ResponseWrapper<>(200, "Successfully retrieved inventory for seller", sellerInventory));
-        } catch (ProductException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
-        }
+        Users user = userService.getUserById(userId);
+
+        Page<Warehouse> sellersWarehouses = warehouseService.getWarehousesBySeller(user, pageable);
+        List<Inventory> sellerInventory = new ArrayList<>();
+
+        sellersWarehouses.forEach(warehouse -> {
+            sellerInventory.addAll(inventoryService.getInventoryByWarehouse(warehouse, pageable).getContent());
+        });
+
+        return ResponseEntity
+                .ok(new ResponseWrapper<>(200, "Successfully retrieved inventory for seller", sellerInventory));
     }
 
     @GetMapping("/search")

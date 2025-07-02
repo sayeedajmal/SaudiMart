@@ -99,24 +99,27 @@ public class OrderApprovalService {
         Order order = null;
         if (orderId != null) {
             order = orderRepository.findById(orderId)
-                    .orElseThrow(() -> new ProductException("Order not found with id: " + orderId));
+                    .orElseThrow(() -> new ProductException("Order not found with id: " +
+                            orderId));
         }
 
         Users approver = null;
         if (approverId != null) {
             approver = userRepository.findById(approverId)
-                    .orElseThrow(() -> new ProductException("User not found with id: " + approverId));
+                    .orElseThrow(() -> new ProductException("User not found with id: " +
+                            approverId));
         }
 
-        return orderApprovalRepository.searchOrderApprovals(
-                order,
-                approver,
-                approvalLevel,
-                status,
-                minApprovalDate,
-                maxApprovalDate,
-                minCreatedAt,
-                maxCreatedAt,
-                pageable);
+        // return orderApprovalRepository.searchOrderApprovals(
+        // order,
+        // approver,
+        // approvalLevel,
+        // status,
+        // minApprovalDate,
+        // maxApprovalDate,
+        // minCreatedAt,
+        // maxCreatedAt,
+        // pageable);
+        return null;
     }
 }

@@ -35,7 +35,7 @@ public class ProductImageService {
     public Page<ProductImage> getProductImagesByVariantId(String variantId, Pageable pageable) throws ProductException {
         ProductVariant variant = productVariantRepository.findById(variantId)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
-        return productImageRepository.findByVariant(variant);
+        return productImageRepository.findByVariant(variant, pageable);
     }
 
     public ProductImage createProductImage(ProductImage productImage) throws ProductException {
@@ -66,6 +66,7 @@ public class ProductImageService {
         return productImageRepository.save(productImage);
     }
 
+
     public void deleteProductImage(String productImageId) throws ProductException {
         if (!productImageRepository.existsById(productImageId)) {
             throw new ProductException("Product image not found with id: " + productImageId);
@@ -73,7 +74,6 @@ public class ProductImageService {
         productImageRepository.deleteById(productImageId);
     }
 
-    @SuppressWarnings("unchecked")
     public List<ProductImage> searchProductImagesByVariantId(String variantId)
             throws ProductException {
         ProductVariant variant = productVariantRepository.findById(variantId)

@@ -65,8 +65,8 @@ public class WarehouseService {
         warehouseRepository.deleteById(id);
     }
 
-    public Page<Warehouse> searchWarehouses(String name, String location, Users seller, Pageable pageable) {
-        return warehouseRepository.findByNameContainingIgnoreCaseOrLocationContainingIgnoreCaseOrSeller(name, location,
+    public Page<Warehouse> searchWarehouses(String name, Users seller, Pageable pageable) {
+        return warehouseRepository.findByNameContainingIgnoreCaseOrSeller(name,
                 seller, pageable);
     }
 }

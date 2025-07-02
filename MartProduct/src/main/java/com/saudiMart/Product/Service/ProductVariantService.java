@@ -120,8 +120,7 @@ public class ProductVariantService {
     }
 
     private void updateVariantImages(ProductVariant variant, List<ProductImage> newImages) {
-        @SuppressWarnings("unchecked")
-        List<ProductImage> existingImages = (List<ProductImage>) productImageRepository.findByVariant(variant);
+        List<ProductImage> existingImages = productImageRepository.findByVariant(variant);
 
         if (newImages != null) {
             for (ProductImage incomingImage : newImages) {

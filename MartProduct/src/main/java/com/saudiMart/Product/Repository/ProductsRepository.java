@@ -1,7 +1,6 @@
 package com.saudiMart.Product.Repository;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.saudiMart.Product.Model.Category;
-import com.saudiMart.Product.Model.ContractItem;
 import com.saudiMart.Product.Model.Products;
 
 @Repository
@@ -43,5 +41,4 @@ public interface ProductsRepository extends JpaRepository<Products, String> {
                                   @Param("sellerId") String sellerId, @Param("available") Boolean available,
                                   @Param("minPrice") BigDecimal minPrice, @Param("maxPrice") BigDecimal maxPrice, Pageable pageable);
 
-    Optional<ContractItem> findByProduct(ContractItem contractItem);
 }

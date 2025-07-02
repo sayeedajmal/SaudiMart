@@ -40,11 +40,10 @@ public class WarehouseController {
     @GetMapping
     public ResponseEntity<ResponseWrapper<Page<Warehouse>>> searchWarehouses(
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String location,
             @RequestParam(required = false) String sellerId,
             @PageableDefault(size = 10) Pageable pageable) throws ProductException {
         Users seller = userService.getUserById(sellerId);
-        Page<Warehouse> warehouses = warehouseService.searchWarehouses(name, location, seller, pageable);
+        Page<Warehouse> warehouses = warehouseService.searchWarehouses(name, seller, pageable);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved all warehouses", warehouses));
     }
 
