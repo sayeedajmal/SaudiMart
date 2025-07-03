@@ -91,9 +91,9 @@ public class ProductsController {
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved products based on search criteria", products));
     }
 
-    @GetMapping("/category/{categoryName}")
+    @GetMapping("/category")
     public ResponseEntity<ResponseWrapper<Page<Products>>> getProductsByCategoryName(
-            @PathVariable String categoryName, @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+            @RequestParam String categoryName, Pageable pageable) throws ProductException {
         Page<Products> products = productsService.getProductByCategoryName(categoryName, pageable);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved products by category", products));
     }

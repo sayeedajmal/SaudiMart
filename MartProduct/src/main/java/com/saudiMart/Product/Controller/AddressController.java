@@ -110,15 +110,10 @@ public class AddressController {
     @GetMapping("/user")
     public ResponseEntity<ResponseWrapper<Page<Address>>> getAddressesByUserId(@RequestParam String userId,
             @PageableDefault(size = 10) Pageable pageable) throws ProductException {
-        try {
-            Users userById = userService.getUserById(userId);
-            Page<Address> addresses = addressService.getAddressesByUser(userById, pageable);
-            return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(),
-                    "Successfully retrieved addresses for user", addresses));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
-        }
+        Users userById = userService.getUserById(userId);
+        Page<Address> addresses = addressService.getAddressesByUser(userById, pageable);
+        return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(),
+                "Successfully retrieved addresses for user", addresses));
     }
 
     @GetMapping("/search")
