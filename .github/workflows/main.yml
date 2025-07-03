@@ -32,12 +32,14 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    # Build each service JAR using Maven Wrapper
     - name: Build ${{ matrix.service }}
       working-directory: ${{ matrix.service }}
       run: |
         chmod +x mvnw
         ./mvnw clean package -DskipTests
 
+    # Upload the built JAR as an artifact
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
@@ -53,16 +55,26 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    # Download all JAR artifacts to a temporary directory
     - name: Download all artifacts
       uses: actions/download-artifact@v4
       with:
         path: artifacts
 
+    # Move artifacts back to their respective target directories so Docker build can find them
     - name: Move artifacts to correct locations
       run: |
         for service in MartAuth MartGateway MartProduct MartEureka; do
           mkdir -p $service/target
           mv artifacts/$service-artifact/* $service/target/
+        done
+
+    # (Optional) Add a check to confirm the JAR is present before Docker build
+    - name: List JARs in each target directory
+      run: |
+        for service in MartAuth MartGateway MartProduct MartEureka; do
+          echo "Contents of $service/target:"
+          ls -l $service/target/
         done
 
     - name: Set up Docker Buildx
@@ -74,10 +86,11 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
+    # Build and push Docker images for each service
     - name: Build and push Docker images
       run: |
         for service in MartAuth MartGateway MartProduct MartEureka; do
-          # Construct the image tag
+          # Construct the image tag (lowercase service name)
           IMAGE_TAG="sayeedajmal/${service,,}:latest"
           echo "Building and pushing image: $IMAGE_TAG"
           docker build -t $IMAGE_TAG $service
