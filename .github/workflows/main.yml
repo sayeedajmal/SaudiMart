@@ -77,6 +77,9 @@ jobs:
     - name: Build and push Docker images
       run: |
         for service in MartAuth MartGateway MartProduct MartEureka; do
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/${service,,}:latest $service
-          docker push ${{ secrets.DOCKER_USERNAME }}/${service,,}:latest
+          # Construct the image tag
+          IMAGE_TAG="${{ secrets.DOCKER_USERNAME }}/${service,,}:latest"
+          echo "Building and pushing image: $IMAGE_TAG"
+          docker build -t $IMAGE_TAG $service
+          docker push $IMAGE_TAG
         done
