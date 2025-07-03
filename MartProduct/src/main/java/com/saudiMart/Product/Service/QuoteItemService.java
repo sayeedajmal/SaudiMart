@@ -12,6 +12,7 @@ import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Model.Quote;
 import com.saudiMart.Product.Model.QuoteItem;
 import com.saudiMart.Product.Repository.QuoteItemRepository;
+import com.saudiMart.Product.Repository.QuoteRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
 @Service
@@ -19,6 +20,9 @@ public class QuoteItemService {
 
     @Autowired
     private QuoteItemRepository quoteItemRepository;
+
+    @Autowired
+    private QuoteRepository quoteRepository;
 
     public Page<QuoteItem> getAllQuoteItems(Pageable pageable) {
         return quoteItemRepository.findAll(pageable);
@@ -44,6 +48,19 @@ public class QuoteItemService {
         if (quoteItem == null) {
             throw new ProductException("Quote Item cannot be null");
         }
+
+        String buyerId = quoteItem.getQuote().getBuyer().getId();
+        String productId = quoteItem.getProduct().getId();
+        String variantId = quoteItem.getVariant() != null ? quoteItem.getVariant().getId() : null;
+
+        QuoteItem existing = quoteRepository.findExistingItem(buyerId, productId, variantId);
+        if (existing != null) {
+            throw new ProductException("Quote item with same product & variant already exists for this buyer.");
+        }
+
+        Quote savedQuote = quoteRepository.save(quoteItem.getQuote());
+        quoteItem.setQuote(savedQuote);
+
         return quoteItemRepository.save(quoteItem);
     }
 
@@ -100,5 +117,6 @@ public class QuoteItemService {
     }
 
     public Page<QuoteItem> getQuoteItemsByVariant(ProductVariant variant, Pageable pageable) {
-        return quoteItemRepository.findByVariant(variant, pageable);}
+        return quoteItemRepository.findByVariant(variant, pageable);
+    }
 }
