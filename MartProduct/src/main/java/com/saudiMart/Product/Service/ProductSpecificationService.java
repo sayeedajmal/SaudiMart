@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.ProductSpecification;
@@ -21,8 +23,8 @@ public class ProductSpecificationService {
     @Autowired
     private ProductsRepository productsRepository;
 
-    public List<ProductSpecification> getAllProductSpecifications() {
-        return productSpecificationRepository.findAll();
+    public Page<ProductSpecification> getAllProductSpecifications(Pageable pageable) {
+        return productSpecificationRepository.findAll(pageable);
     }
 
     public ProductSpecification getProductSpecificationById(String id) throws ProductException {
@@ -30,19 +32,11 @@ public class ProductSpecificationService {
                 .orElseThrow(() -> new ProductException("Product specification not found with id: " + id));
     }
 
-    public List<ProductSpecification> getProductSpecificationsByProductId(String productId) throws ProductException {
-        Products product = productsRepository.findById(productId)
-                .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
-        return productSpecificationRepository.findByProduct(product);
-    }
-
-    public List<ProductSpecification> getProductSpecificationsByProductIdAndSpecName(String productId, String specName)
+    public List<ProductSpecification> getProductSpecificationsByProductId(String productId)
             throws ProductException {
         Products product = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
-        return productSpecificationRepository.findByProduct(product).stream()
-                .filter(spec -> spec.getSpecName().equalsIgnoreCase(specName))
-                .collect(java.util.stream.Collectors.toList());
+        return productSpecificationRepository.findByProduct(product);
     }
 
     public ProductSpecification createProductSpecification(ProductSpecification productSpecification)
@@ -79,5 +73,15 @@ public class ProductSpecificationService {
             throw new ProductException("Product specification not found with id: " + id);
         }
         productSpecificationRepository.deleteById(id);
+    }
+
+    public Page<ProductSpecification> searchProductSpecifications(String productId, String specName, Pageable pageable)
+            throws ProductException {
+        Products product = null;
+        if (productId != null) {
+            product = productsRepository.findById(productId)
+                    .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
+        }
+        return productSpecificationRepository.findByProductAndSpecNameContainingIgnoreCase(product, specName, pageable);
     }
 }

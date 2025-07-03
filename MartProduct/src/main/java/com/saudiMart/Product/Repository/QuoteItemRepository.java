@@ -1,24 +1,25 @@
 package com.saudiMart.Product.Repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Model.Quote;
 import com.saudiMart.Product.Model.QuoteItem;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 public interface QuoteItemRepository extends JpaRepository<QuoteItem, String> {
 
-    List<QuoteItem> findByQuote(Quote quote);
+    Page<QuoteItem> findByQuote(Quote quote, Pageable pageable);
 
-    List<QuoteItem> findByProduct(Products product);
+    Page<QuoteItem> findByProduct(Products product, Pageable pageable);
 
-    List<QuoteItem> findByVariant(ProductVariant variant);
+    Page<QuoteItem> findByVariant(ProductVariant variant, Pageable pageable);
 
-    List<QuoteItem> findByQuoteId(String quoteId);
+    Page<QuoteItem> findByQuoteId(String quoteId, Pageable pageable);
 
-    List<QuoteItem> findByProductId(String productId);
+    Page<QuoteItem> findByProductId(String productId, Pageable pageable);
 
-    List<QuoteItem> findByVariantId(String variantId);
+    Page<QuoteItem> findByVariantId(String variantId, Pageable pageable);
 }

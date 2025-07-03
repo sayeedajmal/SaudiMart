@@ -1,9 +1,10 @@
 package com.saudiMart.Product.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.Category;
@@ -16,19 +17,19 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public Page<Category> getAllCategories(Pageable pageable) {
+        return categoryRepository.findAll(pageable);
     }
 
-    public List<Category> getAllActiveCategoriesByName(String name, Boolean isActive) {
+    public Page<Category> getAllActiveCategoriesByName(String name, Boolean isActive, Pageable pageable) {
         if (name != null && isActive != null) {
-            return categoryRepository.findByNameContainingIgnoreCaseAndIsActive(name, isActive);
+            return categoryRepository.findByNameContainingIgnoreCaseAndIsActive(name, isActive, pageable);
         } else if (name != null) {
-            return categoryRepository.findByNameContainingIgnoreCase(name);
+            return categoryRepository.findByNameContainingIgnoreCase(name, pageable);
         } else if (isActive != null) {
-            return categoryRepository.findByIsActive(isActive);
+            return categoryRepository.findByIsActive(isActive, pageable);
         } else {
-            return categoryRepository.findAll();
+            return categoryRepository.findAll(pageable);
         }
     }
 
@@ -42,8 +43,8 @@ public class CategoryService {
                 .orElseThrow(() -> new ProductException("Category not found with name: " + name));
     }
 
-    public List<Category> getActiveCategories() {
-        return categoryRepository.findByIsActive(true);
+    public Page<Category> getActiveCategories(Pageable pageable) {
+        return categoryRepository.findByIsActive(true, pageable);
     }
 
     public Category createCategory(Category category) throws ProductException {

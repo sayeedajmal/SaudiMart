@@ -1,8 +1,11 @@
 package com.saudiMart.Product.Controller;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,11 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.saudiMart.Product.Model.Order;
 import com.saudiMart.Product.Model.OrderItem;
-import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Service.OrderItemService;
 import com.saudiMart.Product.Utils.ProductException;
@@ -29,9 +31,10 @@ public class OrderItemController {
     private OrderItemService orderItemService;
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<OrderItem>>> getAllOrderItems() {
-        List<OrderItem> orderItems = orderItemService.getAllOrderItems();
-        ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(200, "Successfully retrieved all order items",
+    public ResponseEntity<ResponseWrapper<Page<OrderItem>>> getAllOrderItems(
+            @PageableDefault(size = 10) Pageable pageable) {
+        Page<OrderItem> orderItems = orderItemService.getAllOrderItems(pageable);
+        ResponseWrapper<Page<OrderItem>> response = new ResponseWrapper<>(200, "Successfully retrieved all order items",
                 orderItems);
         return ResponseEntity.ok(response);
     }
@@ -102,42 +105,67 @@ public class OrderItemController {
     }
 
     @GetMapping("/order/{orderId}")
-    public ResponseEntity<ResponseWrapper<List<OrderItem>>> getOrderItemsByOrder(@PathVariable String orderId) {
-        // Assuming you have a method in OrderService to get an Order by ID
-        // and then pass that Order object to orderItemService.getOrderItemsByOrder
-        // For now, let's assume OrderService can return an Order by ID
+    public ResponseEntity<ResponseWrapper<Page<OrderItem>>> getOrderItemsByOrder(@PathVariable String orderId,
+            @PageableDefault(size = 10) Pageable pageable) {
         try {
-            Order order = new Order(); // Placeholder - replace with actual Order retrieval logic
-            order.setId(orderId); // Set the ID for the placeholder Order
-
-            List<OrderItem> orderItems = orderItemService.getOrderItemsByOrder(order);
-            ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(200,
+            Page<OrderItem> orderItems = orderItemService.getOrderItemsByOrder(orderId, pageable);
+            ResponseWrapper<Page<OrderItem>> response = new ResponseWrapper<>(200,
                     "Successfully retrieved order items for order", orderItems);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    "An error occurred while retrieving order items by order", null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            throw new RuntimeException("An error occurred while retrieving order items by order", e);
         }
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<ResponseWrapper<List<OrderItem>>> getOrderItemsByProduct(@PathVariable String productId) {
-        // Assuming you have a method in ProductsService to get a Product by ID
-        // and then pass that Products object to orderItemService.getOrderItemsByProduct
-        // For now, let's assume ProductsService can return a Product by ID
+    public ResponseEntity<ResponseWrapper<Page<OrderItem>>> getOrderItemsByProduct(@PathVariable String productId,
+            @PageableDefault(size = 10) Pageable pageable) {
         try {
-            Products product = new Products(); // Placeholder - replace with actual Product retrieval logic
-            product.setId(productId); // Set the ID for the placeholder Product
-
-            List<OrderItem> orderItems = orderItemService.getOrderItemsByProduct(product);
-            ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(200,
+            Page<OrderItem> orderItems = orderItemService.getOrderItemsByProduct(productId, pageable);
+            ResponseWrapper<Page<OrderItem>> response = new ResponseWrapper<>(200,
                     "Successfully retrieved order items for product", orderItems);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            ResponseWrapper<List<OrderItem>> response = new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    "An error occurred while retrieving order items by product", null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            throw new RuntimeException("An error occurred while retrieving order items by product", e);
         }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseWrapper<Page<OrderItem>>> searchOrderItems(
+            @RequestParam(required = false) String orderId,
+            @RequestParam(required = false) String productId,
+            @RequestParam(required = false) String variantId,
+            @RequestParam(required = false) Integer minQuantity,
+            @RequestParam(required = false) Integer maxQuantity,
+            @RequestParam(required = false) BigDecimal minPricePerUnit,
+            @RequestParam(required = false) BigDecimal maxPricePerUnit,
+            @RequestParam(required = false) BigDecimal minDiscountPercent,
+            @RequestParam(required = false) BigDecimal maxDiscountPercent,
+            @RequestParam(required = false) BigDecimal minTaxPercent,
+            @RequestParam(required = false) BigDecimal maxTaxPercent,
+            @RequestParam(required = false) BigDecimal minTotalPrice,
+            @RequestParam(required = false) BigDecimal maxTotalPrice,
+            @RequestParam(required = false) String shipFromWarehouseId,
+            @RequestParam(required = false) OrderItem.OrderItemStatus status,
+            @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+        Page<OrderItem> orderItems = orderItemService.searchOrderItems(
+                orderId,
+                productId,
+                variantId,
+                minQuantity,
+                maxQuantity,
+                minPricePerUnit,
+                maxPricePerUnit,
+                minDiscountPercent,
+                maxDiscountPercent,
+                minTaxPercent,
+                maxTaxPercent,
+                minTotalPrice,
+                maxTotalPrice,
+                shipFromWarehouseId,
+                status,
+                pageable);
+        return ResponseEntity.ok(
+                new ResponseWrapper<>(200, "Successfully retrieved order items based on search criteria", orderItems));
     }
 }

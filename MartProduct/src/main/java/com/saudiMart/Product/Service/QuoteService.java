@@ -1,14 +1,15 @@
 package com.saudiMart.Product.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.Quote;
-import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Model.Quote.QuoteStatus;
+import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Repository.QuoteRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
@@ -18,8 +19,8 @@ public class QuoteService {
     @Autowired
     private QuoteRepository quoteRepository;
 
-    public List<Quote> getAllQuotes() {
-        return quoteRepository.findAll();
+    public Page<Quote> getAllQuotes(Pageable pageable) {
+        return quoteRepository.findAll(pageable);
     }
 
     public Quote getQuoteById(String id) throws ProductException {
@@ -76,15 +77,19 @@ public class QuoteService {
         quoteRepository.deleteById(id);
     }
 
-    public List<Quote> getQuotesByBuyer(Users user) {
-        return quoteRepository.findByBuyer(user);
+    public Page<Quote> getQuotesByBuyer(Users user, Pageable pageable) {
+        return quoteRepository.findByBuyer(user, pageable);
     }
 
-    public List<Quote> getQuotesBySeller(Users user) {
-        return quoteRepository.findBySeller(user);
+    public Page<Quote> getQuotesBySeller(Users user, Pageable pageable) {
+        return quoteRepository.findBySeller(user, pageable);
     }
 
-    public List<Quote> getQuotesByStatus(QuoteStatus status) {
-        return quoteRepository.findByStatus(status);
+    public Page<Quote> getQuotesByStatus(QuoteStatus status, Pageable pageable) {
+        return quoteRepository.findByStatus(status, pageable);
+    }
+
+    public Page<Quote> searchQuotes(QuoteStatus status, Users seller, Users buyer, Pageable pageable) {
+        return quoteRepository.searchQuotes(status, seller, buyer, pageable);
     }
 }

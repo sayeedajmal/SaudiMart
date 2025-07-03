@@ -1,19 +1,23 @@
 package com.saudiMart.Product.Repository;
 
-import com.saudiMart.Product.Model.Contract;
-import com.saudiMart.Product.Model.Users;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.saudiMart.Product.Model.Contract;
+import com.saudiMart.Product.Model.Users;
 
 @Repository
 public interface ContractRepository extends JpaRepository<Contract, String> {
 
-    List<Contract> findByStatus(Contract.ContractStatus status);
+    Page<Contract> findByStatus(Contract.ContractStatus status, Pageable pageable);
 
-    List<Contract> findByBuyer(Users user);
+    Page<Contract> findByBuyer(Users user, Pageable pageable);
 
-    List<Contract> findBySeller(Users user);
+    Page<Contract> findBySeller(Users user, Pageable pageable);
+
+    Page<Contract> findAll(Specification<Contract> spec, Pageable pageable);
+
 }

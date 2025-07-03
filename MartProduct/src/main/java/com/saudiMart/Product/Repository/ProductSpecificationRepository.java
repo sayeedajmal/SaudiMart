@@ -2,6 +2,8 @@ package com.saudiMart.Product.Repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,9 +15,11 @@ public interface ProductSpecificationRepository extends JpaRepository<ProductSpe
 
     List<ProductSpecification> findByProduct(Products product);
 
-    List<ProductSpecification> findByProductOrderByDisplayOrderAsc(Products product);
+    Page<ProductSpecification> findByProductOrderByDisplayOrderAsc(Products product, Pageable pageable);
 
-    List<ProductSpecification> findBySpecNameContainingIgnoreCase(String keyword);
+    Page<ProductSpecification> findBySpecNameContainingIgnoreCase(String keyword, Pageable pageable);
+
+    Page<ProductSpecification> findByProductAndSpecNameContainingIgnoreCase(Products product, String specName, Pageable pageable);
 
     void deleteByProduct(Products product);
 }

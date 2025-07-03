@@ -1,12 +1,14 @@
 package com.saudiMart.Product.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.Address;
+import com.saudiMart.Product.Model.Address.AddressType;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Repository.AddressRepository;
 import com.saudiMart.Product.Utils.ProductException;
@@ -17,8 +19,8 @@ public class AddressService {
     @Autowired
     private AddressRepository addressRepository;
 
-    public List<Address> getAllAddresses() {
-        return addressRepository.findAll();
+    public Page<Address> getAllAddresses(Pageable pageable) {
+        return addressRepository.findAll(pageable);
     }
 
     public Address getAddressById(String id) throws ProductException {
@@ -26,8 +28,28 @@ public class AddressService {
                 .orElseThrow(() -> new ProductException("Address not found with id: " + id));
     }
 
-    public List<Address> getAddressesByUser(Users user) {
-        return addressRepository.findByUser(user);
+    public Page<Address> searchAddresses(AddressType addressType, String companyName, String city, String state,
+            String postalCode, String country, Pageable pageable) {
+        if (addressType != null) {
+            return addressRepository.findByAddressType(addressType, pageable);
+        } else if (companyName != null && !companyName.isEmpty()) {
+            return addressRepository.findByCompanyNameContainingIgnoreCase(companyName, pageable);
+        } else if (city != null && !city.isEmpty()) {
+            return addressRepository.findByCityContainingIgnoreCase(city, pageable);
+        } else if (state != null && !state.isEmpty()) {
+            return addressRepository.findByStateContainingIgnoreCase(state, pageable);
+        } else if (postalCode != null && !postalCode.isEmpty()) {
+            return addressRepository.findByPostalCodeContainingIgnoreCase(postalCode, pageable);
+        } else if (country != null && !country.isEmpty()) {
+            return addressRepository.findByCountryContainingIgnoreCase(country, pageable);
+        }
+        // If no specific search criteria are provided, return all addresses with
+        // pagination
+        return addressRepository.findAll(pageable);
+    }
+
+    public Page<Address> getAddressesByUser(Users user, Pageable pageable) {
+        return addressRepository.findByUser(user, pageable);
     }
 
     public Address createAddress(Address address) throws ProductException {

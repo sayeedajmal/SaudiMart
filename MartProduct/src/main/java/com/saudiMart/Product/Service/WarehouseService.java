@@ -1,9 +1,10 @@
 package com.saudiMart.Product.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.Users;
@@ -17,8 +18,8 @@ public class WarehouseService {
     @Autowired
     private WarehouseRepository warehouseRepository;
 
-    public List<Warehouse> getAllWarehouses() {
-        return warehouseRepository.findAll();
+    public Page<Warehouse> getAllWarehouses(Pageable pageable) {
+        return warehouseRepository.findAll(pageable);
     }
 
     public Warehouse getWarehouseById(String id) throws ProductException {
@@ -26,8 +27,8 @@ public class WarehouseService {
                 .orElseThrow(() -> new ProductException("Warehouse not found with id: " + id));
     }
 
-    public List<Warehouse> getWarehousesBySeller(Users user) {
-        return warehouseRepository.findBySeller(user);
+    public Page<Warehouse> getWarehousesBySeller(Users user, Pageable pageable) {
+        return warehouseRepository.findBySeller(user, pageable);
     }
 
     public Warehouse createWarehouse(Warehouse warehouse) throws ProductException {
@@ -51,9 +52,7 @@ public class WarehouseService {
             if (warehouseDetails.getIsActive() != null) {
                 warehouse.setIsActive(warehouseDetails.getIsActive());
             }
-            // Note: Relationships (seller and address) should ideally be updated
-            // through dedicated methods or carefully handled to avoid issues.
-            // For simplicity, this example only updates name and isActive.
+
             return warehouseRepository.save(warehouse);
         }
         throw new ProductException("Warehouse not found with id: " + id);
@@ -64,5 +63,10 @@ public class WarehouseService {
             throw new ProductException("Warehouse not found with id: " + id);
         }
         warehouseRepository.deleteById(id);
+    }
+
+    public Page<Warehouse> searchWarehouses(String name, Users seller, Pageable pageable) {
+        return warehouseRepository.findByNameContainingIgnoreCaseOrSeller(name,
+                seller, pageable);
     }
 }

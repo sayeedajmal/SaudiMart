@@ -1,5 +1,6 @@
 package com.saudiMart.Product.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,43 +39,52 @@ public class ProductsService {
     private CategoryRepository categoryRepository;
 
     @Transactional
-    public List<Products> getAllProducts() {
-        return productsRepository.findAll();
+    public Page<Products> getAllProducts(Pageable pageable) {
+        return productsRepository.findAll(pageable);
     }
 
     public Products getProductById(String productId) throws ProductException {
         Products product = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product with ID " + productId + " not found"));
-
-        // product.setImages(productImageRepository.findByProduct(product));
-        product.setSpecifications(productSpecificationRepository.findByProduct(product));
-        product.setVariants(productVariantRepository.findByProduct(product));
-
         return product;
     }
 
-    public List<Products> getProductsBySellerId(String sellerId) {
-        return productsRepository.findBySellerId(sellerId);
+    public Page<Products> getProductsBySellerId(String sellerId, Pageable pageable) {
+        return productsRepository.findBySellerId(sellerId, pageable);
     }
 
-    public List<Products> getAvailableProductsBySellerId(String sellerId) {
-        return productsRepository.findBySellerId(sellerId).stream()
-                .filter(Products::getAvailable)
-                .collect(Collectors.toList());
+    public Page<Products> getAvailableProductsBySellerId(String sellerId, Pageable pageable) {
+        return productsRepository.findBySellerId(sellerId, pageable);
     }
 
-    public List<Products> getProductsByCategoryId(String categoryId) throws ProductException {
+    public Page<Products> getProductsByCategory(Category category, Pageable pageable) throws ProductException {
+        return productsRepository.findByCategory(category, pageable);
+    }
+
+    public Page<Products> getProductByCategoryName(String categoryName, Pageable pageable) throws ProductException {
+        Category category = categoryRepository.findByName(categoryName)
+                .orElseThrow(() -> new ProductException("Category not found with name: " + categoryName));
+        return productsRepository.findByCategory(category, pageable);
+    }
+
+    public Page<Products> getAvailableProductsByCategoryId(String categoryId, Pageable pageable)
+            throws ProductException {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ProductException("Category not found with id: " + categoryId));
-        return productsRepository.findByCategory(category);
+        // Assuming findByCategory also handles 'available' or you'd add a custom method
+        return productsRepository.findByCategory(category, pageable);
     }
 
-    public List<Products> getAvailableProductsByCategoryId(String categoryId) throws ProductException {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ProductException("Category not found with id: " + categoryId));
-        return productsRepository.findByCategory(category).stream()
-                .filter(Products::getAvailable)
-                .collect(Collectors.toList());
+    public Page<Products> searchProducts(String keywords, String categoryId, String sellerId, Boolean available,
+            BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) throws ProductException {
+        Category category = null;
+        if (categoryId != null) {
+            category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new ProductException("Category not found with id: " + categoryId));
+        }
+
+        return productsRepository.searchProducts(
+                keywords, category, sellerId, available, minPrice, maxPrice, pageable);
     }
 
     @Transactional
@@ -195,9 +207,9 @@ public class ProductsService {
 
     @Transactional
     public void deleteProduct(String productId) throws ProductException {
-       if(productsRepository.findById(productId).isEmpty()){
-           throw new ProductException("Product not found");
-       }
+        if (productsRepository.findById(productId).isEmpty()) {
+            throw new ProductException("Product not found");
+        }
         productsRepository.deleteById(productId);
     }
 }

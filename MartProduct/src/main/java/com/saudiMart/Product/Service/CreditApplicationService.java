@@ -1,10 +1,11 @@
 package com.saudiMart.Product.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.CreditApplication;
@@ -19,8 +20,8 @@ public class CreditApplicationService {
     @Autowired
     private CreditApplicationRepository creditApplicationRepository;
 
-    public List<CreditApplication> getAllCreditApplications() {
-        return creditApplicationRepository.findAll();
+    public Page<CreditApplication> getAllCreditApplications(Pageable pageable) {
+        return creditApplicationRepository.findAll(pageable);
     }
 
     public CreditApplication getCreditApplicationById(String id) throws ProductException {
@@ -74,19 +75,23 @@ public class CreditApplicationService {
         creditApplicationRepository.deleteById(id);
     }
 
-    public List<CreditApplication> getCreditApplicationsByBuyer(Users user) {
-        return creditApplicationRepository.findByBuyer(user);
+    public Page<CreditApplication> getCreditApplicationsByBuyer(Users user, Pageable pageable)
+            throws ProductException {
+        return creditApplicationRepository.findByBuyer(user, pageable);
     }
 
-    public List<CreditApplication> getCreditApplicationsBySeller(Users user) {
-        return creditApplicationRepository.findBySeller(user);
+    public Page<CreditApplication> getCreditApplicationsBySeller(Users user, Pageable pageable)
+            throws ProductException {
+        return creditApplicationRepository.findBySeller(user, pageable);
     }
 
-    public List<CreditApplication> getCreditApplicationsByStatus(CreditApplicationStatus status) {
-        return creditApplicationRepository.findByStatus(status);
+    public Page<CreditApplication> getCreditApplicationsByStatus(CreditApplicationStatus status, Pageable pageable) {
+        return creditApplicationRepository.findByStatus(status, pageable);
     }
 
-    public List<CreditApplication> getCreditApplicationsByReviewer(Users user) {
-        return creditApplicationRepository.findByReviewer(user);
+    public Page<CreditApplication> getCreditApplicationsByReviewer(Users user, Pageable pageable)
+            throws ProductException {
+        return creditApplicationRepository.findByReviewer(user, pageable);
     }
+
 }

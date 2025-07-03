@@ -3,6 +3,8 @@ package com.saudiMart.Product.Model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Year;
+import java.util.Random;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -78,9 +80,9 @@ public class Quote {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-        // Consider generating quoteNumber here if not handled by the database default
-        // e.g., if using a different database or need application-level generation
-    }
+        if (quoteNumber == null) {
+        this.quoteNumber = "Q-" + Year.now().getValue() + "-" + String.format("%06d", new Random().nextInt(999999));
+    }}
 
     @PreUpdate
     protected void onUpdate() {

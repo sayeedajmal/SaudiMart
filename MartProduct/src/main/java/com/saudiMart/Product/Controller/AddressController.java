@@ -1,8 +1,9 @@
 package com.saudiMart.Product.Controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.saudiMart.Product.Model.Address;
+import com.saudiMart.Product.Model.Address.AddressType;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Service.AddressService;
@@ -32,12 +34,13 @@ public class AddressController {
     @Autowired
     public AddressController(AddressService addressService, UserService userService) {
         this.addressService = addressService;
-        this.userService=userService;
+        this.userService = userService;
     }
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<Address>>> getAllAddresses() throws ProductException {
-        List<Address> addresses = addressService.getAllAddresses();
+    public ResponseEntity<ResponseWrapper<Page<Address>>> getAllAddresses(
+            @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+        Page<Address> addresses = addressService.getAllAddresses(pageable);
         return ResponseEntity.ok(
                 new ResponseWrapper<>(HttpStatus.OK.value(), "Successfully retrieved all addresses", addresses));
     }
@@ -105,15 +108,37 @@ public class AddressController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<ResponseWrapper<List<Address>>> getAddressesByUserId(@RequestParam String userId) throws ProductException {
+    public ResponseEntity<ResponseWrapper<Page<Address>>> getAddressesByUserId(@RequestParam String userId,
+            @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+        Users userById = userService.getUserById(userId);
+        Page<Address> addresses = addressService.getAddressesByUser(userById, pageable);
+        return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(),
+                "Successfully retrieved addresses for user", addresses));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseWrapper<Page<Address>>> searchAddresses(
+            @RequestParam(required = false) AddressType addressType,
+            @RequestParam(required = false) String companyName,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String state,
+            @RequestParam(required = false) String postalCode,
+            @RequestParam(required = false) String country,
+            @PageableDefault(size = 10) Pageable pageable) {
         try {
-            Users userById = userService.getUserById(userId);
-            List<Address> addresses = addressService.getAddressesByUser(userById);
-            return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(),
-                    "Successfully retrieved addresses for user", addresses));
+            Page<Address> addresses = addressService.searchAddresses(
+                    addressType,
+                    companyName,
+                    city,
+                    state,
+                    postalCode,
+                    country,
+                    pageable);
+            return ResponseEntity.ok(new ResponseWrapper<>(HttpStatus.OK.value(), "Addresses found", addresses));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null));
+                    .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                            "An error occurred during search", null));
         }
     }
 }

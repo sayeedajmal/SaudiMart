@@ -1,8 +1,9 @@
 package com.saudiMart.Product.Controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,12 +34,13 @@ public class CreditApplicationController {
     @Autowired
     public CreditApplicationController(CreditApplicationService creditApplicationService, UserService userService) {
         this.creditApplicationService = creditApplicationService;
- this.userService = userService;
+        this.userService = userService;
     }
 
     @GetMapping
-    public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getAllCreditApplications() {
-        List<CreditApplication> creditApplications = creditApplicationService.getAllCreditApplications();
+    public ResponseEntity<ResponseWrapper<Page<CreditApplication>>> getAllCreditApplications(
+            @PageableDefault(size = 10) Pageable pageable) {
+        Page<CreditApplication> creditApplications = creditApplicationService.getAllCreditApplications(pageable);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved all credit applications", creditApplications));
     }
@@ -103,58 +105,109 @@ public class CreditApplicationController {
     }
 
     @GetMapping("/buyer/{userId}")
-    public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsByBuyer(
- @PathVariable String userId) {
- try {
- Users user = userService.getUserById(userId);
- List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsByBuyer(user);
- return ResponseEntity.ok(
- new ResponseWrapper<>(200, "Successfully retrieved credit applications by buyer", creditApplications));
- } catch (ProductException e) {
- return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
- } catch (Exception e) {
- return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
- .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
- }
+    public ResponseEntity<ResponseWrapper<Page<CreditApplication>>> getCreditApplicationsByBuyer(
+            @PathVariable String userId,
+            @PageableDefault(size = 10) Pageable pageable) {
+        try {
+            Users user = userService.getUserById(userId);
+            Page<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsByBuyer(user,
+                    pageable);
+            return ResponseEntity.ok(
+                    new ResponseWrapper<>(200, "Successfully retrieved credit applications by buyer",
+                            creditApplications));
+        } catch (ProductException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
+        }
     }
 
     @GetMapping("/seller/{userId}")
-    public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsBySeller(
- @PathVariable String userId) {
- try {
- Users user = userService.getUserById(userId);
- List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsBySeller(user);
- return ResponseEntity.ok(
- new ResponseWrapper<>(200, "Successfully retrieved credit applications by seller", creditApplications));
- } catch (ProductException e) {
- return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
- } catch (Exception e) {
- return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
- .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
- }
+    public ResponseEntity<ResponseWrapper<Page<CreditApplication>>> getCreditApplicationsBySeller(
+            @PathVariable String userId,
+            @PageableDefault(size = 10) Pageable pageable) {
+        try {
+            Users user = userService.getUserById(userId);
+            Page<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsBySeller(user,
+                    pageable);
+            return ResponseEntity.ok(
+                    new ResponseWrapper<>(200, "Successfully retrieved credit applications by seller",
+                            creditApplications));
+        } catch (ProductException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
+        }
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsByStatus(
-            @PathVariable CreditApplicationStatus status) {
-        List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsByStatus(status);
- return ResponseEntity.ok(
- new ResponseWrapper<>(200, "Successfully retrieved credit applications by status", creditApplications));
+    public ResponseEntity<ResponseWrapper<Page<CreditApplication>>> getCreditApplicationsByStatus(
+            @PathVariable CreditApplicationStatus status,
+            @PageableDefault(size = 10) Pageable pageable) {
+        Page<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsByStatus(status,
+                pageable);
+        return ResponseEntity.ok(
+                new ResponseWrapper<>(200, "Successfully retrieved credit applications by status", creditApplications));
     }
 
     @GetMapping("/reviewer/{userId}")
-    public ResponseEntity<ResponseWrapper<List<CreditApplication>>> getCreditApplicationsByReviewer(
- @PathVariable String userId) {
- try {
- Users user = userService.getUserById(userId);
- List<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsByReviewer(user);
- return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved credit applications by reviewer",
- creditApplications));
- } catch (ProductException e) {
- return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
- } catch (Exception e) {
- return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
- .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
- }
+    public ResponseEntity<ResponseWrapper<Page<CreditApplication>>> getCreditApplicationsByReviewer(
+            @PathVariable String userId,
+            @PageableDefault(size = 10) Pageable pageable) {
+        try {
+            Users user = userService.getUserById(userId);
+            Page<CreditApplication> creditApplications = creditApplicationService.getCreditApplicationsByReviewer(user,
+                    pageable);
+            return ResponseEntity
+                    .ok(new ResponseWrapper<>(200, "Successfully retrieved credit applications by reviewer",
+                            creditApplications));
+        } catch (ProductException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseWrapper<>(404, e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(), null));
+        }
     }
+
+    // @GetMapping("/search")
+    // public ResponseEntity<ResponseWrapper<Page<CreditApplication>>>
+    // searchCreditApplications(
+    // @RequestParam(required = false) String buyerId,
+    // @RequestParam(required = false) String sellerId,
+    // @RequestParam(required = false) CreditApplicationStatus status,
+    // @RequestParam(required = false) String reviewerId,
+    // @RequestParam(required = false) BigDecimal minRequestedLimit,
+    // @RequestParam(required = false) BigDecimal maxRequestedLimit,
+    // @RequestParam(required = false) BigDecimal minApprovedLimit,
+    // @RequestParam(required = false) BigDecimal maxApprovedLimit,
+    // @RequestParam(required = false) @DateTimeFormat(iso =
+    // DateTimeFormat.ISO.DATE) LocalDate applicationStartDate,
+    // @RequestParam(required = false) @DateTimeFormat(iso =
+    // DateTimeFormat.ISO.DATE) LocalDate applicationEndDate,
+    // @RequestParam(required = false) @DateTimeFormat(iso =
+    // DateTimeFormat.ISO.DATE) LocalDate reviewStartDate,
+    // @RequestParam(required = false) @DateTimeFormat(iso =
+    // DateTimeFormat.ISO.DATE) LocalDate reviewEndDate,
+    // @RequestParam(required = false) @DateTimeFormat(iso =
+    // DateTimeFormat.ISO.DATE) LocalDate expiryStartDate,
+    // @RequestParam(required = false) @DateTimeFormat(iso =
+    // DateTimeFormat.ISO.DATE) LocalDate expiryEndDate,
+    // @PageableDefault(size = 10) Pageable pageable) {
+    // try {
+    // Page<CreditApplication> creditApplications =
+    // creditApplicationService.searchCreditApplications(
+    // buyerId, sellerId, status, reviewerId, minRequestedLimit, maxRequestedLimit,
+    // minApprovedLimit, maxApprovedLimit, applicationStartDate, applicationEndDate,
+    // reviewStartDate, reviewEndDate, expiryStartDate, expiryEndDate, pageable);
+    // return ResponseEntity
+    // .ok(new ResponseWrapper<>(200, "Successfully retrieved credit applications",
+    // creditApplications));
+    // } catch (Exception e) {
+    // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    // .body(new ResponseWrapper<>(500, "An error occurred: " + e.getMessage(),
+    // null));
+    // }
+    // }
 }

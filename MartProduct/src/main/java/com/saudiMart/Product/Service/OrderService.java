@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.Order;
@@ -19,8 +21,8 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    public Page<Order> getAllOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable);
     }
 
     public Order getOrderById(String id) throws ProductException {
@@ -29,19 +31,19 @@ public class OrderService {
     }
 
     public List<Order> getOrdersByBuyer(Users user) {
-        return orderRepository.findByBuyer(user);
+        return orderRepository.findByBuyer(user, Pageable.unpaged()).getContent();
     }
 
     public List<Order> getOrdersBySeller(Users user) {
-        return orderRepository.findBySeller(user);
+        return orderRepository.findBySeller(user, Pageable.unpaged()).getContent();
     }
 
     public List<Order> getOrdersByStatus(OrderStatus status) {
-        return orderRepository.findByStatus(status);
+        return orderRepository.findByStatus(status, Pageable.unpaged()).getContent();
     }
 
     public List<Order> getOrdersByCreationDateBetween(LocalDateTime startDate, LocalDateTime endDate) {
-        return orderRepository.findByCreatedAtBetween(startDate, endDate);
+        return orderRepository.findByCreatedAtBetween(startDate, endDate, Pageable.unpaged()).getContent();
     }
 
     public Order createOrder(Order order) throws ProductException {

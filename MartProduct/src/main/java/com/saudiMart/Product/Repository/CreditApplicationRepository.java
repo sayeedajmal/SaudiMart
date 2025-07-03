@@ -1,8 +1,9 @@
 package com.saudiMart.Product.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,18 +14,17 @@ import com.saudiMart.Product.Model.Users;
 @Repository
 public interface CreditApplicationRepository extends JpaRepository<CreditApplication, String> {
 
-    List<CreditApplication> findByBuyer(Users buyer);
+    Page<CreditApplication> findByBuyer(Users buyer, Pageable pageable);
 
-    List<CreditApplication> findBySeller(Users seller);
+    Page<CreditApplication> findBySeller(Users seller, Pageable pageable);
 
-    List<CreditApplication> findByStatus(CreditApplicationStatus status);
+    Page<CreditApplication> findByStatus(CreditApplicationStatus status, Pageable pageable);
 
-    List<CreditApplication> findByReviewer(Users reviewer);
+    Page<CreditApplication> findByReviewer(Users reviewer, Pageable pageable);
 
-    List<CreditApplication> findByBuyerAndSeller(Users buyer, Users seller);
+    Page<CreditApplication> findByBuyerAndSeller(Users buyer, Users seller, Pageable pageable);
 
     Optional<CreditApplication> findByIdAndSeller(String id, Users seller);
 
     Optional<CreditApplication> findByIdAndBuyer(String id, Users buyer);
-
 }

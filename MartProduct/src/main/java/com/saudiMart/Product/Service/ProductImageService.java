@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.ProductImage;
@@ -21,8 +23,8 @@ public class ProductImageService {
     @Autowired
     private ProductVariantRepository productVariantRepository;
 
-    public List<ProductImage> getAllVarientImages() {
-        return productImageRepository.findAll();
+    public Page<ProductImage> getAllVarientImages(Pageable pageable) {
+        return productImageRepository.findAll(pageable);
     }
 
     public ProductImage getProductImageById(String productImageId) throws ProductException {
@@ -30,16 +32,10 @@ public class ProductImageService {
                 .orElseThrow(() -> new ProductException("Product image not found with id: " + productImageId));
     }
 
-    public List<ProductImage> getProductImagesByVarientId(String varientId) throws ProductException {
-        ProductVariant variant = productVariantRepository.findById(varientId)
-                .orElseThrow(() -> new ProductException("Product not found with id: " + varientId));
-        return productImageRepository.findByVariant(variant);
-    }
-
-    public List<ProductImage> getProductImagesByVariantId(String variantId) throws ProductException {
+    public Page<ProductImage> getProductImagesByVariantId(String variantId, Pageable pageable) throws ProductException {
         ProductVariant variant = productVariantRepository.findById(variantId)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
-        return productImageRepository.findByVariant(variant);
+        return productImageRepository.findByVariant(variant, pageable);
     }
 
     public ProductImage createProductImage(ProductImage productImage) throws ProductException {
@@ -70,10 +66,19 @@ public class ProductImageService {
         return productImageRepository.save(productImage);
     }
 
+
     public void deleteProductImage(String productImageId) throws ProductException {
         if (!productImageRepository.existsById(productImageId)) {
             throw new ProductException("Product image not found with id: " + productImageId);
         }
         productImageRepository.deleteById(productImageId);
     }
+
+    public List<ProductImage> searchProductImagesByVariantId(String variantId)
+            throws ProductException {
+        ProductVariant variant = productVariantRepository.findById(variantId)
+                .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
+        return (List<ProductImage>) productImageRepository.findByVariant(variant);
+    }
+
 }

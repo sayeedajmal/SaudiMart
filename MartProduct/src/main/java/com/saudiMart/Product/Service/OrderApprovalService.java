@@ -1,9 +1,11 @@
 package com.saudiMart.Product.Service;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.Order;
@@ -11,6 +13,8 @@ import com.saudiMart.Product.Model.OrderApproval;
 import com.saudiMart.Product.Model.OrderApproval.OrderApprovalStatus;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Repository.OrderApprovalRepository;
+import com.saudiMart.Product.Repository.OrderRepository;
+import com.saudiMart.Product.Repository.UserRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
 @Service
@@ -19,8 +23,14 @@ public class OrderApprovalService {
     @Autowired
     private OrderApprovalRepository orderApprovalRepository;
 
-    public List<OrderApproval> getAllOrderApprovals() {
-        return orderApprovalRepository.findAll();
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public Page<OrderApproval> getAllOrderApprovals(Pageable pageable) {
+        return orderApprovalRepository.findAll(pageable);
     }
 
     public OrderApproval getOrderApprovalBy(String id) throws ProductException {
@@ -62,15 +72,54 @@ public class OrderApprovalService {
         orderApprovalRepository.deleteById(id);
     }
 
-    public List<OrderApproval> getOrderApprovalsByOrder(Order order) {
-        return orderApprovalRepository.findByOrder(order);
+    public Page<OrderApproval> getOrderApprovalsByOrder(Order order, Pageable pageable) throws ProductException {
+        return orderApprovalRepository.findByOrder(order, pageable);
     }
 
-    public List<OrderApproval> getOrderApprovalsByApprover(Users approver) {
-        return orderApprovalRepository.findByApprover(approver);
+    public Page<OrderApproval> getOrderApprovalsByApprover(Users approver, Pageable pageable)
+            throws ProductException {
+        return orderApprovalRepository.findByApprover(approver, pageable);
     }
 
-    public List<OrderApproval> getOrderApprovalsByStatus(OrderApprovalStatus status) {
-        return orderApprovalRepository.findByStatus(status);
+    public Page<OrderApproval> getOrderApprovalsByStatus(OrderApprovalStatus status, Pageable pageable) {
+        return orderApprovalRepository.findByStatus(status, pageable);
+    }
+
+    public Page<OrderApproval> searchOrderApprovals(
+            String orderId,
+            String approverId,
+            Integer approvalLevel,
+            OrderApprovalStatus status,
+            LocalDateTime minApprovalDate,
+            LocalDateTime maxApprovalDate,
+            LocalDateTime minCreatedAt,
+            LocalDateTime maxCreatedAt,
+            Pageable pageable) throws ProductException {
+
+        Order order = null;
+        if (orderId != null) {
+            order = orderRepository.findById(orderId)
+                    .orElseThrow(() -> new ProductException("Order not found with id: " +
+                            orderId));
+        }
+
+        Users approver = null;
+        if (approverId != null) {
+            approver = userRepository.findById(approverId)
+                    .orElseThrow(() -> new ProductException("User not found with id: " +
+                            approverId));
+        }
+
+        // return orderApprovalRepository.searchOrderApprovals(
+        // order,
+        // approver,
+        // approvalLevel,
+        // status,
+        // minApprovalDate,
+        // maxApprovalDate,
+        // minCreatedAt,
+        // maxCreatedAt,
+        // pageable);
+        return null;
     }
 }
