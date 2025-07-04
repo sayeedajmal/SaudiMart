@@ -1,0 +1,54 @@
+graphql
+type Product {
+    id: ID!
+    seller: Seller
+    name: String!
+    description: String
+    basePrice: Float
+    minimumOrderQuantity: Int
+    sku: String
+    available: Boolean
+    createdAt: String
+    updatedAt: String
+    category: Category
+    variants: [ProductVariant]
+    specifications: [ProductSpecification]
+}
+
+type Category {
+    id: ID!
+    name: String!
+}
+
+type ProductVariant {
+    id: ID!
+    sku: String
+    variantName: String
+    basePrice: Float
+    images: [Image]
+}
+
+type ProductSpecification {
+    id: ID!
+    specName: String!
+    specValue: String
+    unit: String
+}
+
+type Image {
+    id: ID!
+    imageUrl: String
+    altText: String
+    isPrimary: Boolean
+}
+
+type Seller {
+    id: ID!
+    name: String
+}
+
+type Query {
+    productById(id: String!): Product
+    allProducts(page: Int, size: Int): [Product]
+    productsByCategoryName(categoryName: String!, page: Int, size: Int): [Product]
+}
