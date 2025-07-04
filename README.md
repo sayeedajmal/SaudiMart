@@ -1,5 +1,7 @@
 # SaudiMart B2B E-Commerce Platform
 
+[![Build and Deploy SaudiMart Services](https://github.com/sayeedajmal/SaudiMart/actions/workflows/main.yml/badge.svg)](https://github.com/sayeedajmal/SaudiMart/actions/workflows/main.yml)
+
 This repository contains the system design and implementation details for the SaudiMart B2B e-commerce platform.
 
 ## What is SaudiMart?
