@@ -1,14 +1,15 @@
 package com.saudiMart.Product.graphql.resolver;
 
-import com.saudiMart.Product.Model.Category;
-import com.saudiMart.Product.Model.ProductVariant;
-import com.saudiMart.Product.Model.ProductSpecification;
-import com.saudiMart.Product.Model.Products;
-import graphql.kickstart.tools.GraphQLResolver;
-import com.saudiMart.Product.Model.Users;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import com.coxautodev.graphql.tools.GraphQLResolver;
+import com.saudiMart.Product.Model.Category;
+import com.saudiMart.Product.Model.ProductSpecification;
+import com.saudiMart.Product.Model.ProductVariant;
+import com.saudiMart.Product.Model.Products;
+import com.saudiMart.Product.Model.Users;
 
 @Component
 public class ProductResolver implements GraphQLResolver<Products> {

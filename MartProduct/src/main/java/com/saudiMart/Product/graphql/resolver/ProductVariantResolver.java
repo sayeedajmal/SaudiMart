@@ -1,13 +1,13 @@
 package com.saudiMart.Product.graphql.resolver;
 
-import com.saudiMart.Product.Model.ProductVariant;
-import com.saudiMart.Product.Model.ProductImage;
-import graphql.kickstart.tools.GraphQLResolver;
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-
-import java.util.List;
+import com.coxautodev.graphql.tools.GraphQLResolver;
+import com.saudiMart.Product.Model.ProductImage;
+import com.saudiMart.Product.Model.ProductVariant;
 
 @Component
 public class ProductVariantResolver implements GraphQLResolver<ProductVariant> {

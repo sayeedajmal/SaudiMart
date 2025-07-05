@@ -1,8 +1,9 @@
 package com.saudiMart.Product.graphql.resolver;
 
-import com.saudiMart.Product.Model.ProductImage;
-import graphql.kickstart.tools.GraphQLResolver;
 import org.springframework.stereotype.Component;
+
+import com.coxautodev.graphql.tools.GraphQLResolver;
+import com.saudiMart.Product.Model.ProductImage;
 
 @Component
 public class ImageResolver implements GraphQLResolver<ProductImage> {

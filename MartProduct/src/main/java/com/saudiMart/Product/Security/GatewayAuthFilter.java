@@ -18,7 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class GatewayAuthFilter extends OncePerRequestFilter {
 
-    @SuppressWarnings("null")
     @Override
     protected void doFilterInternal(HttpServletRequest request,
             HttpServletResponse response,
@@ -36,7 +35,6 @@ public class GatewayAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        System.out.println("Hello! I am Pinged here");
 
         // Extract Gateway-passed headers
         String userId = request.getHeader("X-User-Id");
@@ -49,6 +47,7 @@ public class GatewayAuthFilter extends OncePerRequestFilter {
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userId, null, authorities);
+        System.out.println("Hello! I am Pinged here I AM HERE WITH AUTH");
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

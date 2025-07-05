@@ -35,6 +35,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/actuator/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/products/**", "/categories/**").permitAll();
                     auth.requestMatchers(HttpMethod.OPTIONS, "/products/**", "/categories/**").permitAll();
+                    auth.requestMatchers("/graphql").authenticated();
                     auth.anyRequest().authenticated();
                 })
                 .exceptionHandling(exception -> exception

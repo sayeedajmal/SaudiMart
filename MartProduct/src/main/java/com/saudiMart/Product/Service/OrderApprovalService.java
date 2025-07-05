@@ -13,8 +13,6 @@ import com.saudiMart.Product.Model.OrderApproval;
 import com.saudiMart.Product.Model.OrderApproval.OrderApprovalStatus;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Repository.OrderApprovalRepository;
-import com.saudiMart.Product.Repository.OrderRepository;
-import com.saudiMart.Product.Repository.UserRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
 @Service
@@ -23,11 +21,11 @@ public class OrderApprovalService {
     @Autowired
     private OrderApprovalRepository orderApprovalRepository;
 
-    @Autowired
-    private OrderRepository orderRepository;
+    // @Autowired
+    // private OrderRepository orderRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    // @Autowired
+    // private UserRepository userRepository;
 
     public Page<OrderApproval> getAllOrderApprovals(Pageable pageable) {
         return orderApprovalRepository.findAll(pageable);
@@ -96,19 +94,19 @@ public class OrderApprovalService {
             LocalDateTime maxCreatedAt,
             Pageable pageable) throws ProductException {
 
-        Order order = null;
-        if (orderId != null) {
-            order = orderRepository.findById(orderId)
-                    .orElseThrow(() -> new ProductException("Order not found with id: " +
-                            orderId));
-        }
+        // Order order = null;
+        // if (orderId != null) {
+        // order = orderRepository.findById(orderId)
+        // .orElseThrow(() -> new ProductException("Order not found with id: " +
+        // orderId));
+        // }
 
-        Users approver = null;
-        if (approverId != null) {
-            approver = userRepository.findById(approverId)
-                    .orElseThrow(() -> new ProductException("User not found with id: " +
-                            approverId));
-        }
+        // Users approver = null;
+        // if (approverId != null) {
+        // approver = userRepository.findById(approverId)
+        // .orElseThrow(() -> new ProductException("User not found with id: " +
+        // approverId));
+        // }
 
         // return orderApprovalRepository.searchOrderApprovals(
         // order,

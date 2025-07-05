@@ -11,7 +11,6 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, String> {
 
         Page<Warehouse> findBySeller(Users user, Pageable pageable);
 
-        @SuppressWarnings("null")
         Page<Warehouse> findAll(Pageable pageable);
 
         Page<Warehouse> findByNameContainingIgnoreCaseOrSeller(String name, Users seller, Pageable pageable);
