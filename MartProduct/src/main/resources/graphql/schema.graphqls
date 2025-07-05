@@ -1,4 +1,3 @@
-graphql
 type Product {
     id: ID!
     seller: Seller
@@ -47,8 +46,14 @@ type Seller {
     name: String
 }
 
+type ProductPage {
+    content: [Product]!
+    totalElements: Int!
+    totalPages: Int!
+}
+
 type Query {
     productById(id: String!): Product
-    allProducts(page: Int, size: Int): [Product]
-    productsByCategoryName(categoryName: String!, page: Int, size: Int): [Product]
+    allProducts(page: Int, size: Int): ProductPage
+    productsByCategoryName(categoryName: String!, page: Int, size: Int): ProductPage
 }

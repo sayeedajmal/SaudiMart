@@ -41,7 +41,8 @@ public class ProductQueryController {
     }
 
     @QueryMapping
-    public Page<Products> productsByCategoryName(@Argument String categoryName, @Argument Integer page, @Argument Integer size) {
+    public Page<Products> productsByCategoryName(@Argument String categoryName, @Argument Integer page,
+            @Argument Integer size) {
         Pageable pageable = PageRequest.of(page != null ? page : 0, size != null ? size : 10);
         System.out.println("Before getting products by category name");
         try {
