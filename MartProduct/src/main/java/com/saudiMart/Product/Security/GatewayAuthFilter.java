@@ -26,6 +26,13 @@ public class GatewayAuthFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
+        // Allow GraphQL endpoints to pass through
+        if (path.matches("^/graphql(/.*)?$")) {
+            System.out.println("ITS FROM THE GRAPHQL ENDPOINT, HERE'S THE PATH: " + path);
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
         // Skip public endpoints
         if ((HttpMethod.GET.matches(method) && path.matches("^/(products|categories)(/.*)?$")) ||
                 (HttpMethod.OPTIONS.matches(method) && path.matches("^/(products|categories)(/.*)?$"))) {

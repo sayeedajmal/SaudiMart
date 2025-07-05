@@ -1,28 +1,28 @@
-package com.saudiMart.Product.graphql.resolver;
+package com.saudiMart.Product.graphql.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.stereotype.Controller;
 
-import com.coxautodev.graphql.tools.GraphQLQueryResolver;
 import com.saudiMart.Product.Model.Products;
 import com.saudiMart.Product.Service.ProductsService;
 
-@Component
-public class ProductQueryResolver implements GraphQLQueryResolver {
+@Controller
+public class ProductQueryController {
 
     private final ProductsService productsService;
 
     @Autowired
-    public ProductQueryResolver(ProductsService productsService) {
+    public ProductQueryController(ProductsService productsService) {
         this.productsService = productsService;
     }
 
-    @PreAuthorize("isAuthenticated()")
-    public Products productById(String id) {
+    @QueryMapping
+    public Products productById(@Argument String id) {
         System.out.println("Before getting product by ID");
         try {
             return productsService.getProductById(id);
@@ -34,12 +34,14 @@ public class ProductQueryResolver implements GraphQLQueryResolver {
         }
     }
 
-    public Page<Products> allProducts(Integer page, Integer size) {
+    @QueryMapping
+    public Page<Products> allProducts(@Argument Integer page, @Argument Integer size) {
         Pageable pageable = PageRequest.of(page != null ? page : 0, size != null ? size : 10);
         return productsService.getAllProducts(pageable);
     }
 
-    public Page<Products> productsByCategoryName(String categoryName, Integer page, Integer size) {
+    @QueryMapping
+    public Page<Products> productsByCategoryName(@Argument String categoryName, @Argument Integer page, @Argument Integer size) {
         Pageable pageable = PageRequest.of(page != null ? page : 0, size != null ? size : 10);
         System.out.println("Before getting products by category name");
         try {
