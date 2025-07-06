@@ -56,4 +56,5 @@ type Query {
     productById(id: String!): Product
     allProducts(page: Int, size: Int): ProductPage
     productsByCategoryName(categoryName: String!, page: Int, size: Int): ProductPage
+    hello: String
 }

@@ -33,11 +33,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/actuator/**").permitAll();
-                    auth.requestMatchers("/graphql").permitAll();
-                    auth.requestMatchers("/graphql/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/products/**", "/categories/**").permitAll();
                     auth.requestMatchers(HttpMethod.OPTIONS, "/products/**", "/categories/**").permitAll();
-                    auth.requestMatchers("/graphql").authenticated();
                     auth.anyRequest().authenticated();
                 })
                 .exceptionHandling(exception -> exception

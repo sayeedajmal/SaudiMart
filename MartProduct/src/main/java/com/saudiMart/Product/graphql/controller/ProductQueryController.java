@@ -6,6 +6,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import com.saudiMart.Product.Model.Products;
@@ -15,6 +18,14 @@ import com.saudiMart.Product.Service.ProductsService;
 public class ProductQueryController {
 
     private final ProductsService productsService;
+
+    @QueryMapping
+    @PreAuthorize("hasRole('ROLE_BUYER')")
+    public String hello() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("🤖 Current Auth in GraphQL: " + auth);
+        return "Hi from GraphQL!";
+    }
 
     @Autowired
     public ProductQueryController(ProductsService productsService) {

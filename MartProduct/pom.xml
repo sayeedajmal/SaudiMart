@@ -83,11 +83,12 @@
         </dependency>
 
         <!-- GraphQL -->
-        
+
         <dependency>
-            <groupId>org.springframework.graphql</groupId>
-            <artifactId>spring-graphql</artifactId>
-        </dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-graphql</artifactId>
+</dependency>
+
        
 
         <!-- Development -->
