@@ -24,7 +24,7 @@ import com.saudiMart.Product.Model.Order.OrderStatus;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Service.OrderService;
-import com.saudiMart.Product.Service.UserService; // Assuming a UserService exists to fetch Users
+import com.saudiMart.Product.Service.UserService; 
 import com.saudiMart.Product.Utils.ProductException;
 
 @RestController
@@ -35,7 +35,7 @@ public class OrderController {
     private OrderService orderService;
 
     @Autowired
-    private UserService userService; // Assuming a UserService exists
+    private UserService userService; 
 
     @GetMapping
     public ResponseEntity<ResponseWrapper<Page<Order>>> getAllOrders(@PageableDefault(size = 10) Pageable pageable) {
@@ -72,7 +72,7 @@ public class OrderController {
     @GetMapping("/buyer/{userId}")
     public ResponseEntity<ResponseWrapper<List<Order>>> getOrdersByBuyer(@PathVariable String userId)
             throws ProductException {
-        Users buyer = userService.getUserById(userId); // Assuming getUserById method in UserService
+        Users buyer = userService.getUserById(userId); 
         List<Order> orders = orderService.getOrdersByBuyer(buyer);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved orders by buyer", orders));
     }
@@ -80,7 +80,7 @@ public class OrderController {
     @GetMapping("/seller/{userId}")
     public ResponseEntity<ResponseWrapper<List<Order>>> getOrdersBySeller(@PathVariable String userId)
             throws ProductException {
-        Users seller = userService.getUserById(userId); // Assuming getUserById method in UserService
+        Users seller = userService.getUserById(userId); 
         List<Order> orders = orderService.getOrdersBySeller(seller);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved orders by seller", orders));
     }

@@ -1,7 +1,13 @@
 package com.saudiMart.Product.Controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -16,13 +22,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.saudiMart.Product.Model.Inventory;
 import com.saudiMart.Product.Model.Quote;
 import com.saudiMart.Product.Model.Quote.QuoteStatus;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Model.Users;
+import com.saudiMart.Product.Model.Warehouse;
+import com.saudiMart.Product.Service.InventoryService;
 import com.saudiMart.Product.Service.QuoteService;
 import com.saudiMart.Product.Service.UserService;
 import com.saudiMart.Product.Utils.ProductException;
+
+import lombok.Data;
 
 @RestController
 @RequestMapping("/quotes")
@@ -32,23 +43,69 @@ public class QuoteController {
 
     private final UserService userService;
 
+    private final InventoryService invenService;
+
     @Autowired
-    public QuoteController(QuoteService quoteService, UserService userService) {
+    public QuoteController(QuoteService quoteService, UserService userService, InventoryService inventoryService) {
         this.quoteService = quoteService;
         this.userService = userService;
+        this.invenService = inventoryService;
     }
 
-    @GetMapping
-    public ResponseEntity<ResponseWrapper<Page<Quote>>> getAllQuotes(
+    @GetMapping("/filter")
+    public ResponseEntity<ResponseWrapper<Page<Map<String, Object>>>> getAllQuotes(
             @RequestParam(required = false) QuoteStatus status,
             @RequestParam(required = false) String buyerId,
             @RequestParam(required = false) String sellerId,
             @PageableDefault(size = 10) Pageable pageable) throws ProductException {
-        Users buyer = userService.getUserById(buyerId);
-        Users seller = userService.getUserById(sellerId);
-        Page<Quote> quotes = quoteService.searchQuotes(status, buyer, seller, pageable);
-        return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved quotes", quotes));
 
+        Users buyer = buyerId == null ? null : userService.getUserById(buyerId);
+        Users seller = sellerId == null ? null : userService.getUserById(sellerId);
+        Page<Quote> quotes = quoteService.searchQuotes(status, buyer, seller, pageable);
+
+        List<Map<String, Object>> mappedQuotes = quotes.getContent().stream()
+                .map(quote -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("quote", quote);
+
+                    try {
+                        if (quote.getQuoteItem() != null && quote.getQuoteItem().getVariant() != null) {
+                            Inventory inventory = invenService.getInventoryByVariantId(
+                                    quote.getQuoteItem().getVariant().getId());
+
+                            if (inventory != null) {
+                                map.put("quantity", inventory.getQuantity());
+                                map.put("warehouse", inventory.getWarehouse());
+                                map.put("reservedQuantity", inventory.getReservedQuantity());
+                            } else {
+                                System.err.println("Inventory is null for quote ID: " + quote.getId());
+                            }
+                        } else {
+                            System.err.println("QuoteItem or Variant is null for quote ID: " + quote.getId());
+                        }
+
+                    } catch (ProductException e) {
+                        e.printStackTrace();
+                    }
+
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        Page<Map<String, Object>> mappedPage = new PageImpl<>(
+                mappedQuotes,
+                pageable,
+                quotes.getTotalElements());
+
+        return ResponseEntity.ok(
+                new ResponseWrapper<>(200, "Successfully retrieved quotes", mappedPage));
+    }
+
+    
+    @GetMapping
+    public ResponseEntity<ResponseWrapper<Page<Quote>>> getAllQuotes(@PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity
+                .ok(new ResponseWrapper<>(200, "Successfully retrieved quotes", quoteService.getAllQuotes(pageable)));
     }
 
     @GetMapping("/{id}")
@@ -99,5 +156,20 @@ public class QuoteController {
             @PageableDefault(size = 10) Pageable pageable) {
         Page<Quote> quotes = quoteService.getQuotesByStatus(status, pageable);
         return ResponseEntity.ok(new ResponseWrapper<>(200, "Successfully retrieved quotes by status", quotes));
+    }
+}
+
+@Data
+class QuoteWithInventoryDTO {
+    private Quote quote;
+    private int quantity;
+    private Warehouse warehouse;
+    private int reservedQuantity;
+
+    public QuoteWithInventoryDTO(Quote quote, Inventory inventory) {
+        this.quote = quote;
+        this.quantity = inventory.getQuantity();
+        this.warehouse = inventory.getWarehouse();
+        this.reservedQuantity = inventory.getReservedQuantity();
     }
 }

@@ -1,6 +1,7 @@
 package com.saudiMart.Product.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -132,7 +133,7 @@ public class ProductsService {
 
         updateProductSpecifications(oldProduct, newProduct.getSpecifications());
         updateProductVariants(oldProduct, newProduct.getVariants());
-
+        oldProduct.setUpdatedAt(LocalDateTime.now());
         return productsRepository.save(oldProduct);
     }
 

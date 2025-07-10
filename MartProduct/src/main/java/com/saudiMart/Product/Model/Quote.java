@@ -4,12 +4,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
-import java.util.Random;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -51,6 +52,11 @@ public class Quote {
     private Users seller;
 
     @NotNull
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "quoteItem_id", nullable = false)
+    private QuoteItem quoteItem;
+
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private QuoteStatus status = QuoteStatus.DRAFT;
@@ -81,8 +87,9 @@ public class Quote {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         if (quoteNumber == null) {
-        this.quoteNumber = "Q-" + Year.now().getValue() + "-" + String.format("%06d", new Random().nextInt(999999));
-    }}
+            this.quoteNumber = "Q-" + Year.now().getValue() + "-" + LocalDateTime.now().toString();
+        }
+    }
 
     @PreUpdate
     protected void onUpdate() {

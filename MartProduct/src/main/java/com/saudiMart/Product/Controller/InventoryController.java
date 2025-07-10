@@ -86,18 +86,17 @@ public class InventoryController {
     }
 
     @GetMapping("/variant/{variantId}")
-    public ResponseEntity<ResponseWrapper<Page<Inventory>>> getInventoryByVariantId(@PathVariable String variantId,
-            @PageableDefault(size = 10) Pageable pageable) throws ProductException {
+    public ResponseEntity<ResponseWrapper<Inventory>> getInventoryByVariantId(@PathVariable String variantId) throws ProductException {
 
-        Page<Inventory> inventory = inventoryService.getInventoryByVariantId(variantId, pageable);
+        Inventory inventory = inventoryService.getInventoryByVariantId(variantId);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved inventory entries for variant", inventory));
     }
 
     @GetMapping("/warehouse/{warehouseId}")
-    public ResponseEntity<ResponseWrapper<Page<Inventory>>> getInventoryByWarehouseId(@PathVariable String warehouseId,
+    public ResponseEntity<ResponseWrapper<Inventory>> getInventoryByWarehouseId(@PathVariable String warehouseId,
             @PageableDefault(size = 10) Pageable pageable) throws ProductException {
-        Page<Inventory> inventory = inventoryService.getInventoryByWarehouseId(warehouseId, pageable);
+        Inventory inventory = inventoryService.getInventoryByWarehouseId(warehouseId);
         return ResponseEntity
                 .ok(new ResponseWrapper<>(200, "Successfully retrieved inventory entries for warehouse", inventory));
     }

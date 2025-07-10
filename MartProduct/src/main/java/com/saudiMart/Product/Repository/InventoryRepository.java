@@ -17,7 +17,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, String> {
 
     void deleteByProduct(Products product);
 
-    Page<Inventory> findByVariant(ProductVariant variant, Pageable pageable);
+    Inventory findByVariant(ProductVariant variant);
 
     Page<Inventory> findByWarehouse(Warehouse warehouse, Pageable pageable);
 

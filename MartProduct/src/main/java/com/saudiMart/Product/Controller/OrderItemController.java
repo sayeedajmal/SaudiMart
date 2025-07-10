@@ -1,7 +1,5 @@
 package com.saudiMart.Product.Controller;
 
-import java.math.BigDecimal;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -104,19 +102,6 @@ public class OrderItemController {
         }
     }
 
-    @GetMapping("/order/{orderId}")
-    public ResponseEntity<ResponseWrapper<Page<OrderItem>>> getOrderItemsByOrder(@PathVariable String orderId,
-            @PageableDefault(size = 10) Pageable pageable) {
-        try {
-            Page<OrderItem> orderItems = orderItemService.getOrderItemsByOrder(orderId, pageable);
-            ResponseWrapper<Page<OrderItem>> response = new ResponseWrapper<>(200,
-                    "Successfully retrieved order items for order", orderItems);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            throw new RuntimeException("An error occurred while retrieving order items by order", e);
-        }
-    }
-
     @GetMapping("/product/{productId}")
     public ResponseEntity<ResponseWrapper<Page<OrderItem>>> getOrderItemsByProduct(@PathVariable String productId,
             @PageableDefault(size = 10) Pageable pageable) {
@@ -135,16 +120,7 @@ public class OrderItemController {
             @RequestParam(required = false) String orderId,
             @RequestParam(required = false) String productId,
             @RequestParam(required = false) String variantId,
-            @RequestParam(required = false) Integer minQuantity,
-            @RequestParam(required = false) Integer maxQuantity,
-            @RequestParam(required = false) BigDecimal minPricePerUnit,
-            @RequestParam(required = false) BigDecimal maxPricePerUnit,
-            @RequestParam(required = false) BigDecimal minDiscountPercent,
-            @RequestParam(required = false) BigDecimal maxDiscountPercent,
-            @RequestParam(required = false) BigDecimal minTaxPercent,
-            @RequestParam(required = false) BigDecimal maxTaxPercent,
-            @RequestParam(required = false) BigDecimal minTotalPrice,
-            @RequestParam(required = false) BigDecimal maxTotalPrice,
+            @RequestParam(required = false) Integer quantity,
             @RequestParam(required = false) String shipFromWarehouseId,
             @RequestParam(required = false) OrderItem.OrderItemStatus status,
             @PageableDefault(size = 10) Pageable pageable) throws ProductException {
@@ -152,16 +128,7 @@ public class OrderItemController {
                 orderId,
                 productId,
                 variantId,
-                minQuantity,
-                maxQuantity,
-                minPricePerUnit,
-                maxPricePerUnit,
-                minDiscountPercent,
-                maxDiscountPercent,
-                minTaxPercent,
-                maxTaxPercent,
-                minTotalPrice,
-                maxTotalPrice,
+                quantity,
                 shipFromWarehouseId,
                 status,
                 pageable);

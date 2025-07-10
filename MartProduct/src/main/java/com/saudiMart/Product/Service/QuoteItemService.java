@@ -9,10 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
-import com.saudiMart.Product.Model.Quote;
 import com.saudiMart.Product.Model.QuoteItem;
 import com.saudiMart.Product.Repository.QuoteItemRepository;
-import com.saudiMart.Product.Repository.QuoteRepository;
 import com.saudiMart.Product.Utils.ProductException;
 
 @Service
@@ -20,9 +18,6 @@ public class QuoteItemService {
 
     @Autowired
     private QuoteItemRepository quoteItemRepository;
-
-    @Autowired
-    private QuoteRepository quoteRepository;
 
     public Page<QuoteItem> getAllQuoteItems(Pageable pageable) {
         return quoteItemRepository.findAll(pageable);
@@ -33,34 +28,10 @@ public class QuoteItemService {
                 .orElseThrow(() -> new ProductException("Quote Item not found with id: " + id));
     }
 
-    public Page<QuoteItem> searchQuoteItems(String quoteId, String productId, String variantId, Pageable pageable) {
-        if (quoteId != null) {
-            return quoteItemRepository.findByQuoteId(quoteId, pageable);
-        } else if (productId != null) {
-            return quoteItemRepository.findByProductId(productId, pageable);
-        } else if (variantId != null) {
-            return quoteItemRepository.findByVariantId(variantId, pageable);
-        }
-        return quoteItemRepository.findAll(pageable);
-    }
-
     public QuoteItem createQuoteItem(QuoteItem quoteItem) throws ProductException {
         if (quoteItem == null) {
             throw new ProductException("Quote Item cannot be null");
         }
-
-        String buyerId = quoteItem.getQuote().getBuyer().getId();
-        String productId = quoteItem.getProduct().getId();
-        String variantId = quoteItem.getVariant() != null ? quoteItem.getVariant().getId() : null;
-
-        QuoteItem existing = quoteRepository.findExistingItem(buyerId, productId, variantId);
-        if (existing != null) {
-            throw new ProductException("Quote item with same product & variant already exists for this buyer.");
-        }
-
-        Quote savedQuote = quoteRepository.save(quoteItem.getQuote());
-        quoteItem.setQuote(savedQuote);
-
         return quoteItemRepository.save(quoteItem);
     }
 
@@ -106,10 +77,6 @@ public class QuoteItemService {
             throw new ProductException("Quote Item not found with id: " + id);
         }
         quoteItemRepository.deleteById(id);
-    }
-
-    public Page<QuoteItem> getQuoteItemsByQuote(Quote quote, Pageable pageable) {
-        return quoteItemRepository.findByQuote(quote, pageable);
     }
 
     public Page<QuoteItem> getQuoteItemsByProduct(Products product, Pageable pageable) {

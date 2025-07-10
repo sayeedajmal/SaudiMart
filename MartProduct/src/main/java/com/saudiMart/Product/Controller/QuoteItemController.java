@@ -13,12 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.saudiMart.Product.Model.ProductVariant;
 import com.saudiMart.Product.Model.Products;
-import com.saudiMart.Product.Model.Quote;
 import com.saudiMart.Product.Model.QuoteItem;
 import com.saudiMart.Product.Model.ResponseWrapper;
 import com.saudiMart.Product.Service.QuoteItemService;
@@ -30,17 +28,6 @@ public class QuoteItemController {
 
     @Autowired
     private QuoteItemService quoteItemService;
-
-    @GetMapping
-    public ResponseEntity<ResponseWrapper<Page<QuoteItem>>> getAllQuoteItems(
-            @RequestParam(required = false) String quoteId,
-            @RequestParam(required = false) String productId,
-            @RequestParam(required = false) String variantId,
-            @PageableDefault(size = 10) Pageable pageable) throws ProductException {
-        Page<QuoteItem> quoteItems = quoteItemService.searchQuoteItems(quoteId, productId, variantId, pageable);
-        return ResponseEntity
-                .ok(new ResponseWrapper<>(200, "Successfully retrieved quote items based on criteria.", quoteItems));
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseWrapper<QuoteItem>> getQuoteItemById(@PathVariable String id) {
@@ -99,15 +86,6 @@ public class QuoteItemController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseWrapper<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), null));
         }
-    }
-
-    @GetMapping("/quote/{quoteId}")
-    public ResponseEntity<ResponseWrapper<Page<QuoteItem>>> getQuoteItemsByQuoteId(@RequestBody Quote quote,
-            @PageableDefault(size = 10) Pageable pageable)
-            throws ProductException {
-        Page<QuoteItem> quoteItems = quoteItemService.getQuoteItemsByQuote(quote, pageable);
-        return ResponseEntity
-                .ok(new ResponseWrapper<>(200, "Successfully retrieved quote items by quote ID.", quoteItems));
     }
 
     @GetMapping("/product/{productId}")

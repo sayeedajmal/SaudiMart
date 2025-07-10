@@ -15,16 +15,16 @@ import com.saudiMart.Product.Model.Users;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, String> {
 
- Page<Order> findByStatus(OrderStatus status, Pageable pageable);
+   Page<Order> findByStatus(OrderStatus status, Pageable pageable);
 
- Page<Order> findByCreatedAtAfter(LocalDateTime createdAt, Pageable pageable);
+   Page<Order> findByCreatedAtAfter(LocalDateTime createdAt, Pageable pageable);
 
- Page<Order> findByBuyerAndSeller(Users BuyerUser, Users sellerUser, Pageable pageable);
+   Page<Order> findByBuyerAndSeller(Users BuyerUser, Users sellerUser, Pageable pageable);
 
-    @Query("SELECT o FROM Order o WHERE o.createdAt BETWEEN :startDate AND :endDate")
- Page<Order> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+   @Query("SELECT o FROM Order o WHERE o.createdAt BETWEEN :startDate AND :endDate")
+   Page<Order> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
- Page<Order> findBySeller(Users user, Pageable pageable);
+   Page<Order> findBySeller(Users user, Pageable pageable);
 
- Page<Order> findByBuyer(Users user, Pageable pageable);
+   Page<Order> findByBuyer(Users user, Pageable pageable);
 }

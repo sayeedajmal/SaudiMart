@@ -47,16 +47,16 @@ public class InventoryService {
         return inventoryRepository.findByProduct(product, pageable);
     }
 
-    public Page<Inventory> getInventoryByVariantId(String variantId, Pageable pageable) throws ProductException {
+    public Inventory getInventoryByVariantId(String variantId) throws ProductException {
         ProductVariant variant = productVariantRepository.findById(variantId)
                 .orElseThrow(() -> new ProductException("Product Variant not found with id: " + variantId));
-        return inventoryRepository.findByVariant(variant, pageable);
+        return inventoryRepository.findByVariant(variant);
     }
 
-    public Page<Inventory> getInventoryByWarehouseId(String warehouseId, Pageable pageable) throws ProductException {
+    public Inventory getInventoryByWarehouseId(String warehouseId) throws ProductException {
         Warehouse warehouse = warehouseRepository.findById(warehouseId)
                 .orElseThrow(() -> new ProductException("Warehouse not found with id: " + warehouseId));
-        return inventoryRepository.findByWarehouse(warehouse, pageable);
+        return inventoryRepository.findByWarehouse(warehouse, null).getContent().get(0);
     }
 
     public Inventory createInventory(Inventory inventory) throws ProductException {

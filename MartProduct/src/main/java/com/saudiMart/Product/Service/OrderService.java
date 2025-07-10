@@ -1,6 +1,8 @@
 package com.saudiMart.Product.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,15 +13,26 @@ import org.springframework.stereotype.Service;
 
 import com.saudiMart.Product.Model.Order;
 import com.saudiMart.Product.Model.Order.OrderStatus;
+import com.saudiMart.Product.Model.PriceTier;
+import com.saudiMart.Product.Model.ProductVariant;
+import com.saudiMart.Product.Model.Quote;
 import com.saudiMart.Product.Model.Users;
 import com.saudiMart.Product.Repository.OrderRepository;
 import com.saudiMart.Product.Utils.ProductException;
+
+import jakarta.validation.NoProviderFoundException;
 
 @Service
 public class OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private ProductVariantService variantService;
+
+    @Autowired
+    private QuoteService quoteService;
 
     public Page<Order> getAllOrders(Pageable pageable) {
         return orderRepository.findAll(pageable);
@@ -50,6 +63,29 @@ public class OrderService {
         if (order == null) {
             throw new ProductException("Order cannot be null");
         }
+
+        order.getOrderItem().forEach(item -> {
+            try {
+                ProductVariant variantById = variantService.getProductVariantById(item.getVariant().getId());
+                Quote quoteById = quoteService.getQuoteById(order.getQuote().getId());
+                Optional<PriceTier> matchingTier = variantById.getPriceTiers().stream()
+                        .filter(tier -> item.getQuantity() >= tier.getMinQuantity()
+                                && item.getQuantity() <= tier.getMaxQuantity())
+                        .max(Comparator.comparingInt(PriceTier::getMaxQuantity)); // Closest to maxQuantity
+
+                PriceTier selectedTier = matchingTier.orElseThrow(
+                        () -> new ProductException("No price tier found for quantity: " + item.getQuantity()));
+                order.setStatus(OrderStatus.DRAFT);
+                order.setSubtotal(quoteById.getSubtotal());
+                order.setShippingCost(BigDecimal.ZERO);
+                order.setDiscountPercent(selectedTier.getDiscountPercent());
+                order.setTaxAmount(quoteById.getTaxAmount());
+                order.setTotalPrice(quoteById.getQuoteItem().getTotalPrice());
+            } catch (ProductException e) {
+                throw new NoProviderFoundException("Product Variant not found with id: " + item.getVariant().getId());
+            }
+        });
+
         return orderRepository.save(order);
     }
 
@@ -66,10 +102,6 @@ public class OrderService {
                 order.setBillingAddress(orderDetails.getBillingAddress());
             if (orderDetails.getPaymentMethod() != null)
                 order.setPaymentMethod(orderDetails.getPaymentMethod());
-            if (orderDetails.getReferenceNumber() != null)
-                order.setReferenceNumber(orderDetails.getReferenceNumber());
-            if (orderDetails.getPurchaseOrderNumber() != null)
-                order.setPurchaseOrderNumber(orderDetails.getPurchaseOrderNumber());
             if (orderDetails.getExpectedDeliveryDate() != null)
                 order.setExpectedDeliveryDate(orderDetails.getExpectedDeliveryDate());
             if (orderDetails.getActualDeliveryDate() != null)
@@ -78,17 +110,6 @@ public class OrderService {
                 order.setNotes(orderDetails.getNotes());
             if (orderDetails.getStatus() != null)
                 order.setStatus(orderDetails.getStatus());
-            if (orderDetails.getSubtotal() != null)
-                order.setSubtotal(orderDetails.getSubtotal());
-            if (orderDetails.getTaxAmount() != null)
-                order.setTaxAmount(orderDetails.getTaxAmount());
-            if (orderDetails.getShippingCost() != null)
-                order.setShippingCost(orderDetails.getShippingCost());
-            if (orderDetails.getDiscountAmount() != null)
-                order.setDiscountAmount(orderDetails.getDiscountAmount());
-            if (orderDetails.getTotalPrice() != null)
-                order.setTotalPrice(orderDetails.getTotalPrice());
-
             return orderRepository.save(order);
         }
         throw new ProductException("Order not found with id: " + id);

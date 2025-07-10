@@ -3,7 +3,10 @@ package com.saudiMart.Product.Model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,8 +18,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
@@ -26,7 +32,9 @@ import lombok.Data;
 @Table(name = "orders", indexes = {
         @Index(name = "idx_orders_buyer_seller", columnList = "buyer_id, seller_id"),
         @Index(name = "idx_orders_status", columnList = "status"),
-        @Index(name = "idx_orders_created_at", columnList = "created_at")
+        @Index(name = "idx_orders__orderItem_id", columnList = "orderItem_id"),
+        @Index(name = "idx_orders_created_at", columnList = "created_at"),
+        @Index(name = "idx_orders_quote_id", columnList = "quote_id")
 }, uniqueConstraints = {
         @UniqueConstraint(columnNames = "order_number")
 })
@@ -38,7 +46,16 @@ public class Order {
     private String id;
 
     @Column(name = "order_number", unique = true, length = 50)
-    private String orderNumber;
+    private String orderNumber = String.format("%08d", UUID.randomUUID().hashCode());
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "quote_id")
+    private Quote quote;
+
+    @NotNull
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "orderItem_id", nullable = false)
+    private List<OrderItem> orderItem;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,7 +68,7 @@ public class Order {
     private Users seller;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contract_id")
+    @JoinColumn(name = "contract_id", nullable = true)
     private Contract contract;
 
     @NotNull
@@ -68,11 +85,10 @@ public class Order {
     @Column(name = "payment_method", length = 50)
     private PaymentMethod paymentMethod = PaymentMethod.BANK_TRANSFER;
 
-    @Column(name = "reference_number", length = 50)
-    private String referenceNumber;
-
-    @Column(name = "purchase_order_number", length = 50)
-    private String purchaseOrderNumber;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "purchaseOrderNumberSeq")
+    @SequenceGenerator(name = "purchaseOrderNumberSeq", sequenceName = "purchase_order_number_seq")
+    @Column(name = "purchase_order_number", updatable = false, insertable = false)
+    private Long purchaseOrderNumber;
 
     @Column(name = "expected_delivery_date")
     private LocalDate expectedDeliveryDate;
@@ -96,8 +112,8 @@ public class Order {
     @Column(name = "shipping_cost", precision = 12, scale = 2)
     private BigDecimal shippingCost = BigDecimal.ZERO;
 
-    @Column(name = "discount_amount", precision = 12, scale = 2)
-    private BigDecimal discountAmount = BigDecimal.ZERO;
+    @Column(name = "discount_percent", precision = 12, scale = 2)
+    private BigDecimal discountPercent = BigDecimal.ZERO;
 
     @Column(name = "total_price", precision = 12, scale = 2)
     private BigDecimal totalPrice = BigDecimal.ZERO;
@@ -123,6 +139,6 @@ public class Order {
     }
 
     public enum OrderStatus {
-        DRAFT, PENDING_APPROVAL, APPROVED, REJECTED, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+        DRAFT, REJECTED, PROCESSING, SHIPPED, DELIVERED
     }
 }

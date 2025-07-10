@@ -2,8 +2,6 @@ package com.saudiMart.Product.Model;
 
 import java.math.BigDecimal;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,12 +24,6 @@ public class QuoteItem {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "quote_id", nullable = false)
-    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-    private Quote quote;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)

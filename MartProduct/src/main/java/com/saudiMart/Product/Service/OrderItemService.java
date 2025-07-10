@@ -1,6 +1,5 @@
 package com.saudiMart.Product.Service;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +46,6 @@ public class OrderItemService {
                 .orElseThrow(() -> new ProductException("Order item not found with id: " + id));
     }
 
-    public Page<OrderItem> getOrderItemsByOrder(String orderId, Pageable pageable) throws ProductException {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ProductException("Order not found with id: " + orderId));
-        return orderItemRepository.findByOrder(order, pageable);
-    }
-
     public Page<OrderItem> getOrderItemsByProduct(String productId, Pageable pageable) throws ProductException {
         Products product = productsRepository.findById(productId)
                 .orElseThrow(() -> new ProductException("Product not found with id: " + productId));
@@ -75,25 +68,10 @@ public class OrderItemService {
             OrderItem orderItem = orderItemOptional.get();
             if (orderItemDetails.getQuantity() != null)
                 orderItem.setQuantity(orderItemDetails.getQuantity());
-            if (orderItemDetails.getPricePerUnit() != null)
-                orderItem.setPricePerUnit(orderItemDetails.getPricePerUnit());
-            if (orderItemDetails.getDiscountPercent() != null)
-                orderItem.setDiscountPercent(orderItemDetails.getDiscountPercent());
-            if (orderItemDetails.getTaxPercent() != null)
-                orderItem.setTaxPercent(orderItemDetails.getTaxPercent());
-            if (orderItemDetails.getTotalPrice() != null)
-                orderItem.setTotalPrice(orderItemDetails.getTotalPrice());
             if (orderItemDetails.getShipFromWarehouse() != null)
                 orderItem.setShipFromWarehouse(orderItemDetails.getShipFromWarehouse());
             if (orderItemDetails.getStatus() != null)
                 orderItem.setStatus(orderItemDetails.getStatus());
-            if (orderItemDetails.getNotes() != null)
-                orderItem.setNotes(orderItemDetails.getNotes());
-
-            if (orderItemDetails.getOrder() != null)
-                orderItem.setOrder(orderItemDetails.getOrder());
-            if (orderItemDetails.getProduct() != null)
-                orderItem.setProduct(orderItemDetails.getProduct());
             if (orderItemDetails.getVariant() != null)
                 orderItem.setVariant(orderItemDetails.getVariant());
             return orderItemRepository.save(orderItem);
@@ -112,16 +90,7 @@ public class OrderItemService {
             String orderId,
             String productId,
             String variantId,
-            Integer minQuantity,
-            Integer maxQuantity,
-            BigDecimal minPricePerUnit,
-            BigDecimal maxPricePerUnit,
-            BigDecimal minDiscountPercent,
-            BigDecimal maxDiscountPercent,
-            BigDecimal minTaxPercent,
-            BigDecimal maxTaxPercent,
-            BigDecimal minTotalPrice,
-            BigDecimal maxTotalPrice,
+            Integer quantity,
             String shipFromWarehouseId,
             OrderItemStatus status,
             Pageable pageable) throws ProductException {
@@ -146,40 +115,8 @@ public class OrderItemService {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("variant"), variant));
         }
 
-        if (minQuantity != null) {
-            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("quantity"), minQuantity));
-        }
-        if (maxQuantity != null) {
-            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("quantity"), maxQuantity));
-        }
-
-        if (minPricePerUnit != null) {
-            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("pricePerUnit"), minPricePerUnit));
-        }
-        if (maxPricePerUnit != null) {
-            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("pricePerUnit"), maxPricePerUnit));
-        }
-
-        if (minDiscountPercent != null) {
-            spec = spec
-                    .and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("discountPercent"), minDiscountPercent));
-        }
-        if (maxDiscountPercent != null) {
-            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("discountPercent"), maxDiscountPercent));
-        }
-
-        if (minTaxPercent != null) {
-            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("taxPercent"), minTaxPercent));
-        }
-        if (maxTaxPercent != null) {
-            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("taxPercent"), maxTaxPercent));
-        }
-
-        if (minTotalPrice != null) {
-            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("totalPrice"), minTotalPrice));
-        }
-        if (maxTotalPrice != null) {
-            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("totalPrice"), maxTotalPrice));
+        if (quantity != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("quantity"), quantity));
         }
 
         if (shipFromWarehouseId != null) {
